@@ -1,0 +1,36 @@
+- @title = "Question #{@question.question_number}/#{@question.question_year}"
+.written_question
+  %h1.question_number
+    =link_to "Question #{@question.question_number} / #{@question.question_year}", @question
+  %table.question_data
+    %tbody
+      %tr
+        %th From
+        %td
+          %table
+            %tbody
+              %tr
+                =render :partial => "mps/link_to_mp", :locals => {:link_to_mp => @question.asker}
+      %tr
+        %th To
+        %td=link_to_portfolio @question.portfolio, "#{@question.portfolio_name} (#{@question.subject})"
+      -unless @question.respondent.nil?
+        %tr
+          %th Answered
+          %td
+            %table
+              %tbody
+                %tr
+                  =render :partial => "mps/link_to_mp", :locals => {:link_to_mp => @question.respondent}
+      %tr
+        %th Asked
+        %td="#{date_to_s(@question.date_asked)} (#{distance_of_time_in_words_to_now(@question.date_asked)} ago)"
+
+  %table.question_text
+    %tbody
+      %tr.question
+        %th Q
+        %td=@question.question
+      %tr.answer
+        %th A
+        %td=@question.answer

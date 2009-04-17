@@ -263,8 +263,13 @@ module ApplicationHelper
     image_tag(portfolio_pie_chart_url(size, title), :usemap => "#portfolios_image_map", :size => size, :class => 'pie_chart', :alt => "Pie chart of #{title}")
   end
 
-  def link_to_portfolio portfolio
-    link_to portfolio.portfolio_name, url_for_portfolio(portfolio)
+  def link_to_portfolio portfolio, name = nil
+    name ||= portfolio.portfolio_name
+    link_to name, url_for_portfolio(portfolio)
+  end
+
+  def written_question_path written_question
+    url_for :controller => "written_questions", :action => "show", :question_number => written_question.question_number, :year => written_question.question_year
   end
 
   def link_to_mp mp
