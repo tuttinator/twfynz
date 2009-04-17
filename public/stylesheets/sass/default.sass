@@ -740,22 +740,20 @@ td.split_bill
   :font-weight bold
 
 .written_question
-  table.question_data, table.question_text
+  table.question
     :width 100%
-  h1
-    :margin-left 129px
+    tr.question, tr.answer
+      th
+        :font-size 2.4em
   tr th
     :font-weight bold
     :line-height 1.6em
     :text-align right
-    :width 120px
     :vertical-align top
   tr td
     :background-color #eee
   th, td
     :padding 3px
-  table.question_text th
-    :font-size 2.4em
 
 #election_message
   :font-size 1.8em

@@ -2,15 +2,15 @@
 .written_question
   %h1.question_number
     =link_to "Question #{@question.question_number} / #{@question.question_year}", @question
-  %table.question_data
+  %table.question
     %tbody
       %tr
         %th From
         %td
-          %table
-            %tbody
-              %tr
-                =render :partial => "mps/link_to_mp", :locals => {:link_to_mp => @question.asker}
+          -mp = @question.asker
+          =link_to(%Q[#{mp.first} #{mp.last}], show_mp_url(:name => mp.id_name) )
+          =mp.member_on_date(Date.today).party.abbreviated if mp.member_on_date(Date.today).party
+          =mp.member_on_date(Date.today).electorate
       %tr
         %th To
         %td=link_to_portfolio @question.portfolio, "#{@question.portfolio_name} (#{@question.subject})"
@@ -18,16 +18,13 @@
         %tr
           %th Answered
           %td
-            %table
-              %tbody
-                %tr
-                  =render :partial => "mps/link_to_mp", :locals => {:link_to_mp => @question.respondent}
+            -mp = @question.respondent
+            =link_to(%Q[#{mp.first} #{mp.last}], show_mp_url(:name => mp.id_name) )
+            =mp.member_on_date(Date.today).party.abbreviated if mp.member_on_date(Date.today).party
+            =mp.member_on_date(Date.today).electorate
       %tr
         %th Asked
         %td="#{date_to_s(@question.date_asked)} (#{distance_of_time_in_words_to_now(@question.date_asked)} ago)"
-
-  %table.question_text
-    %tbody
       %tr.question
         %th Q
         %td=@question.question
