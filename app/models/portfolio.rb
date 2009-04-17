@@ -35,6 +35,24 @@ class Portfolio < ActiveRecord::Base
       @all_portfolio_names = Portfolio.all.collect(&:portfolio_name).sort.collect{|name| name.sub('Maori','Māori')} unless @all_portfolio_names
       @all_portfolio_names
     end
+
+    def from_name name
+      substitutions = {
+        "energy_resources" => "energy",
+        "building_construction" => "building_issues",
+        "climate_change_issues" => "climate_change",
+        "gcsb" => "communications_security_bureau",
+        "nz_security_intelligence_service" => "security_intelligence_service",
+        "leader_of_house" => "the_house",
+        "deputy_leader_of_house" => "the_house"
+      }
+
+      name.gsub!(/\(.+\)/, '')
+      url = WordTokenizer.unpunctuate(name).gsub(/(?:\b)?the\b/, "").gsub(/\band\b/, "").strip.squeeze(" ").gsub(/[ -]/ , "_").downcase
+      url = substitutions[url] if substitutions.has_key?(url)
+
+      Portfolio.find_by_url url
+    end
   end
 
   def full_name

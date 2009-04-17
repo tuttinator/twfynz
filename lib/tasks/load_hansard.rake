@@ -13,7 +13,18 @@ namespace :kiwimp do
     PersistedFile.git_pull
     PersistedFile.load_yaml_index
   end
-  
+
+  desc "parse already downloaded written questions"
+  task :parse_written_questions => :environment do
+    PersistedFile.load_written_questions
+  end
+
+  desc "download written questions from parliament.nz"
+  task :download_written_questions => :environment do
+    require File.dirname(__FILE__) + '/../written_question_downloader.rb'
+    WrittenQuestionDownloader.new.download
+  end
+
   desc 'download hansard from parliament.nz'
   task :download_hansard => :environment do
     require File.dirname(__FILE__) + '/../hansard_downloader.rb'

@@ -15,6 +15,15 @@ class PersistedFile < ActiveRecord::Base
       persisted = find_all_by_persisted_and_debate_date_and_publication_status(true, date, publication_status_code)
       !persisted.empty?
     end
+    
+    def load_written_questions
+      require File.dirname(__FILE__) + '/../../lib/written_question_parser.rb'
+      dates = unpersisted_dates('W')
+      dates.each do |date|
+        files = unpersisted_files(date, 'W').sort_by(&:file_name)
+        load_written_questions_for files
+      end
+    end
 
     def load_questions
       require File.dirname(__FILE__) + '/../../lib/hansard_parser.rb'
@@ -24,6 +33,27 @@ class PersistedFile < ActiveRecord::Base
         files = unpersisted_files(date, 'U').sort_by(&:file_name)
         load_questions_for files
       end
+    end
+
+    def load_written_questions_for files
+      parser = WrittenQuestionParser.new
+      files.each_with_index do |file, index|
+        puts "parsing: #{file.storage_name}"
+        content = File.open(file.storage_name).read
+        written_question = parser.parse(content)
+        preexisting_question = WrittenQuestion.find_by_question_number(written_question.question_number)
+        if preexisting_question.nil?
+          written_question.save!
+        else
+          WrittenQuestion.update(preexisting_question.id, {
+              :answer => written_question.answer,
+              :status => written_question.status
+          })
+        end
+      end
+      files.each { |f| f.do_persist! }
+      date = files.first.debate_date
+      puts "persisted: #{date}"
     end
 
     def load_questions_for files
@@ -149,6 +179,7 @@ class PersistedFile < ActiveRecord::Base
     end
 
     def file_name(date, status, name)
+      puts "status=>#{status} name => #{name}"
       date.strftime('%Y/%m/%d')+'/'+status+'/'+name
     end
 
@@ -196,7 +227,6 @@ class PersistedFile < ActiveRecord::Base
     end
 
     def add_if_missing record
-      debate_date = record.debate_date
       filename = record.make_file_name
       existing = find_by_file_name(filename)
 
@@ -235,6 +265,12 @@ class PersistedFile < ActiveRecord::Base
       set_indexes_for_status 'U'
       set_indexes_for_status 'A'
       set_indexes_for_status 'F'
+    end
+
+    def set_written_indexes_on_date
+      ['W'].each{|status|
+        set_indexes_for_status status
+      }
     end
 
     def set_indexes_for_status publication_status
@@ -333,7 +369,11 @@ class PersistedFile < ActiveRecord::Base
   end
 
   def publication_status_name
-    PersistedFile.publication_status_name self.publication_status
+    if self.written_status.nil?
+      PersistedFile.publication_status_name self.publication_status
+    else
+      self.written_status
+    end
   end
 
   def parliament_file_name

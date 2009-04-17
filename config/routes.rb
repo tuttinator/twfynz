@@ -20,10 +20,11 @@ def with_controller name, map
 end
 
 ActionController::Routing::Routes.draw do |map|
-
   single_date_format = { :date => /(19|20)\d\d-[0-1]?\d-[0-3]?\d/ }
   single_date_options = { :requirements => single_date_format }
   single_date_path = ':date'
+
+  year_options = { :requirements => { :year => /(19|20)\d{2}/} }
 
   date_format = { :year => /(19|20)\d\d/,
                   :month => /(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec|[01]?\d|january|february|march|april|may|june|july|august|september|november|december)/,
@@ -54,6 +55,14 @@ ActionController::Routing::Routes.draw do |map|
 
     application.with_options(single_date_options) do |single_date|
       make_route single_date_path, single_date, :show_single_date
+    end
+  end
+
+  with_controller :written_questions, map do |question|
+    index_route 'written_questions', question
+
+    question.with_options(year_options) do |by_year|
+      make_route 'written_questions/:year/:question_number', by_year, :show
     end
   end
 
