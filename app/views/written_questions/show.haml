@@ -1,33 +1,5 @@
 - @title = "Question #{@question.question_number}/#{@question.question_year}"
 .written_question
-  %h1.question_number
-    =link_to "Question #{@question.question_number} / #{@question.question_year}", @question
-  %table.question
-    %tbody
-      %tr
-        %th From
-        %td
-          -mp = @question.asker
-          =link_to(%Q[#{mp.first} #{mp.last}], show_mp_url(:name => mp.id_name) )
-          =mp.member_on_date(Date.today).party.abbreviated if mp.member_on_date(Date.today).party
-          =mp.member_on_date(Date.today).electorate
-      %tr
-        %th To
-        %td=link_to_portfolio @question.portfolio, "#{@question.portfolio_name} (#{@question.subject})"
-      -unless @question.respondent.nil?
-        %tr
-          %th Answered
-          %td
-            -mp = @question.respondent
-            =link_to(%Q[#{mp.first} #{mp.last}], show_mp_url(:name => mp.id_name) )
-            =mp.member_on_date(Date.today).party.abbreviated if mp.member_on_date(Date.today).party
-            =mp.member_on_date(Date.today).electorate
-      %tr
-        %th Asked
-        %td="#{date_to_s(@question.date_asked)} (#{distance_of_time_in_words_to_now(@question.date_asked)} ago)"
-      %tr.question
-        %th Q
-        %td=@question.question
-      %tr.answer
-        %th A
-        %td=@question.answer
+  =render :partial => "question", :locals => {:question => @question}
+  - for q in @questions
+    = link_to_unless q.id == @question.id, "Q#{q.question_number}", q

@@ -1,0 +1,13 @@
+- @title = "House of Representatives written questions: Aotearoa New Zealand Parliament"
+
+#primary_container
+  %h1 Written Questions
+  %ul
+    %li="Replies: " + link_to("#{@statuses['reply']} questions", index_path(:status => "replies"))
+    %li="Questions: " + link_to("#{@statuses['question']} questions", index_path(:status => "questions"))
+    %li="Oldest unanswered question: " + link_to("#{distance_of_time_in_words_to_now @oldest_unanswered.date_asked} old", @oldest_unanswered)
+  = will_paginate @questions
+  %ul#written_questions
+    - for question in @questions
+      %li.question=render :partial => "question", :locals => { :question => question }
+  = will_paginate @questions

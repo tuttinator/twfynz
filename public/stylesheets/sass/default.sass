@@ -739,21 +739,48 @@ td.split_bill
 .assented_bill
   :font-weight bold
 
-.written_question
-  table.question
-    :width 100%
-    tr.question, tr.answer
-      th
-        :font-size 2.4em
-  tr th
+#written_questions
+  li
+    :list-style none
+    :margin-left 0
+
+    h1
+      :margin 0
+      :padding 0.2em 8px 0
+      :font-size 1.2em
+      :background-color #F1F2DA
+      :max-width 584px
+    div.bubble
+      :margin-bottom 12px
+
+div.bubble
+  :width auto
+  :max-width 600px
+  :margin-bottom 24px
+  :font-size 0.8em
+
+  blockquote
+    :margin 0
+    :padding 0
+    :border 1px solid #c9c2c1
+    :background-color #fff
+    :font-size 1.25em
+    p
+      :margin 10px
+      :padding 0
+
+  blockquote.answer
+    :font-style italic
+  blockquote.question
     :font-weight bold
-    :line-height 1.6em
-    :text-align right
-    :vertical-align top
-  tr td
-    :background-color #eee
-  th, td
-    :padding 3px
+
+  cite
+    :position relative
+    :margin 0px
+    :padding 7px 0px 0px 15px
+    :top 6px
+    :background transparent url(tip.gif) no-repeat 20px 0
+    :font-style normal
 
 #election_message
   :font-size 1.8em
