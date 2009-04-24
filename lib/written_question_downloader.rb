@@ -5,7 +5,7 @@ require 'hpricot'
 class WrittenQuestionDownloader
   STATUSES = ["Question", "Reply"]
 
-  def download date=Date.parse("1 Jan 2009")
+  def download date=Date.parse("1 Jan 2008")
     @date = date
     finished = false
     page = 0
@@ -24,7 +24,8 @@ class WrittenQuestionDownloader
   end
 
   def open_index_page page
-    url = "http://www.parliament.nz/en-NZ/PB/Debates/QWA/Default.htm?p=#{page}"
+    url = "http://www.parliament.nz/en-NZ/PB/Debates/QWA/Default.htm?search=1232319134&p=#{page}"
+#    url = "http://www.parliament.nz/en-NZ/PB/Debates/QWA/Default.htm?p=#{page}"
     puts "opening #{url}"
     Hpricot open(url)
   end

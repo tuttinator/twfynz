@@ -15,4 +15,10 @@
               %th{ :style=>"text-align: right;" }='Questions count*'
           %tbody
             = render(:partial => 'portfolio_group', :collection => @letter_to_portfolios.keys.sort, :locals => {:letter_to_portfolios => @letter_to_portfolios, :portfolios => @portfolios_with_debates})
-  %p * Count of oral questions to the Minister including supplementary questions
+    %p * Count of oral questions to the Minister including supplementary questions
+    %h3 Written Questions
+    %ul
+      %li=link_to "#{@statuses['reply'] + @statuses['question']} Written Questions", written_questions_path
+      %li=link_to"#{@statuses['reply']} answered questions", written_questions_path(:status => "replies")
+      %li=link_to "#{@statuses['question']} unanswered questions", written_questions_path(:status => "questions")
+

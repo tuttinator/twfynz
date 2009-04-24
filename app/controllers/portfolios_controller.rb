@@ -2,13 +2,18 @@ require 'sparklines'
 
 class PortfoliosController < ApplicationController
 
+  before_filter :flag_up, :only => [:index, :show_portfolio]
+
   caches_action :index, :show_portfolio
   caches_page :activity_sparkline
 
   layout "portfolios_layout"
 
-  def index
+  def flag_up
     @portfolios_on = true
+  end
+
+  def index
     @portfolios_with_debates = Portfolio.find_all_with_debates
     # @parties = Party.all_size_ordered.delete_if {|p| p.short == 'Independent'}
     # @questions_per_party = Hash.new {|h,k| h[k] = 0}
@@ -21,6 +26,12 @@ class PortfoliosController < ApplicationController
     @portfolios_with_debates = @portfolios_with_debates.group_by {|p| p.url}
     @letter_to_portfolios = @portfolios_with_debates.keys.group_by {|p| p[0..0]}
     @portfolios_without_debates = Portfolio.find_all_without_debates.group_by {|b| b.url}
+
+    @statuses = {}
+    WrittenQuestion.count(:group => 'status').each{|result|
+      @statuses[result[0]] = result[1]
+    }
+
 =begin
     @portfolios_image_map_areas = [
       Area.new('425,106,540,122','Prime Minister'),
@@ -55,7 +66,6 @@ class PortfoliosController < ApplicationController
   end
 
   def show_portfolio
-    @portfolios_on = true
     name = params[:portfolio_url]
     @portfolio = Portfolio.find_by_url(name, :include => :oral_answers)
     @hash = params

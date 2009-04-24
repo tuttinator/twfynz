@@ -1,0 +1,3 @@
+- @title = "Written Questions: Aotearoa New Zealand's Parliament "
+%h1=link_to "Questions by Member", written_questions_by_asker_index_path
+=render :partial => "questions", :locals => {:questions => @questions}

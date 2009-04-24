@@ -28,7 +28,7 @@ class WrittenQuestionParser
 
     answer = @doc.at(".qandaset .answer")
     a_text = answer.inner_html
-    q.answer = /.+\) replied: (.+)/.match(a_text)[1]
+    q.answer = /.+\) replied: (.+)/m.match(a_text)[1].gsub(/\n/, ' ').squeeze(' ').strip
 
     if /Reply due: \d{1,2} \w{3} \d{4}/.match(q.answer).nil?
       q.status = "reply"
