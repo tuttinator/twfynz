@@ -1,0 +1,14 @@
+%h1=link_to "Question #{question.question_number} / #{question.question_year}", question
+.bubble
+  %blockquote.question
+    %p=question.question
+  -mp = question.asker
+  %cite=link_to(%Q[#{mp.first} #{mp.last}], show_mp_url(:name => mp.id_name) ) + " asked #{date_to_s(question.date_asked)} (#{distance_of_time_in_words_to_now(question.date_asked)} ago)"
+.bubble
+  %blockquote.answer
+    %p=question.answer
+  - mp = question.respondent
+  %cite
+    -unless question.respondent.nil?
+      =link_to(%Q[#{mp.first} #{mp.last}], show_mp_url(:name => mp.id_name)) + " for "
+    =link_to_portfolio question.portfolio, "#{question.portfolio_name} (#{question.subject})"

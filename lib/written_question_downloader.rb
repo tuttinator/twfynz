@@ -8,12 +8,14 @@ class WrittenQuestionDownloader
   def download date=Date.parse("1 Jan 2009")
     @date = date
     finished = false
-    page = 88
+    page = 0
     questions = questions_in_index(page)
-    statuses = []
-    while !questions.empty? and !finished and (statuses.include?("Question") or statuses.empty?)
-      finished, statuses = download_questions(questions)
-      puts statuses.inspect
+
+    earliest_query = WrittenQuestion.find(:first, :limit => 1, :conditions => ['status = ? and question_year = ?', 'question', @date.year], :order => 'question_number')
+    @earliest_question_no = earliest_query.nil? ? 0 : earliest_query.question_number
+
+    while !questions.empty? and !finished
+      finished = download_questions(questions)
       page = page.next
       questions = questions_in_index(page)
     end
@@ -34,25 +36,27 @@ class WrittenQuestionDownloader
 
   def download_questions questions
     finished = false
-    statuses = []
     questions.each do |question|
       unless finished
-        finished, status = download_question(question)
-        statuses << status
+        finished = download_question(question)
       end
     end
-    return finished, statuses
+    finished
   end
 
   def download_question question
     date = date_question question
     status = get_status question
+    question_number = get_question_number question
+
     right_year = date.year == @date.year
-    if right_year and STATUSES.include?(status)
-      continue_download question, date, status
+    if question_number > @earliest_question_no and right_year and STATUSES.include?(status)
+      finished = continue_download question, date, status
     end
-    finished = !right_year
-    return finished, status
+    if !right_year or question_number < @earliest_question_no
+      finished = true
+    end
+    finished
   end
 
   def continue_download question, date, status
@@ -66,6 +70,8 @@ class WrittenQuestionDownloader
       })
 
     download_if_new persisted_file
+    finished = false
+    finished
   end
 
   def question_name question
@@ -77,14 +83,13 @@ class WrittenQuestionDownloader
     if persisted_file.exists?
       PersistedFile.add_if_missing persisted_file
     else
-      finished = download_this_question persisted_file
+      download_this_question persisted_file
     end
     finished
   end
 
   def download_this_question persisted_file
     contents = question_contents(persisted_file.parliament_url)
-    finished = false
 
     if contents.include? 'Server Error'
       PersistedFile.add_non_downloaded persisted_file
@@ -95,7 +100,6 @@ class WrittenQuestionDownloader
         PersistedFile.add_new persisted_file, contents
       end
     end
-    finished
   end
 
   def question_contents url
@@ -109,12 +113,16 @@ class WrittenQuestionDownloader
     "http://www.parliament.nz#{question.at("h4 a").attributes["href"]}"
   end
 
+  def get_question_number question
+    question.at('h4 a').inner_html.to_i
+  end
+
   def get_status question
     question.at('.attrStatus').inner_html
   end
 
   def date_question question
-    date = Date.parse(question.at('.attrPublicationDate').inner_html)
-    date = date.advance(:years => 2000) if date.year < 2000
+    content = question.at('.attrPublicationDate').inner_html
+    date = Date.parse("#{content[0,6]} 20#{content[7,2]}")
   end
 end

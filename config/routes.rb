@@ -61,9 +61,14 @@ ActionController::Routing::Routes.draw do |map|
   with_controller :written_questions, map do |question|
     index_route 'written_questions', question
 
+    make_route 'written_questions/:status', question, :index
+
     question.with_options(year_options) do |by_year|
       make_route 'written_questions/:year/:question_number', by_year, :show
     end
+
+    make_route 'written_questions/by_asker/:name', question
+    make_route 'written_questions/by_portfolio/:name', question
   end
 
   with_controller :places, map do |place|

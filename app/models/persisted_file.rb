@@ -38,6 +38,7 @@ class PersistedFile < ActiveRecord::Base
     def load_written_questions_for files
       parser = WrittenQuestionParser.new
       files.each_with_index do |file, index|
+        puts "file: #{file.inspect}"
         puts "parsing: #{file.storage_name}"
         content = File.open(file.storage_name).read
         written_question = parser.parse(content)
@@ -268,9 +269,7 @@ class PersistedFile < ActiveRecord::Base
     end
 
     def set_written_indexes_on_date
-      ['W'].each{|status|
-        set_indexes_for_status status
-      }
+      set_indexes_for_status 'W'
     end
 
     def set_indexes_for_status publication_status
