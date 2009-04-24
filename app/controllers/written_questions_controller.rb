@@ -1,4 +1,10 @@
 class WrittenQuestionsController < ApplicationController
+  before_filter :written_questions_on
+
+  def written_questions_on
+    @portfolios_on = true
+  end
+
   # GET /written_questions
   # GET /written_questions.xml
   def index
@@ -8,18 +14,30 @@ class WrittenQuestionsController < ApplicationController
       @statuses[result[0]] = result[1]
     }
 
-    @questions = paginate params[:status].nil? ? nil : params[:status].singularize
+    @questions = paginate params[:status]
 
     respond_to do |format|
       format.html # index.html.erb
       format.xml  { render :xml => @questions }
     end
   end
-  
-  def index_by_answered
-    @questions = paginate "reply"
-    re
-    render :action => :index
+
+  def written_questions_by_portfolio_index
+    @portfolios = WrittenQuestion.count(:all, :group => "portfolio", :include => "portfolio", :order => "count_all desc")
+  end
+
+  def written_questions_by_portfolio
+    portfolio = Portfolio.find_by_url params[:name]
+    @questions = WrittenQuestion.paginate :page => params[:page], :conditions => ["portfolio_id = ?", portfolio.id], :order => "question_year desc, question_number desc", :per_page => 10
+  end
+
+  def written_questions_by_asker_index
+    @askers = WrittenQuestion.count(:all, :group => "asker", :include => "asker", :order => "count_all desc")
+  end
+
+  def written_questions_by_asker
+    asker = Mp.find_by_id_name params[:name]
+    @questions = WrittenQuestion.paginate :page => params[:page], :conditions => ["asker_id = ?", asker.id], :order => "question_year desc, question_number desc", :per_page => 10
   end
 
 
@@ -40,7 +58,7 @@ class WrittenQuestionsController < ApplicationController
     if status.nil?
       WrittenQuestion.paginate :page => params[:page], :order => "question_year desc, question_number desc", :per_page => 10
     else
-      WrittenQuestion.paginate :page => params[:page], :conditions => ['status = ?', status], :order => "question_year desc, question_number desc", :per_page => 10
+      WrittenQuestion.paginate :page => params[:page], :conditions => ['status = ?', status.singularize], :order => "question_year desc, question_number desc", :per_page => 10
     end
   end
 end

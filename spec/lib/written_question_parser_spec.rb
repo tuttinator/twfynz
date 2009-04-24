@@ -53,7 +53,7 @@ describe WrittenQuestionParser do
     end
 
     it "should parse out the answer correctly" do
-      @result.answer.should eql("The current economic downturn is relevant to all aspects of the Communications and Information Technology portfolio.  All work, and hence all advice, in this area is aimed at responding to current economic challenges and driving up New Zealand’s long-term economic competitiveness.")
+      @result.answer.should eql("The current economic downturn is relevant to all aspects of the Communications and Information Technology portfolio. All work, and hence all advice, in this area is aimed at responding to current economic challenges and driving up New Zealand’s long-term economic competitiveness. • the Ministry of Civil Defence and Emergency Management, comprising: o Civil Defence Emergency Management Development Unit; o Operations Unit; o Civil Defence Emergency Management Specialist Services Unit; and o Strategic Development and Business Support Unit. • the Civil Defence Emergency Management Policy Team, which is part of the Department of Internal Affairs’ Regulation and Compliance Branch; and • a communications team, which is part of the Department of Internal Affairs’ Strategic Communications Unit.")
     end
 
     it "should have a status of reply" do
@@ -1033,6 +1033,14 @@ def answered
               Steven
               Joyce
             </span> (Minister for Communications and Information Technology) replied: The current economic downturn is relevant to all aspects of the Communications and Information Technology portfolio.  All work, and hence all advice, in this area is aimed at responding to current economic challenges and driving up New Zealand’s long-term economic competitiveness.
+• the Ministry of Civil Defence and Emergency Management, comprising:
+o Civil Defence Emergency Management Development Unit;
+o Operations Unit;
+o Civil Defence Emergency Management Specialist Services Unit; and
+o Strategic Development and Business Support Unit.
+• the Civil Defence Emergency Management Policy Team, which is part of the Department of Internal Affairs’ Regulation and Compliance Branch; and
+• a communications team, which is part of the Department of Internal Affairs’ Strategic Communications Unit.
+
         </div>
 
     </div>

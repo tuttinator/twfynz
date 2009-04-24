@@ -1,0 +1,6 @@
+-@questions ||= questions
+= will_paginate @questions
+%ul#written_questions
+  - for question in @questions
+    %li.question=render :partial => "question", :locals => { :question => question }
+= will_paginate @questions
