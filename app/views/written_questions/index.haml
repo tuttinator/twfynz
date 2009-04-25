@@ -3,7 +3,10 @@
 #primary_container
   %h1 Written Questions
   %ul
-    %li="Replies: " + link_to("#{@statuses['reply']} questions", index_path(:status => "replies"))
-    %li="Questions: " + link_to("#{@statuses['question']} questions", index_path(:status => "questions"))
-    %li="Oldest unanswered question: " + link_to("#{distance_of_time_in_words_to_now @oldest_unanswered.date_asked} old", @oldest_unanswered)
+    %li=link_to("#{@statuses['reply']} answered questions", index_path(:status => "replies"))
+    %li=link_to("#{@statuses['question'] || 'no'} unanswered questions", index_path(:status => "questions"))
+    %li=link_to("The oldest unanswered question (#{distance_of_time_in_words_to_now @oldest_unanswered.date_asked} old)", @oldest_unanswered) unless @oldest_unanswered.nil?
+    %li=link_to "Questions By Member", written_questions_by_asker_index_path
+    %li=link_to "Questions By Portfolio", written_questions_by_portfolio_index_path
+  %br
   =render :partial => "questions", :locals => {:questions => @questions}

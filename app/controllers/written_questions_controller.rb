@@ -1,6 +1,8 @@
 class WrittenQuestionsController < ApplicationController
   before_filter :written_questions_on
 
+  PAGE_SIZE = 20
+
   def written_questions_on
     @portfolios_on = true
   end
@@ -28,7 +30,7 @@ class WrittenQuestionsController < ApplicationController
 
   def written_questions_by_portfolio
     portfolio = Portfolio.find_by_url params[:name]
-    @questions = WrittenQuestion.paginate :page => params[:page], :conditions => ["portfolio_id = ?", portfolio.id], :order => "question_year desc, question_number desc", :per_page => 10
+    @questions = WrittenQuestion.paginate :page => params[:page], :conditions => ["portfolio_id = ?", portfolio.id], :order => "question_year desc, question_number desc", :per_page => PAGE_SIZE
   end
 
   def written_questions_by_asker_index
@@ -37,7 +39,7 @@ class WrittenQuestionsController < ApplicationController
 
   def written_questions_by_asker
     asker = Mp.find_by_id_name params[:name]
-    @questions = WrittenQuestion.paginate :page => params[:page], :conditions => ["asker_id = ?", asker.id], :order => "question_year desc, question_number desc", :per_page => 10
+    @questions = WrittenQuestion.paginate :page => params[:page], :conditions => ["asker_id = ?", asker.id], :order => "question_year desc, question_number desc", :per_page => PAGE_SIZE
   end
 
 
@@ -56,9 +58,9 @@ class WrittenQuestionsController < ApplicationController
   private
   def paginate status=nil
     if status.nil?
-      WrittenQuestion.paginate :page => params[:page], :order => "question_year desc, question_number desc", :per_page => 10
+      WrittenQuestion.paginate :page => params[:page], :order => "question_year desc, question_number desc", :per_page => PAGE_SIZE
     else
-      WrittenQuestion.paginate :page => params[:page], :conditions => ['status = ?', status.singularize], :order => "question_year desc, question_number desc", :per_page => 10
+      WrittenQuestion.paginate :page => params[:page], :conditions => ['status = ?', status.singularize], :order => "question_year desc, question_number desc", :per_page => PAGE_SIZE
     end
   end
 end

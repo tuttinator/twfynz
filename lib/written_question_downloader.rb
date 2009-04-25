@@ -5,13 +5,12 @@ require 'hpricot'
 class WrittenQuestionDownloader
   STATUSES = ["Question", "Reply"]
 
-  def download date=Date.parse("1 Jan 2008")
-    @date = date
+  def download
     finished = false
     page = 0
     questions = questions_in_index(page)
 
-    earliest_query = WrittenQuestion.find(:first, :limit => 1, :conditions => ['status = ? and question_year = ?', 'question', @date.year], :order => 'question_number')
+    earliest_query = WrittenQuestion.find(:first, :limit => 1, :conditions => ['status = ?', 'question'], :order => 'question_number')
     @earliest_question_no = earliest_query.nil? ? 0 : earliest_query.question_number
 
     while !questions.empty? and !finished
@@ -24,8 +23,8 @@ class WrittenQuestionDownloader
   end
 
   def open_index_page page
-    url = "http://www.parliament.nz/en-NZ/PB/Debates/QWA/Default.htm?search=1232319134&p=#{page}"
-#    url = "http://www.parliament.nz/en-NZ/PB/Debates/QWA/Default.htm?p=#{page}"
+#    url = "http://www.parliament.nz/en-NZ/PB/Debates/QWA/Default.htm?search=1232319134&p=#{page}"
+    url = "http://www.parliament.nz/en-NZ/PB/Debates/QWA/Default.htm?p=#{page}"
     puts "opening #{url}"
     Hpricot open(url)
   end
@@ -50,11 +49,10 @@ class WrittenQuestionDownloader
     status = get_status question
     question_number = get_question_number question
 
-    right_year = date.year == @date.year
-    if question_number > @earliest_question_no and right_year and STATUSES.include?(status)
+    if question_number > @earliest_question_no and STATUSES.include?(status)
       finished = continue_download question, date, status
     end
-    if !right_year or question_number < @earliest_question_no
+    if question_number < @earliest_question_no
       finished = true
     end
     finished
