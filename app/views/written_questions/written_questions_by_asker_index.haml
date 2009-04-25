@@ -3,4 +3,4 @@
 %h2 Questions By Member
 %ul
   - for asker in @askers
-    %li=link_to "#{asker[0].last}, #{asker[0].first} asked #{asker[1]} questions", written_questions_by_asker_path(:name => asker[0].id_name)
+    %li=link_to "#{asker[0].first} #{asker[0].last} asked #{asker[1]} questions", written_questions_by_asker_path(:name => asker[0].id_name)
