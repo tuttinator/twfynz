@@ -17,12 +17,14 @@ class Portfolio < ActiveRecord::Base
 
     def find_all_with_debates
       portfolios = find(:all, :include => :oral_answers)
-      portfolios.select { |p| p.debate_count > 0 }
+      hits = portfolio_hits
+      portfolios.select { |p| hits.include?(p.id) }
     end
 
     def find_all_without_debates
       portfolios = find(:all, :include => :oral_answers)
-      portfolios.select {|b| b.debate_count ==  0}
+      hits = portfolio_hits
+      portfolios.select {|b| !hits.include?(b.id)}
     end
 
     def name_to_questions_asked_count
@@ -53,6 +55,16 @@ class Portfolio < ActiveRecord::Base
 
       Portfolio.find_by_url url
     end
+
+    def portfolio_hits
+      counts = Debate.count(:group => "about_id, publication_status", :conditions => ["about_type = ?", "Portfolio"], :order => "about_id")
+      hits = []
+      counts.each{|c|
+        hits << c[1] if ['U', 'A', 'F'].include?(c[2])
+      }
+      hits.uniq
+    end
+
   end
 
   def full_name
