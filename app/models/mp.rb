@@ -9,7 +9,7 @@ class Mp < ActiveRecord::Base
 
   belongs_to :party, :foreign_key => 'member_of_id'
 
-  has_many :members, :foreign_key => 'person_id'
+  has_many :members, :foreign_key => 'person_id', :include => :party
   has_many :pecuniary_interests
   has_many :bills, :foreign_key => 'member_in_charge_id'
   has_many :contributions, :foreign_key => 'spoken_by_id'
@@ -117,7 +117,7 @@ class Mp < ActiveRecord::Base
     end
 
     def all_by_last
-      mps = Mp.find(:all, :order => "last", :include => [:party,:members])
+      mps = Mp.find(:all, :order => "last", :include => [:party, :members])
       mps.delete_if{|mp| mp.is_former?}
     end
 
