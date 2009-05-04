@@ -17,16 +17,16 @@ module ApplicationHelper
 
   def calendar_nav current_date, heading_prefix=''
     sitting_days = SittingDay.find(:all)
-    sitting_dates = sitting_days.map{|s| s.date }
     first_sitting = sitting_days.select{|s| s.date.year == current_date.year && s.date.month == current_date.month}.first
 
     if first_sitting
       calendar(:year => current_date.year, :month => current_date.month, :heading_prefix => heading_prefix) do |date|
-        if date.included_in?(sitting_dates)
+        day = date.matching_day(sitting_days)
+        unless day.nil?
           display = date.has_debates? ? to_show_debates_on_date_url(date) : date.mday
           css_class = "sitting-day"
           css_class = css_class + ' current-day' if date.mday == current_date.day
-          [display, {:class => "sitting-day", :title => 'Sitting day'+title_for_sitting_day(date)}]
+          [display, {:class => "sitting-day", :title => 'Sitting day'+title_for_sitting_day(day)}]
         else
           [date.mday, nil]
         end
@@ -41,13 +41,13 @@ module ApplicationHelper
     link_to date.mday, show_debates_on_date_url({:url_category=>'debates'}.merge(Debate::to_date_hash(date)) )
   end
 
-  def title_for_sitting_day date
+  def title_for_sitting_day day
     title = ''
-    if date.has_final?
+    if day.has_final?
       title = ' with final debates'
-    elsif date.has_advance?
+    elsif day.has_advance?
       title = ' with advance debates'
-    elsif date.has_oral_answers?
+    elsif day.has_oral_answers?
       title = ' with uncorrected oral answers'
     end
     title

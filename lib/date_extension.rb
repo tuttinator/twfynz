@@ -4,8 +4,8 @@ class Date
     to_time.utc
   end
 
-  def included_in?(dates)
-    dates.include? self
+  def matching_day(sitting_days)
+    sitting_days.detect{|d| self == d.date }
   end
 
   def is_sitting_day?
