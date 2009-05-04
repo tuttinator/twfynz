@@ -16,10 +16,13 @@ module ApplicationHelper
   # end
 
   def calendar_nav current_date, heading_prefix=''
-    first_sitting = SittingDay.find(:all).select{|s| s.date.year == current_date.year && s.date.month == current_date.month}.first
+    sitting_days = SittingDay.find(:all)
+    sitting_dates = sitting_days.map{|s| s.date }
+    first_sitting = sitting_days.select{|s| s.date.year == current_date.year && s.date.month == current_date.month}.first
+
     if first_sitting
       calendar(:year => current_date.year, :month => current_date.month, :heading_prefix => heading_prefix) do |date|
-        if date.is_sitting_day?
+        if date.included_in?(sitting_dates)
           display = date.has_debates? ? to_show_debates_on_date_url(date) : date.mday
           css_class = "sitting-day"
           css_class = css_class + ' current-day' if date.mday == current_date.day

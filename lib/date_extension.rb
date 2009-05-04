@@ -4,6 +4,10 @@ class Date
     to_time.utc
   end
 
+  def included_in?(dates)
+    dates.include? self
+  end
+
   def is_sitting_day?
     SittingDay.exists? :date => self
   end
