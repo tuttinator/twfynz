@@ -23,11 +23,19 @@ gem 'eco'
 # HAML templating
 gem 'haml-rails'
 
+# Simple form
+gem 'simple_form'
+
+# Foreman - used to run supporting processes
+gem 'foreman', require: false
+
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
   gem 'sass-rails',   '~> 3.2.3'
   gem 'coffee-rails', '~> 3.2.1'
+
+  gem 'compass-rails'
 
   gem 'disable_assets_logger'
   gem 'turbo-sprockets-rails3'
@@ -63,8 +71,9 @@ group :development do
   # Pry as an IRB replacement / debugging tool
   gem 'pry-rails' 
 
-  # YARD fro generated documentation
+  # YARD for generated documentation
   gem 'yard'
+  gem 'yard-cucumber'
 
   # Thin over webbrick in development - because it is evented
   gem 'thin'
