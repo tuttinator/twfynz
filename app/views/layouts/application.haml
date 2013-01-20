@@ -1,0 +1,216 @@
+!!! 5
+
+-# paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/
+
+-# <!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+-# <!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+-# <!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
+-# <!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+
+%html.no-js{ lang: "en"}
+
+  %head
+
+    -# ==========================================================================
+    -# Head
+    -# ==========================================================================
+
+    %meta{ charset: "utf-8"}
+
+    %title= @title + (@home ? '' : ' | TheyWorkForYou.co.nz')
+
+    %meta{ name: "description", content: @description ? @description : "TheyWorkForYou.co.nz, helping you track Aotearoa New Zealand's Parliament"}
+
+    %meta{:name => "keywords", :content => "NZ, New Zealand, Parliament, Hansard, MP, Member of Parliament, MPs, government, house of representatives, Aotearoa"}
+
+    %link{ :rel=>"home", :title=>"Home", :href=>"http://www.theyworkforyou.co.nz/" }
+
+    -# %meta{:name => "author", :content => ""}
+
+    -# Mobile
+    -# ==========================================================================
+    -# %meta{:name => "HandheldFriendly", :content => "True"}
+    -# %meta{:name => "MobileOptimized", :content => "320"}
+
+    -# iOS web app
+
+    -# %meta{:name => "apple-mobile-web-app-capable", :content => "yes"}
+    -# %meta{:name => "apple-mobile-web-app-status-bar-style", :content => "black"}
+    -# %link{:rel => "apple-touch-startup-image", :href => "/img/touch/startup.png"}
+
+    -# RSS
+    -# ==========================================================================
+
+    -# %link{:rel => "alternate", :type => "application/rss+xml", :title => "RSS", :href => "http://feeds.feedburner.com/FEEDNAME"}
+
+    -# Favicon
+    -# ==========================================================================
+
+    %link{:href => "/favicon.ico", :rel => "shortcut icon"}
+
+    -# iPad 3 Retina Display
+    -# %link{:rel => "apple-touch-icon-precomposed", :sizes => "144x144", :href => "/img/touch/apple-touch-icon-144x144-precomposed.png"}
+    
+    -# iPhone 4 Retina display
+    -# %link{:rel => "apple-touch-icon-precomposed", :sizes => "114x114", :href => "/img/touch/apple-touch-icon-114x114-precomposed.png"}
+
+    -# iPad non-Retina display
+    -# %link{:rel => "apple-touch-icon-precomposed", :sizes => "72x72", :href => "/img/touch/apple-touch-icon-72x72-precomposed.png"}
+
+    -# Non-Retina iPhone, iPod Touch, Android 2.1+
+    -# %link{:rel => "apple-touch-icon-precomposed", :href => "/img/touch/apple-touch-icon-57x57-precomposed.png"}
+
+    -# Nokia
+    -# %link{:rel => "shortcut icon", :href => "/img/touch/apple-touch-icon.png"}
+
+    -# CSS
+    -# ==========================================================================
+
+    = stylesheet_link_tag    "application", :media => "all"
+    -# %link{:rel => "stylesheet", :media => "only screen and (min-width: 45em)", :href => "/css/widescreen.css"}
+
+    -# IE Fixes
+    -# ==========================================================================
+
+    -#
+    -# Use HTML5 Shim polyfill if not using Modernizr
+    -# Compiled IE stylesheets for legacy IE "Mobile first" support (using SASS)
+    -# nicolasgallagher.com/mobile-first-css-sass-and-ie/
+    -#
+
+    -# /[if (lt IE 9) & (!IEMobile)]
+        -# %script{:src => "//html5shim.googlecode.com/svn/trunk/html5.js"}
+        %script{:src => "/assets/selectivizr.min.js"}
+        -# %link{:rel => "stylesheet", :href => "/css/oldie.css"}
+        -# %link{:rel => "stylesheet", :href => "/css/ie8.css"}
+
+    -# [if (lt IE 8) & (!IEMobile)]
+        %link{:rel => "stylesheet", :href => "/assets/ie7.css"}
+
+    -# [if IE 6 & (!IEMobile)]
+        %link{:rel => "stylesheet", :href => "/assets/ie6.css"}
+
+    -# JS
+    -# ==========================================================================
+
+    = javascript_include_tag "application"
+
+    -# Typekit - change XXXXXXX to be your site's Typekit Kit ID
+
+    -# %script{:src => "http://use.typekit.com/XXXXXXX.js"}
+    -# :javascript
+        try{Typekit.load();}catch(e){}
+
+    -# Modernizr
+
+    -# %script{:src => "/assets/modernizr.custom.js"}
+
+  %body
+
+    -# ==========================================================================
+    -# Content
+    -# ==========================================================================
+
+    -# = yield
+
+    -# JS
+    -# ==========================================================================
+
+    -# jQuery
+
+    -# %script{:src => "//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"}
+    -# :javascript
+        window.jQuery || document.write('<script src="/assets/jquery-1.7.2.min.js"><\/script>')
+
+    -# Custom JS
+
+    -# %script{:src => "/js/app.js"}
+
+    -#
+    -# Asynchronous Google Analytics
+    -# Change UA-XXXXX-X to be your site's ID
+    -# mathiasbynens.be/notes/async-analytics-snippet
+    -#
+
+    -# :javascript
+        var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
+        (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+        g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+        s.parentNode.insertBefore(g,s)}(document,'script'));
+
+    #outer
+      - if @home
+        #header-home
+          #headercontent-home
+            %h1= link_to "TheyWorkForYou.co.nz", {:controller=>'application', :action=>'home'}
+            %p= link_to "Helping you track Aotearoa New Zealand's Parliament", {:controller=>'application', :action=>'home'}
+      - else
+        #header
+          #headercontent
+            %p= link_to "<span class='site-name'>TheyWorkForYou.co.nz</span>", {:controller=>'application', :action=>'home'}
+      #sign_in
+      - if @home
+        #search-home
+          - if true
+            - form_tag({:controller => 'application', :action => :search}, {:method=>"get"}) do
+              - if @term
+                = text_field_tag(:q, '', :maxlength=>"100", :size=>"12", :value => @term)
+              - else
+                = text_field_tag(:q, '', :maxlength=>"100", :size=>"12")
+              = submit_tag "Search", :class => 'submit'
+        - #headerpic
+      - else
+        #search
+          - if true
+            - form_tag({:controller => 'application', :action => :search}, {:method=>"get"}) do
+              - if @term
+                = text_field_tag(:q, '', :maxlength=>"100", :size=>"12", :value => @term)
+              - else
+                = text_field_tag(:q, '', :maxlength=>"100", :size=>"12")
+              = submit_tag "Search", :class => 'submit'
+      #menu
+        %ul
+          - @hansard_on = false if @search_on
+          - something_else_on = (@hansard_on or @mps_on or @bills_on or @portfolios_on or @committees_on or @parties_on or @about_on or @contact_on or @organisations_on)
+          %li= link_to "Home", {:controller=>'application', :action=>'home'}, :title=>'The front page of the site', :class=>(something_else_on ? nil : 'active')
+          %li= link_to "Bills", {:controller=>'bills'}, :title=>'Bill debates and Questions about Bills', :class=>(@bills_on ? 'active' : nil)
+          %li= link_to "Portfolios", {:controller=>'portfolios'}, :title=>'Questions to Ministers', :class=>(@portfolios_on ? 'active' : nil)
+          -# %li= link_to "Committees", {:controller=>'committees'}, :title=>'Questions about Committees', :class=>(@committees_on ? 'active' : nil)
+          %li= link_to "Debates", {:controller=>'debates'}, :title=>'House of Representatives debates', :class=>(@hansard_on ? 'active' : nil)
+          %li= link_to "MPs", {:controller=>'mps'}, :title=>'List of all MPs', :class=>(@mps_on ? 'active' : nil)
+          %li= link_to "Parties", {:controller=>'parties'}, :title=>'List of all Parties', :class=>(@parties_on ? 'active' : nil)
+          %li= link_to "Organisations", {:controller=>'organisations'}, :title=>'Organisations making submissions', :class=>(@organisations_on ? 'active' : nil)
+          %li.shift-right
+            %a{ :href=>"http://blog.theyworkforyou.co.nz/", :title=>"TheyWorkForYou.co.nz developers' blog" } Blog
+          %li= link_to "About", {:controller=>'application', :action=>'about'}, :title=>'About TheyWorkForYou.co.nz', :class=>(@about_on ? 'active' : nil)
+      #menubottom
+      - unless (@bill || @home || @organisation)
+        = ''
+      %div{ :style => 'color: #eee; padding: 1em 1em 0.7em 1em; background:#373737 none repeat scroll 0 0; position:relative; margin-bottom: 2em;' }
+        %p{ :style => 'padding-right: 0.5em; margin-bottom: 0.5em;' }
+          - if false
+            Site last updated July 2011, it contains NZ Parliament debates from November 2005 to July 2011.
+          Please <a href="https://apps.facebook.com/promosapp/183177/entry/185251">vote for this site</a> in the great New Zealand <a href="https://apps.facebook.com/promosapp/183177/entry/185251">Mix and Mash</a> competition: <a href="https://apps.facebook.com/promosapp/183177/entry/185251">vote here</a> - thanks!
+        - if false
+          %p{ :style => 'padding-right: 0.25em; padding-left: 0.25em;' }
+            TheyWorkForYou.co.nz is volunteer run, and has been in operation since
+            November 2006.
+      #content
+        = yield
+      #footer
+        - if true # if not @home
+          - spacer = ' <span class="spacer">|</span> '
+          .left
+            - links = link_to "Home", {:controller=>'application', :action=>'home'}, :title=>'The front page of the site', :class=>(something_else_on ? nil : 'active')
+            - links += spacer + link_to("Bills", {:controller=>'bills'}, :title=>'Bill debates and Questions about Bills', :class=>(@bills_on ? 'active' : nil) )
+            - links += spacer + link_to("Portfolios", {:controller=>'portfolios'}, :title=>'Questions to Ministers', :class=>(@portfolios_on ? 'active' : nil) )
+            -# links += spacer + link_to("Committees", {:controller=>'committees'}, :title=>'Questions about Committees', :class=>(@committees_on ? 'active' : nil) )
+            - links += spacer + link_to("Debates", {:controller=>'debates'}, :title=>'House of Representatives debates', :class=>(@hansard_on ? 'active' : nil) )
+            - links += spacer + link_to("MPs", {:controller=>'mps'}, :title=>'List of all MPs', :class=>(@mps_on ? 'active' : nil) )
+            - links += spacer + link_to("Parties", {:controller=>'parties'}, :title=>'List of all Parties', :class=>(@parties_on ? 'active' : nil) )
+            - links += spacer + link_to("Organisations", {:controller=>'organisations'}, :title=>'Organisations making submissions', :class=>(@organisations_on ? 'active' : nil) )
+            = links
+          .right
+            - rlinks = %Q[<a href="http://blog.theyworkforyou.co.nz/" title="TheyWorkForYou.co.nz developers' blog">Blog</a>]
+            - rlinks += spacer +  link_to("About", {:controller=>'application', :action=>'about'}, :title=>'About TheyWorkForYou.co.nz', :class=>(@about_on ? 'active' : nil) )
+            = rlinks
