@@ -17,7 +17,8 @@
 
     %meta{ charset: "utf-8"}
 
-    %title= @title + (@home ? '' : ' | TheyWorkForYou.co.nz')
+    %title
+      TheyWorkForYou.co.nz
 
     %meta{ name: "description", content: @description ? @description : "TheyWorkForYou.co.nz, helping you track Aotearoa New Zealand's Parliament"}
 
@@ -79,16 +80,16 @@
     -#
 
     -# /[if (lt IE 9) & (!IEMobile)]
-        -# %script{:src => "//html5shim.googlecode.com/svn/trunk/html5.js"}
-        %script{:src => "/assets/selectivizr.min.js"}
-        -# %link{:rel => "stylesheet", :href => "/css/oldie.css"}
-        -# %link{:rel => "stylesheet", :href => "/css/ie8.css"}
+      -# %script{:src => "//html5shim.googlecode.com/svn/trunk/html5.js"}
+      %script{:src => "/assets/selectivizr.min.js"}
+      -# %link{:rel => "stylesheet", :href => "/css/oldie.css"}
+      -# %link{:rel => "stylesheet", :href => "/css/ie8.css"}
 
     -# [if (lt IE 8) & (!IEMobile)]
-        %link{:rel => "stylesheet", :href => "/assets/ie7.css"}
+      %link{:rel => "stylesheet", :href => "/assets/ie7.css"}
 
     -# [if IE 6 & (!IEMobile)]
-        %link{:rel => "stylesheet", :href => "/assets/ie6.css"}
+      %link{:rel => "stylesheet", :href => "/assets/ie6.css"}
 
     -# JS
     -# ==========================================================================
@@ -99,7 +100,7 @@
 
     -# %script{:src => "http://use.typekit.com/XXXXXXX.js"}
     -# :javascript
-        try{Typekit.load();}catch(e){}
+      try{Typekit.load();}catch(e){}
 
     -# Modernizr
 
@@ -120,7 +121,7 @@
 
     -# %script{:src => "//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"}
     -# :javascript
-        window.jQuery || document.write('<script src="/assets/jquery-1.7.2.min.js"><\/script>')
+      window.jQuery || document.write('<script src="/assets/jquery-1.7.2.min.js"><\/script>')
 
     -# Custom JS
 
@@ -133,26 +134,25 @@
     -#
 
     -# :javascript
-        var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
-        (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
-        g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
-        s.parentNode.insertBefore(g,s)}(document,'script'));
+      var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
+      (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+      g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+      s.parentNode.insertBefore(g,s)}(document,'script'));
 
     #outer
       - if @home
         #header-home
           #headercontent-home
-            %h1= link_to "TheyWorkForYou.co.nz", {:controller=>'application', :action=>'home'}
-            %p= link_to "Helping you track Aotearoa New Zealand's Parliament", {:controller=>'application', :action=>'home'}
-      - else
+            %h1= link_to "TheyWorkForYou.co.nz", "#"
+            %p= link_to "Helping you track Aotearoa New Zealand's Parliament", "#"
         #header
           #headercontent
-            %p= link_to "<span class='site-name'>TheyWorkForYou.co.nz</span>", {:controller=>'application', :action=>'home'}
+            %p= link_to "<span class='site-name'>TheyWorkForYou.co.nz</span>", "#"
       #sign_in
       - if @home
         #search-home
           - if true
-            - form_tag({:controller => 'application', :action => :search}, {:method=>"get"}) do
+            - form_tag("#") do
               - if @term
                 = text_field_tag(:q, '', :maxlength=>"100", :size=>"12", :value => @term)
               - else
@@ -162,7 +162,7 @@
       - else
         #search
           - if true
-            - form_tag({:controller => 'application', :action => :search}, {:method=>"get"}) do
+            - form_tag("#") do
               - if @term
                 = text_field_tag(:q, '', :maxlength=>"100", :size=>"12", :value => @term)
               - else
@@ -172,17 +172,17 @@
         %ul
           - @hansard_on = false if @search_on
           - something_else_on = (@hansard_on or @mps_on or @bills_on or @portfolios_on or @committees_on or @parties_on or @about_on or @contact_on or @organisations_on)
-          %li= link_to "Home", {:controller=>'application', :action=>'home'}, :title=>'The front page of the site', :class=>(something_else_on ? nil : 'active')
-          %li= link_to "Bills", {:controller=>'bills'}, :title=>'Bill debates and Questions about Bills', :class=>(@bills_on ? 'active' : nil)
-          %li= link_to "Portfolios", {:controller=>'portfolios'}, :title=>'Questions to Ministers', :class=>(@portfolios_on ? 'active' : nil)
+          %li= link_to "Home", "#"
+          %li= link_to "Bills", "#"
+          %li= link_to "Portfolios", "#"
           -# %li= link_to "Committees", {:controller=>'committees'}, :title=>'Questions about Committees', :class=>(@committees_on ? 'active' : nil)
-          %li= link_to "Debates", {:controller=>'debates'}, :title=>'House of Representatives debates', :class=>(@hansard_on ? 'active' : nil)
-          %li= link_to "MPs", {:controller=>'mps'}, :title=>'List of all MPs', :class=>(@mps_on ? 'active' : nil)
-          %li= link_to "Parties", {:controller=>'parties'}, :title=>'List of all Parties', :class=>(@parties_on ? 'active' : nil)
-          %li= link_to "Organisations", {:controller=>'organisations'}, :title=>'Organisations making submissions', :class=>(@organisations_on ? 'active' : nil)
+          %li= link_to "Debates", "#"
+          %li= link_to "MPs", "#"
+          %li= link_to "Parties", "#"
+          %li= link_to "Organisations", "#"
           %li.shift-right
             %a{ :href=>"http://blog.theyworkforyou.co.nz/", :title=>"TheyWorkForYou.co.nz developers' blog" } Blog
-          %li= link_to "About", {:controller=>'application', :action=>'about'}, :title=>'About TheyWorkForYou.co.nz', :class=>(@about_on ? 'active' : nil)
+          %li= link_to "About", "#"
       #menubottom
       - unless (@bill || @home || @organisation)
         = ''
@@ -199,18 +199,18 @@
         = yield
       #footer
         - if true # if not @home
-          - spacer = ' <span class="spacer">|</span> '
+          - spacer = ' <span class="spacer">|</span> '.html_safe
           .left
-            - links = link_to "Home", {:controller=>'application', :action=>'home'}, :title=>'The front page of the site', :class=>(something_else_on ? nil : 'active')
-            - links += spacer + link_to("Bills", {:controller=>'bills'}, :title=>'Bill debates and Questions about Bills', :class=>(@bills_on ? 'active' : nil) )
-            - links += spacer + link_to("Portfolios", {:controller=>'portfolios'}, :title=>'Questions to Ministers', :class=>(@portfolios_on ? 'active' : nil) )
+            - links = link_to "Home", "#"
+            - links += spacer + link_to("Bills", "#")
+            - links += spacer + link_to("Portfolios", "#")
             -# links += spacer + link_to("Committees", {:controller=>'committees'}, :title=>'Questions about Committees', :class=>(@committees_on ? 'active' : nil) )
-            - links += spacer + link_to("Debates", {:controller=>'debates'}, :title=>'House of Representatives debates', :class=>(@hansard_on ? 'active' : nil) )
-            - links += spacer + link_to("MPs", {:controller=>'mps'}, :title=>'List of all MPs', :class=>(@mps_on ? 'active' : nil) )
-            - links += spacer + link_to("Parties", {:controller=>'parties'}, :title=>'List of all Parties', :class=>(@parties_on ? 'active' : nil) )
-            - links += spacer + link_to("Organisations", {:controller=>'organisations'}, :title=>'Organisations making submissions', :class=>(@organisations_on ? 'active' : nil) )
+            - links += spacer + link_to("Debates", "#")
+            - links += spacer + link_to("MPs", "#")
+            - links += spacer + link_to("Parties", "#")
+            - links += spacer + link_to("Organisations", "#")
             = links
           .right
-            - rlinks = %Q[<a href="http://blog.theyworkforyou.co.nz/" title="TheyWorkForYou.co.nz developers' blog">Blog</a>]
-            - rlinks += spacer +  link_to("About", {:controller=>'application', :action=>'about'}, :title=>'About TheyWorkForYou.co.nz', :class=>(@about_on ? 'active' : nil) )
+            - rlinks = %Q[<a href="http://blog.theyworkforyou.co.nz/" title="TheyWorkForYou.co.nz developers' blog">Blog</a>].html_safe
+            - rlinks += spacer +  link_to("About", "#" )
             = rlinks
