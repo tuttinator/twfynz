@@ -1,63 +1,56 @@
-== TheyWorkForYou.co.nz (twfynz)
+# They Work For You NZ (twfynz)
 
-Not ready for other developers just to pick up and run with, as the data
-is not committed with this repository.
+Description: TODO
 
-Email me if you're really interested. My email address is listed at
-the development blog: http://blog.theyworkforyou.co.nz/
+## Project Setup
 
-== Install steps
+How do I, as a developer, start working on the project?
 
-If the message above didn't put you off here are some install steps.
+1. What dependencies does it have (where are they expressed) and how do I install them?
+2. How can I see the project working before I change anything?
 
-First make sure you have git installed on your machine <http://git.or.cz/>.
-Also be sure to have Ruby installed <http://www.ruby-lang.org/>. Then:
+## Testing
 
- sudo gem install morph --no-rdoc --no-ri
- sudo gem install hpricot --no-rdoc --no-ri
- sudo gem install json --no-rdoc --no-ri
+How do I run the project's automated tests?
 
- sudo apt-get build-dep imagemagick
- wget ftp://ftp.imagemagick.org/pub/ImageMagick/ImageMagick.tar.gz
- tar xvzf ImageMagick.tar.gz
- cd ImageMagick-6.4.2/
- ./configure --disable-openmp
- make
- sudo make install
+### Unit Tests
 
- sudo gem install rmagick --no-rdoc --no-ri
- sudo gem install sparklines --no-rdoc --no-ri
- cd ..
- rm -rf ImageMagick*
+1. `rake spec`
 
- git clone git://github.com/robmckinnon/twfynz.git
+### Integration Tests
 
- cd twfynz/
- git submodule init
- git submodule update   # pulls in rails, rspec and haml
+1. Run other local services / provide credentials for external services.
+2. `rake spec:integration`
 
- cd config/
- cp database.yml.example database.yml
- vi database.yml        # edit database.yml as required
- sudo mysqladmin create twfynz_test
- sudo mysqladmin create twfynz_development
- sudo mysqladmin create twfynz_production
+## Deploying
 
- rake gems:install      # repeat until all gems installed
- rake gems              # should show all gems installed [I]
+### How to setup the deployment environment
 
- rake db:migrate        # creates tables in development environment
- rake db:test:clone_structure    # creates tables in test environment
- rake spec              # runs specs -> should be green!
+- Required heroku addons, packages, or chef recipes.
+- Required environment variables or credentials not included in git.
+- Monitoring services and logging.
 
- ./script/server        # go to http://localhost:3000/ in browser
+### How to deploy
 
-You won't have any data, but should see a few pages render in browser.
+## Troubleshooting & Useful Tools
 
-== Contact
+Examples of common tasks
 
-You can contact me at my email address listed on
-the development blog: http://blog.theyworkforyou.co.nz/
+> e.g.
+> 
+> - How to make curl requests while authenticated via oauth.
+> - How to monitor background jobs.
+> - How to run the app through a proxy.
 
+## Contributing changes
 
-sudo mongrel_rails cluster::configure -e production \ -p 8000 -N 3 -c /var/www/twfynz -a 127.0.0.1 \ --user www-data --group www-data
+- Internal git workflow
+- Pull request guidelines
+- Tracker project
+- Google group
+- irc channel
+- "Please open github issues"
+
+## License
+
+See LICENSE
