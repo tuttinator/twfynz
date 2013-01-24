@@ -7,5 +7,5 @@ When /^I visit the site$/ do
 end
 
 Then /^I should see the homepage$/ do
-  response.should render_template("index")
+  page.should have_content("Home")
 end
