@@ -14,7 +14,7 @@ class Mp < ActiveRecord::Base
   has_many :bills, :foreign_key => 'member_in_charge_id'
   has_many :contributions, :foreign_key => 'spoken_by_id'
 
-  TITLES = ['Dr the Hon', 'Rt Hon', 'Hon Dr', 'Hon', 'Dr', 'Sir']
+  TITLES = ['Dr The Rt Hon', 'Dr the Hon', 'Rt Hon', 'Hon Dr', 'Hon', 'Dr', 'Sir']
 
   after_save :expire_cached_page
 
@@ -24,34 +24,41 @@ class Mp < ActiveRecord::Base
 
   class << self
 
-    def all_mp_names
-      @all_mp_names = all.collect {|mp| "#{mp.alt.blank? ? mp.first : mp.alt} #{mp.last}" } unless @all_mp_names
-      @all_mp_names
+    def all_mps
+      # @all_mps ||= Mp.find_by_sql('select id,first,alt,last from mps')
+      Mp.find_by_sql('select id,first,alt,last from mps')
     end
 
-    def from_vote_name name
+    def all_mp_names
+      all_mps.collect {|mp| "#{mp.alt.blank? ? mp.first : mp.alt} #{mp.last}" }
+    end
+
+    def from_vote_name name, date, party
       name = 'Roy E' if name == 'E Roy'
       name_downcase = name.downcase.strip.gsub('’',"'")
-      mps = Mp.find(:all)
+      mps = all_mps
       matching = mps.select {|mp| mp.last.downcase == name_downcase }
       if matching.size == 0
         matching = mps.select {|mp| (mp.last.downcase + ' ' + mp.first.downcase[0..0]) == name_downcase}
         if matching.size == 0
           matching = mps.select {|mp| (mp.last.downcase + mp.first.downcase[0..0]) == name_downcase}
+          if matching.size == 0
+            matching = mps.select {|mp| !mp.alt.blank? && (mp.last.downcase + ' ' + mp.alt.downcase[0..0]) == name_downcase}
+          end
         end
       end
 
+      if party
+        matching = matching.select {|mp| mp.party_on_date(date) == party}
+      else
+        matching = matching.select {|mp| mp.member_on_date(date) != nil}
+      end
       if matching.size == 1
         return matching[0]
       elsif matching.empty?
-        raise 'no matching MP for vote name: ' + name
+        raise "no matching MP for vote name/party/date: #{name} ; #{party ? party.short : 'no party'} ; #{date}"
       else
-        matching = matching.select {|mp| !mp.former}
-        if matching.size == 1
-          return matching[0]
-        else
-          raise 'more than one matching MP for vote name: ' + name
-        end
+        raise "more than one matching MP for vote name: #{name} ; #{party.short} ; #{date}"
       end
     end
 
@@ -64,12 +71,12 @@ class Mp < ActiveRecord::Base
         speaker = name.split('(')[0].downcase.strip.gsub('’',"'")
 
         unless speaker[/speaker|member|chairperson/]
-          Mp.find(:all).each do |m|
+          all_mps.each do |m|
             if ((m.downcase_name == speaker) or
                 (m.alt_downcase_name and m.alt_downcase_name == speaker) or
                 (m.downcase_name.gsub(' ','') == speaker) or
                 (m.alt_downcase_name and m.alt_downcase_name.sub(' ','') == speaker))
-              mp = m
+              mp = find(m.id)
               break
             end
           end
@@ -108,7 +115,8 @@ class Mp < ActiveRecord::Base
 
         elsif ((speaker == 'the assistant speaker' or
             speaker == 'the chairperson' or
-            speaker == 'the temporary speaker') and name.include?('('))
+            speaker == 'the temporary speaker' or
+            speaker == 'the temporary chairperson') and name.include?('('))
           sub_name = name.split('(')[1].chop.strip
           mp = Mp.from_name sub_name, date
         end
@@ -272,6 +280,18 @@ class Mp < ActiveRecord::Base
 
   def expire_cached_page
     uncache "/mps/#{id_name}.cache" if is_file_cache?
+  end
+
+  def set_resignation_details parliament_number, resignation_url, valedictory_url, to_what, to_date, replaced_by_id
+    m = members.select{|x| x.parliament_id == parliament_number}.first
+    m.resignation_url = resignation_url if resignation_url
+    m.valedictory_statement_url = valedictory_url if valedictory_url
+    m.to_what = to_what if to_what
+    m.to_date = to_date if to_date
+    m.replaced_by_id = replaced_by_id if replaced_by_id
+    m.save
+    self.former = true
+    self.save
   end
 
   private

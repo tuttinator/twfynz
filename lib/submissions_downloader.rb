@@ -5,15 +5,14 @@ require 'uri'
 
 class SubmissionsDownloader
 
-  def self.submission_download
-    index = 0
+  def self.submission_download index = 0
     while (continue = self.download_page(index))
       index = index.next
     end
   end
 
   def self.open_page page_number
-    url = "http://www.parliament.nz/en-NZ/SC/Papers/Evidence/Default.htm?p=#{page_number.to_s}"
+    url = "http://www.parliament.nz/en-NZ/PB/SC/Documents/Evidence/Default.htm?p=#{page_number.to_s}"
     puts 'downloading '+url
     Hpricot open(url)
   end
@@ -68,6 +67,12 @@ class SubmissionsDownloader
     cite ? cite.parent.attributes['href'].to_s : nil
   end
 
+  def self.find_document_2 title_element
+    element = title_element.parent.next_sibling
+    cite = element.at('cite')
+    cite ? cite.parent.attributes['href'].to_s : nil
+  end
+
   def self.submitter_search_term text
     URI.encode( text[/(^.+) Supp\d+$/i, 1] || text )
   end
@@ -94,7 +99,16 @@ class SubmissionsDownloader
     details_doc = load_details_doc detailed_url
 
     find_title_elements(details_doc).each_with_index do |title, i|
-      document_url = find_document title
+      begin
+        document_url = find_document title
+      rescue Exception => e
+        begin
+          document_url = find_document_2 title
+        rescue Exception => e
+          puts detailed_url + ' ' + title.inner_text
+          raise e
+        end
+      end
       if document_url
         submitter = find_submitter_text title
         business_item = find_business_item title
@@ -102,7 +116,7 @@ class SubmissionsDownloader
 
         unless submission
           submission = Submission.new :submitter_name => submitter,
-            :submitter_url => feeling_lucky_url(submitter),
+            :submitter_url => nil, # feeling_lucky_url(submitter),
             :business_item_name => find_business_item(title),
             :committee_name => committees[i],
             :date => dates[i],

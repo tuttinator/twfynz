@@ -1,3 +1,5 @@
+# require 'twitter'
+
 class OrderPaperAlert < ActiveRecord::Base
 
   def tweet_alert

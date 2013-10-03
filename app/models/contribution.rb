@@ -8,9 +8,9 @@ class Contribution < ActiveRecord::Base
   before_validation_on_create :populate_spoken_by_id
   before_validation :populate_date
 
-  acts_as_xapian :texts => [ :text ],
-      :values => [ [ :date, 0, "debate_date", :date ] ],
-      :terms => [ [ :date_int, 'D', "date" ] ]
+  # acts_as_xapian :texts => [ :text ],
+      # :values => [ [ :date, 0, "debate_date", :date ] ],
+      # :terms => [ [ :date_int, 'D', "date" ] ]
 
   # acts_as_solr :fields => [:text]
 
@@ -27,24 +27,26 @@ class Contribution < ActiveRecord::Base
       SectionHeader, Speech, SubsAnswer, SubsQuestion, SupAnswer, SupQuestion,
       Translation, VotePlaceholder]
     end
-    
+
     def count_by_term term
-      # sql = 'SELECT COUNT(*) FROM contributions WHERE ' + create_condition(term)
-      # count_by_sql(sql)
-      search = ActsAsXapian::Search.new(submodels, term, :limit => 1)
-      return search.matches_estimated
+      sql = 'SELECT COUNT(*) FROM contributions WHERE ' + create_condition(term)
+      count_by_sql(sql)
+      # search = ActsAsXapian::Search.new(submodels, term, :limit => 1)
+      # return search.matches_estimated
     end
 
     def match_by_term term, limit, offset
-      # condition = create_condition(term)
-      # find(:all, :conditions=> condition, :order=>'date DESC, spoken_in_id DESC',
-          # :limit => match_pages.items_per_page.to_s,
-          # :offset => match_pages.current.offset)
-      search = ActsAsXapian::Search.new(submodels, term,
+      condition = create_condition(term)
+      total_count = count_by_term(term)
+      matches = find(:all, :conditions=> condition, :order=>'date DESC, spoken_in_id DESC',
           :limit => limit,
-          :offset => offset,
-          :sort_by_prefix => 'debate_date')
-      return search.results.collect{|h| h[:model]}, search.matches_estimated
+          :offset => offset)
+      return matches, total_count
+      # search = ActsAsXapian::Search.new(submodels, term,
+          # :limit => limit,
+          # :offset => offset,
+          # :sort_by_prefix => 'debate_date')
+      # return search.results.collect{|h| h[:model]}, search.matches_estimated
     end
 
     def search_by_term term
@@ -232,6 +234,14 @@ class Contribution < ActiveRecord::Base
     starts_with?('I move that')
   end
 
+  def is_motion_to_now_read?
+    text.include?('I move') && text.include?('be now read')
+  end
+
+  def bill_names
+    Bill.bill_names text.match(/That the (.*)be now read/)[1]
+  end
+
   def is_interjection?
     false
   end
@@ -290,12 +300,14 @@ class Contribution < ActiveRecord::Base
   # protected
 
     def handle_contribution_part node, geoname_matches
-      node.children.each do |child|
-        if child.text?
-          text = child.to_s
-          geoname_matches += Geoname.matches(text) unless text.empty?
-        elsif child.elem?
-          geoname_matches = handle_contribution_part(child, geoname_matches)
+      if node.children
+        node.children.each do |child|
+          if child.text?
+            text = child.to_s
+            geoname_matches += Geoname.matches(text) unless text.empty?
+          elsif child.elem?
+            geoname_matches = handle_contribution_part(child, geoname_matches)
+          end
         end
       end
       geoname_matches
@@ -305,7 +317,7 @@ class Contribution < ActiveRecord::Base
       if term[/^"([\S]+)"$/]
         term = term[/^"([\S]+)"$/, 1]
       end
-      term = term.gsub('\\', '').gsub(';','').gsub('>','').gsub('<','').gsub("'",'')
+      term = term.gsub('\\', '').gsub(';','').gsub('>','').gsub('<','').gsub("'",'').gsub('*','').gsub('%','')
       terms = term.split
 
       condition = 'MATCH (text) AGAINST '

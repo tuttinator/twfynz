@@ -19,29 +19,29 @@ module DebatesHelper
     end
   end
 
-  def format_bill_link_in_vote_question question, bill
+  def format_bill_link_in_text text, bill
     if bill and bill.is_a? Bill
       bill_link = link_to(bill.bill_name, show_bill_url(:bill_url => bill.url))
-      question.gsub!(bill.bill_name, bill_link)
+      text.gsub!(bill.bill_name, bill_link)
     end
-    question
+    text
   end
 
   def format_vote_question vote
-    debate = vote.contribution.debate
     question = String.new vote.question
+    format_bills_in_text vote.contribution, question
+  end
 
-    if (not debate.is_a? DebateAlone) and (debate.parent.type.to_s == 'BillDebate')
-      bill = debate.about
-      if bill
-        format_bill_link_in_vote_question question, bill
-      elsif debate.debate_topics
-        debate.debate_topics.each { |topic| format_bill_link_in_vote_question question, topic.topic }
-        question
-      end
-    else
-      question
+  def format_bills_in_text contribution, text
+    debate = contribution.debate
+
+    if (bills = debate.related_bills) && bills.size > 0
+      bills.each { |bill| format_bill_link_in_text(text, bill) }
+    elsif (bill = debate.about)
+      format_bill_link_in_text text, bill
     end
+
+    text
   end
 
   def format_bill_in_contribution transcript, text, date
@@ -80,6 +80,8 @@ module DebatesHelper
     elsif contribution.debate.name.include?('Reading') && transcript.include?('I move') && transcript.include?('That the ') && transcript.include?('be now read')
       text = transcript[/That the (.*)be now read/, 1]
       format_bill_in_contribution transcript, text, contribution.spoken_in.date
+    elsif transcript[/read a .* time/]
+      transcript = format_bills_in_text(contribution, transcript)
     elsif contribution.debate.name == 'Business Statement' && contribution.debate.contributions.index(contribution) == 0
       # format_bill_in_contribution transcript, text, contribution.spoken_in.date
     end
@@ -162,7 +164,9 @@ module DebatesHelper
 
   def get_preceding_divider contribution
     previous_contribution = contribution.previous_in_debate
+  end
 
+  def get_preceding_divider_for contribution, previous_contribution
     if (contribution.is_question? ||
         (contribution.is_speech? &&
             !( previous_contribution.is_a?(SectionHeader) ||

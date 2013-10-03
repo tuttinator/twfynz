@@ -8,11 +8,13 @@
     =render :partial => 'project_summary'
   %p#compare_parties
     You can also
-    = link_to 'compare party voting', {:controller=>'application', :action=>'parliament', :id=>48}
-    in the 48th Parliament.
+    = link_to 'compare party voting', parliament_url(:id => @parliament.id)
+    in the
+    = @parliament.ordinal
+    Parliament.
 #primarycontainer
   #primarycontent
-  - unless @submission_dates.nil? || @submission_dates.empty?
+  - unless @submission_dates.blank?
     #public_bill_submissions
       %h2 Bills open for public submissions
       %table.bill-table
@@ -23,7 +25,7 @@
               %td.date= "#{format_date date.date}"
   #column_content
     #left_column_content
-      - unless @latest_orals.empty?
+      - unless true || @latest_orals.empty?
         .latest_orals
           %h2 Latest oral answers
           = date_to_s @latest_orals.first.date
@@ -48,15 +50,17 @@
           %ul
             - @days_top_pages.each do |item|
               %li= link_to("#{item.page_title}", item.url) + " <span class='page_views'>(#{item.unique_pageviews})</span>"
-      - if @weeks_top_pages
-        .popular_last_week
-          %h2 Popular over last week
-          %ul
-            - @weeks_top_pages.each do |item|
-              %li
-                = link_to(item.page_title, item.url)
-                %span.page_views
-                  ="(#{item.unique_pageviews})"
-    #right_column_content
-      #twitter_feed
+    - if true
+      #right_column_content
+        - if @weeks_top_pages
+          .popular_last_week
+            %h2 Popular over last week
+            %ul
+              - @weeks_top_pages.each do |item|
+                %li
+                  = link_to(item.page_title, item.url)
+                  %span.page_views
+                    ="(#{item.unique_pageviews})"
+        - if false
+          #twitter_feed
 - #render :partial => 'calendar.haml'

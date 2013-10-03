@@ -11,7 +11,7 @@ class Committee < ActiveRecord::Base
 
   class << self
     def from_name name
-      name = name.gsub(' Committee', '')
+      name = name.gsub(' Committee', '').sub('Māori','Maori').strip
       find(:all).select do |c|
         committee = c.committee_name
         committee == name || committee.to_latin == name

@@ -1,6 +1,6 @@
 namespace :kiwimp do
 
-  task :update_organisation_mentions do
+  task :update_organisation_mentions => :environment do
     Organisation.find(:all).each {|o| o.save!}
   end
 

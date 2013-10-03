@@ -75,7 +75,7 @@ class PersistedFile < ActiveRecord::Base
     end
 
     def date_after_sept_2005? date
-      date.year > 2008 || (date.year == 2008 && date.month > 11)
+      date.year > 2008 || (date.year == 2008 && date.month > 7)
     end
 
     def load_debates publication_status, sleep_seconds
@@ -84,7 +84,12 @@ class PersistedFile < ActiveRecord::Base
     end
 
     def load_debates_for_date date, publication_status, sleep_seconds=nil
-      files = unpersisted_files(date, publication_status).sort_by(&:file_name)
+      files = unpersisted_files(date, publication_status)
+      if files.first.index_on_date
+        files = files.sort_by(&:index_on_date)
+      else
+        files = files.sort_by(&:file_name)
+      end
       load_debates_for files, sleep_seconds
     end
 
@@ -242,6 +247,7 @@ class PersistedFile < ActiveRecord::Base
 
         puts "adding #{filename} to persisted_files"
         record.save!
+      else
       end
     end
 
@@ -295,7 +301,7 @@ class PersistedFile < ActiveRecord::Base
     def check_final_vs_advanced_count(final_count, date)
       advance_count = find_all_by_debate_date_and_publication_status(date, 'A').size
       if advance_count > 0
-        if advance_count != final_count
+        if advance_count != final_count && date.to_s != '2009-04-08' && date.to_s != '2011-02-09' && date.to_s != '2011-08-03'
           raise "expected #{advance_count} files for #{date}, but got #{final_count} final files, manual fix required."
         else
           puts "count of final and advance files matches #{final_count} for #{date}."
@@ -352,7 +358,11 @@ class PersistedFile < ActiveRecord::Base
   end
 
   def storage_name
-    PersistedFile.storage_path + name
+    if name
+      PersistedFile.storage_path + name
+    else
+      PersistedFile.data_path + file_name
+    end
   end
 
   def make_file_path

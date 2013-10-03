@@ -11,7 +11,7 @@ class Vote < ActiveRecord::Base
   validates_presence_of :vote_question
   validates_presence_of :vote_result
 
-  before_validation_on_create :default_vote_tallies
+  before_validation :default_vote_tallies
 
   class << self
     def value_for_votes votes_cast
@@ -35,18 +35,22 @@ class Vote < ActiveRecord::Base
       end
     end
 
-    def vote_vectors
+    def vote_vectors parliament_number, to_string=true
       parties = Party.party_list
-      votes = third_reading_and_negatived_votes
+      votes = third_reading_and_negatived_votes(parliament_number)
       vectors = []
       parties.each do |party|
-        values = [party.short]
-        votes.each do |vote|
-          x, by_party = vote.votes_by_party
-          votes_cast = by_party[party]
-          values << value_for_votes(votes_cast)
+        if parliament_number.to_i == 49 && party == Party.nz_first
+          # ignore
+        else
+          values = [party.short]
+          votes.each do |vote|
+            x, by_party = vote.votes_by_party
+            votes_cast = by_party[party]
+            values << value_for_votes(votes_cast)
+          end
+          vectors << (to_string ? values.join(",") : values)
         end
-        vectors << values.join(",")
       end
       vectors
     end
@@ -73,9 +77,19 @@ class Vote < ActiveRecord::Base
                 cell_hash[[party, other_party]] = cell
                 votes.each do |vote|
                   parties_cast = {}
-                  vote.send(cast).collect{ |c| parties_cast[c.party] = true }
+                  vote.send(cast).each do |vote_cast|
+                    parties_cast[vote_cast.party] = vote_cast.cast_count.to_f / vote_cast.party.member_count_on_date(vote_cast.date)
+                  end
                   if voted_same_way(party, other_party, parties_cast)
-                    cell[2] = cell[2].next
+                    proportion_of_party       = parties_cast[party]
+                    proportion_of_other_party = parties_cast[other_party]
+                    went_both_ways = vote.noes_by_party[1].key?(party) && vote.ayes_by_party[1].key?(party)
+                    other_went_both_ways = vote.noes_by_party[1].key?(other_party) && vote.ayes_by_party[1].key?(other_party)
+                    if went_both_ways || other_went_both_ways
+                    else
+                      cell[2] += 1 # [proportion_of_party, proportion_of_other_party].min
+                    end
+                    # logger.info vote.debate.parent.name + ' ' + party.short + '(' + proportion_of_party.to_s + ') ' + other_party.short + '(' + proportion_of_other_party.to_s + ') ' + ' ' + cell[2].to_s
                     cell[3][vote] = true
                   end
                 end
@@ -106,8 +120,8 @@ class Vote < ActiveRecord::Base
       end
     end
 
-    def third_reading_matrix cast=nil
-      votes = third_reading_and_negatived_votes
+    def third_reading_matrix parliament_number, cast=nil
+      votes = third_reading_and_negatived_votes parliament_number
       matrix = Party.party_matrix
       add_to_matrix matrix, votes, :ayes_cast if !cast || cast == :ayes
       add_to_matrix matrix, votes, :noes_cast if !cast || cast == :noes
@@ -130,24 +144,30 @@ class Vote < ActiveRecord::Base
       matrix
     end
 
-    def third_reading_and_negatived_votes
-      @third_reading_and_negatived_votes ||= third_reading_votes + negatived_party_votes
-      @third_reading_and_negatived_votes
+    def third_reading_and_negatived_votes parliament_number
+      # @third_reading_and_negatived_votes ||= {}
+      # @third_reading_and_negatived_votes[parliament_number] ||= third_reading_votes(parliament_number) + negatived_party_votes(parliament_number)
+      # @third_reading_and_negatived_votes[parliament_number]
+      third_reading_votes(parliament_number) + negatived_party_votes(parliament_number)
     end
 
-    def negatived_party_votes
+    def negatived_party_votes parliament_number
       negatived_bills = Bill.find_all_negatived
       last_debate_votes = negatived_bills.collect{|b| b.debates.sort_by(&:date).last.votes.last}.compact
-      last_debate_votes.select{|v| v.type == 'PartyVote'}
+      last_debate_votes.select{|v| v.type == 'PartyVote' && Parliament.date_within?(parliament_number, v.debate.date) }
     end
 
-    def third_reading_votes
+    def third_reading_votes parliament_number
       votes = find(:all, :conditions => 'vote_question like "%third%"', :include => [{:vote_casts => :party}, {:contribution => :spoken_in}])
+      votes = votes.select {|x| x.contribution}
       remove_duplicates(votes)
+      votes.select{|v| Parliament.date_within?(parliament_number, v.debate.date)}
     end
 
-    def all_unique
-      remove_duplicates(find(:all, :include => {:contribution => :spoken_in}))
+    def all_unique parliament_number
+      votes = find(:all, :include => {:contribution => :spoken_in})
+      votes = votes.select{|v| Parliament.date_within?(parliament_number, v.debate.date)}
+      remove_duplicates(votes)
     end
 
     def remove_duplicates votes
@@ -160,6 +180,10 @@ class Vote < ActiveRecord::Base
     end
   end
 
+  def is_third_reading_vote?
+    vote_question && vote_question[/third/] ? true : false
+  end
+
   def debate
     contribution.debate
   end
@@ -168,11 +192,23 @@ class Vote < ActiveRecord::Base
     contribution.bill
   end
 
+  def vote_bill
+    if vote_question[/That the bill be now read a \w+ time/]
+      bill
+    else
+      Bill.from_name_and_date bill_name, contribution.date
+    end
+  end
+
   def bill_name
-    if vote_question[/That the (.+) be now read a third time/] && !$1.include?('Bill, ') && !$1.include?('Bill and')
+    if vote_question[/That the (.+) be now read a \w+ time,? and the/]
+      $1
+    elsif vote_question[/and the (Imprest Supply .+) be (now )?read a (.+) time/]
+      $1
+    elsif vote_question[/That the (.+) be now read a (.+) time/] && !$1.include?('Bill, ') && !$1.include?('Bill and')
       $1
     else
-      bill ? bill.bill_name : ('no bill ' + vote.debate.date.to_s + ' ' + vote.bill_names)
+      bill ? bill.bill_name : ('no bill for: ' + debate.date.to_s + ' ' + bill_names)
     end
   end
 

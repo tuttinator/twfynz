@@ -1,3 +1,5 @@
+require 'rugalytics'
+
 # Filters added to this controller apply to all controllers in the application.
 # Likewise, all the methods added will be available for all controllers.
 
@@ -8,8 +10,8 @@ class ApplicationController < ActionController::Base
   before_filter :user_login_flash
   after_filter :user_login_flash
 
-  include CacheableFlash
-  before_filter :write_flash_to_cookie
+  # include CacheableFlash
+  # before_filter :write_flash_to_cookie
 
   # prevent any field that matches /password/ from being logged
   filter_parameter_logging "password"
@@ -17,6 +19,12 @@ class ApplicationController < ActionController::Base
   caches_action :home, :about, :contact, :parliament
 
   layout "application"
+
+  def is_twfynz_request?
+    request.host == 'theyworkforyou.co.nz' ||
+        (RAILS_ENV == 'development' && request.host == 'localhost') ||
+        (RAILS_ENV == 'test' && request.host == 'test.host')
+  end
 
   def is_parlywords_request?
     request.host == 'parlywords.org.nz'
@@ -45,6 +53,8 @@ class ApplicationController < ActionController::Base
     if is_parlywords_request?
       # render :template => 'parlywords', :layout => 'parlywords'
       render :text => 'coming soon', :layout => false
+    elsif !is_twfynz_request?
+      render(:text => 'not found', :status => 404)
     else
       begin
         @weeks_top_pages = top_content 7
@@ -58,16 +68,76 @@ class ApplicationController < ActionController::Base
       @latest_debates = Debate.find_latest_by_status('A')
       @latest_orals = Debate.find_latest_by_status('U')
 
-      @third_reading_matrix = Vote.third_reading_matrix
+      @parliament = Parliament.latest
+      @third_reading_matrix = Vote.third_reading_matrix(@parliament.id)
       @submission_dates = SubmissionDate.find_live_bill_submissions
       render :template => 'home'
     end
   end
 
   def parliament
-    if params[:id] == '48'
-      @third_reading_matrix = Vote.third_reading_matrix
-      render :template => 'parliaments/48'
+    if @parliament = Parliament.find(params[:id])
+      @third_reading_matrix = Vote.third_reading_matrix(@parliament.id)
+      @third_reading_and_negatived_votes = Vote.third_reading_and_negatived_votes(@parliament.id)
+      @third_reading_vote_count = @third_reading_and_negatived_votes.select{|y| y.is_third_reading_vote?}.size
+      @negatived_vote_count = @third_reading_and_negatived_votes.size - @third_reading_vote_count
+
+      render :template => "parliaments/#{@parliament.id}", :layout => 'parties_layout'
+    else
+      render(:text => 'not found', :status => 404)
+    end
+  end
+
+  def third_reading_and_negatived_votes_by_parliament_for_r
+    @parliament = Parliament.find(params[:id])
+    if @parliament
+      respond_to do |format|
+        votes = Vote.third_reading_and_negatived_votes(@parliament.id)
+        header = %Q|"#{votes.collect(&:bill_name).join('","')}"|
+        vote_vectors = Vote.vote_vectors(@parliament.id)
+        format.csv { render :text => header + "\n" + vote_vectors.collect(&:to_s).join("\n") }
+      end
+    else
+      render(:text => 'not found', :status => 404)
+    end
+  end
+
+  def third_reading_and_negatived_votes_by_parliament
+    @parliament = Parliament.find(params[:id])
+    if @parliament
+      respond_to do |format|
+        votes = Vote.third_reading_and_negatived_votes(@parliament.id).sort_by{|x| x.debate.date.to_s + x.id.to_s}
+
+        bills = votes.collect(&:vote_bill)
+        bill_urls = bills.collect{|x| show_bill_url(x.id_hash)}
+
+        child_bill_names = ["Bill name"] + votes.collect{|x| %Q|"#{x.bill_name}"|}
+        child_bill_urls = ["Bill URL"] + bill_urls
+
+        vote_vectors = Vote.vote_vectors(@parliament.id, to_string=false)
+
+        parent_bill_names = ["Formerly part of bill"] + bills.collect do |bill|
+          (bill && bill.formerly_part_of) ? bill.formerly_part_of.bill_name : ''
+        end
+
+        child_bill_names.each_with_index do |x,i|
+          if parent_bill_names[i].gsub('(','').gsub(')','').sub(' Bill','').sub(' Amendment','') == x.gsub('(','').gsub(')','').sub(' Bill','').sub(' Amendment','') ||
+            parent_bill_names[i] == 'Public Transport Management Bill' ||
+            parent_bill_names[i] == 'Limited Partnerships Bill'
+            parent_bill_names[i] = ''
+          end
+        end
+
+        dates = ["Party Vote Date"] + votes.collect{|x| x.debate.date}
+        parent_bill_names = parent_bill_names.map {|x| %Q|"#{x}"|}
+        array = [parent_bill_names, child_bill_urls, dates, child_bill_names]
+
+        vote_vectors.each {|v| array << v}
+
+        csv = array.transpose.collect{|x| x.join(',') }.join("\n")
+
+        format.csv { render :text => csv }
+      end
     else
       render(:text => 'not found', :status => 404)
     end
@@ -147,9 +217,60 @@ class ApplicationController < ActionController::Base
     current_user && current_user.login == 'rob'
   end
 
+  def format_date date
+    text = date.strftime "%d %b %Y"
+    text = text[1..(text.size-1)] if text.size > 0 and text[0..0] == '0'
+    text
+  end
+
   private
 
     def top_content days
+      previous_date = Date.today - days
+      require 'garb' unless defined? Garb
+      Struct.new('TempItem', :path, :unique_pageviews, :url) unless defined? Struct::TempItem
+
+      Garb::Session.login(config.username, config.password)
+      profile = Garb::Management::Profile.all.find {|x| x.title == config.account }
+      report = Garb::Report.new(profile, :limit => 20, :start_date => previous_date.to_time)
+      report.metrics :unique_pageviews
+      report.dimensions :page_path
+      report.sort :unique_pageviews.desc
+
+      results = report.results
+      items = []
+      results.each do |result|
+        if items.size < 10
+          path = result.page_path
+          if path.split('/').size > 2 && !path[/^\/(search|parties|parliaments|organisations|mps)/]
+            path.sub!('mori','maori')
+            view_count = result.unique_pageviews.to_i
+            item = Struct::TempItem.new(path, view_count, "http://theyworkforyou.co.nz#{path}")
+            items << UrlItem.new(item)
+          end
+        end
+        nil
+      end
+      items = items.sort_by{|i| i.weighted_score }.reverse
+      items
+    end
+
+    def config
+      @analytics_config ||= config_setup(RAILS_ROOT)
+    end
+
+    def config_setup root
+      config_file = "#{root}/config/rugalytics.yml"
+      config_file = "#{root}/rugalytics.yml" unless File.exist? config_file
+      load_config(config_file) if File.exist? config_file
+    end
+
+    def load_config filename
+      hash = YAML.load_file(filename)
+      OpenStruct.new(hash)
+    end
+
+    def old_top_content days
       profile = Rugalytics.default_profile
       previous_date = Date.today - days
       report = profile.top_content_report :from => previous_date
@@ -160,7 +281,7 @@ class ApplicationController < ActionController::Base
         item.url.sub!('mori','maori')
         UrlItem.new(item)
       end
-      items = items.sort_by{|i| i.weighted_score }.reverse
+      items = items.sort_by{ |i| i.weighted_score }.reverse
       items = items[0..9] if items.size > 10
       items
     end

@@ -18,6 +18,7 @@ class Bill < ActiveRecord::Base
   validates_presence_of :member_in_charge_id
 
   validates_presence_of :parliament_url
+  validates_uniqueness_of :parliament_id, :allow_blank => true
 
   before_validation :populate_former_name,
       :populate_formerly_part_of,
@@ -36,6 +37,22 @@ class Bill < ActiveRecord::Base
 
   class << self
 
+    def bill_names text
+      bill_text = text.to_s
+      bill_text.gsub!(/(\d)\), Te/, '\1), the Te')
+      bill_text.gsub!(/Bill( \(No \d+\))? and the/,'Bill\1, and the')
+      bill_text.gsub!(/Bill( \([^\)]+\))? and the/,'Bill\1, and the')
+      bill_text.gsub!(/\sbe now read a (\w+) time and the /, ', and the ')
+
+      bills = bill_text.split(/,( and)? the/)
+      bills = bills.select { |b| b.match(/[a-z ]*(.*)/)[1].length > 0 }
+      bills.collect { |b| b.match(/[a-z ]*(.*)/)[1].chomp(', ').strip }
+    end
+
+    def parliament_id parliament_url
+      parliament_url.split('/').last.split('.').first
+    end
+
     def passed_third_reading_no_vote
       readings = BillEvent.find(:all, :conditions => 'name like "%Third%"'); nil
       readings = Parliament.find(48).in_parliament(readings); nil
@@ -46,16 +63,12 @@ class Bill < ActiveRecord::Base
     end
 
     def all_bill_names
-      @all_bill_names = Bill.all.collect(&:bill_name).sort.uniq.reverse unless @all_bill_names
+      @all_bill_names = Bill.find_by_sql('select distinct bill_name from bills').collect(&:bill_name).sort.reverse unless @all_bill_names
       @all_bill_names
     end
 
     def bills_from_text_and_date text, date
-      bill_text = text.gsub(/(\d)\), Te/, '\1), the Te')
-      bill_text = bill_text.gsub(/Bill( \([^\)]+\))? and the/,'Bill\1, and the')
-      bills = bill_text.split(/,( and)? the/).collect do |name|
-        name = name.match(/[a-z ]*(.*)/)[1]
-        name = name.chomp(', ').strip unless name.empty?
+      bills = bill_names(text).collect do |name|
         name.empty? ? nil : Bill.from_name_and_date(name, date)
       end.compact
     end
@@ -86,7 +99,30 @@ class Bill < ActiveRecord::Base
       end
     end
 
+    CORRECTIONS = [
+      ['Appropriation (2005/06) Supplementary Estimates Bill', 'Appropriation (2005/06 Supplementary Estimates) Bill'],
+      ['Limited Partnerships Bill be now read a third time and the Taxation (Limited Partnerships) Bill', 'Limited Partnerships Bill'],
+      ['Public Transport Amendment Bill', 'Public Transport Management Bill'],
+      ['Social Security (Entitlement Cards) Amendment', 'Social Security (Entitlement Cards) Amendment Bill'],
+      ['Parole (Extended Supervision Orders) Bill', 'Parole (Extended Supervision Orders) Amendment Bill'],
+      ['Employment Relations (Minimum Redundancy Entitlements) Amendment Bill', 'Employment Relations (Statutory Minimum Redundancy Entitlements) Amendment Bill'],
+      ['Cluster Munitions (Prohibition) Bill', 'Cluster Munitions Prohibition Bill'],
+      ['Telecommunications (TSO, Broadband, and Other Matters) Amendment Bill','Telecommunications (TSO, Broadband and Other Matters) Amendment Bill'],
+      ['2009/2010','2009/10'],
+      ['Employment Relations (Film Production) Amendment Bill','Employment Relations (Film Production Work) Amendment Bill'],
+      ['Research, Science and Technology Amendment Bill','Research, Science, and Technology Bill'],
+      ['Customs and Excise (Prohibition of Goods Made by Slave Labour) Amendment Bill','Customs and Excise (Prohibition of Imports Made by Slave Labour) Amendment Bill'],
+      ['Electoral (Reduction in Number of Members of Parliament) Bill','Electoral (Reduction in Number of Members of Parliament) Amendment Bill'],
+      ['Bill of Rights (Private Property Rights) Amendment Bill', 'New Zealand Bill of Rights (Private Property Rights) Amendment Bill'],
+      ['Subordinate Legislation (Confirmation and Validation Bill (No 2)','Subordinate Legislation (Confirmation and Validation) Bill (No 2)'],
+      ['Births, Death, Marriages, and Relationships Registration Amendment Bill','Births, Deaths, Marriages, and Relationships Registration Amendment Bill'],
+      ['Telecommunications (TSO, Broadband and Other Matters) Amendment Bill','Telecommunications (TSO, Broadband, and Other Matters) Amendment Bill'],
+      ['Aquaculture Legislation Amendment Bill (No. 3)','Aquaculture Legislation Amendment Bill (No 3)'],
+      [') Estimates)',' Estimates)'],
+      ['20010/11','2010/11']
+    ]
     def from_name_and_date_by_method name, date, method
+      name = name.sub('Hearing of evidence on the ','')
       bills = send(method, name)
       bills = send(method, name.gsub('-',' - ')) if bills.empty?
       bills = send(method, name.gsub('’',"'")) if bills.empty?
@@ -96,16 +132,23 @@ class Bill < ActiveRecord::Base
       bills = send(method, name.gsub('’',"'").chomp(')').sub(')',') ').sub('(',' (').squeeze(' ').sub('Appropriations','Appropriation')) if bills.empty?
       bills = send(method, name.gsub('’',"'").chomp(')').sub(')',') ').sub('(',' (').squeeze(' ').sub('RateAmendments','Rate Amendments')) if bills.empty?
       bills = send(method, name.gsub('’',"'").chomp(')').sub(')',') ').sub('(',' (').squeeze(' ').sub('andAsure','and Asure')) if bills.empty?
-      bills = send(method, name.gsub('Appropriation (2005/06) Supplementary Estimates Bill', 'Appropriation (2005/06 Supplementary Estimates) Bill')) if bills.empty?
-      bills = send(method, name.gsub('Limited Partnerships Bill be now read a third time and the Taxation (Limited Partnerships) Bill', 'Limited Partnerships Bill')) if bills.empty?
-      bills = send(method, name.gsub('Public Transport Amendment Bill', 'Public Transport Management Bill')) if bills.empty?
-      bills = send(method, name.gsub('Social Security (Entitlement Cards) Amendment', 'Social Security (Entitlement Cards) Amendment Bill')) if bills.empty?
-      bills = bills.select {|b| b.royal_assent.nil? || (b.royal_assent > date) }
+
+      if bills.empty?
+        CORRECTIONS.each do |old_text, new_text|
+          bills = send(method, name.sub(old_text, new_text)) if bills.empty?
+        end
+      end
+
+      bills = bills.select {|b| b.royal_assent.nil? || (b.royal_assent >= date) }
       bills = bills.select do |b|
         if b.introduction.nil? && b.earliest_date.nil?
           true
         elsif b.introduction.nil?
-          b.earliest_date <= date ? true : false
+          select = b.earliest_date <= date ? true : false
+          if !select && b.formerly_part_of
+            select = (b.formerly_part_of.earliest_date && b.formerly_part_of.earliest_date <= date) ? true : false
+          end
+          select
         elsif b.earliest_date.nil?
           b.introduction <= date ? true : false
         elsif b.earliest_date <= date || b.introduction <= date
@@ -120,6 +163,12 @@ class Bill < ActiveRecord::Base
       elsif bills.empty?
         if method == :find_all_by_bill_name
           from_name_and_date_by_method name, date, :find_all_by_former_name
+        elsif name == 'Resource Management (Simplifying and Streamlining) Amendment Bill' ||
+            name == 'Local Government (Auckland Law Reform) Bill' ||
+            name == 'Domestic Violence (Enhancing Safety) Bill' ||
+            name == 'Climate Change (Emissions Trading and Renewable Preference) Bill' ||
+            name == 'Corrections (Contract Management of Prisons) Amendment Bill'
+          Bill.find_by_bill_name(name)
         else
           raise "no bills match: #{name}, #{date.to_s}"
         end
@@ -129,7 +178,7 @@ class Bill < ActiveRecord::Base
           if the_date.is_a? String
             the_date = Date.parse(date)
           end
-          days_back = bills.collect {|b| [(the_date - b.introduction).to_i, b] }
+          days_back = bills.select{|b| the_date >= b.earliest_date}.collect {|b| [(the_date - b.earliest_date).to_i, b] }
           bill = days_back.sort.first[1]
           bill
         rescue Exception => e
@@ -149,10 +198,16 @@ class Bill < ActiveRecord::Base
       find_all_with_debates.select(&:negatived?)
     end
 
-    def find_all_assented
+    def find_all_assented_by_parliament
       assented = find_all_with_debates.select(&:assented?)
-      assented = assented.collect {|b| b.formerly_part_of_id ? b.formerly_part_of : b}.uniq
-      assented
+      by_parliament = []
+      parliaments = Parliament.all.sort_by(&:id).reverse
+      parliaments.each do |parliament|
+        assented_during_parliament = assented.select{|x| parliament.date_within?(x.royal_assent) }
+        assented_during_parliament = assented_during_parliament.collect {|b| b.formerly_part_of_id ? b.formerly_part_of : b}.uniq
+        by_parliament << [parliament, assented_during_parliament]
+      end
+      by_parliament
     end
 
     def sort_events_by_date events
@@ -183,6 +238,81 @@ class Bill < ActiveRecord::Base
         end
         comparison
       end
+    end
+  end
+
+  def query_for_search
+    name = %Q|"#{bill_name}"|
+    words = name.split(' ').size
+    if words > 6
+      name = name.gsub(' Bill','')
+      name = name.gsub(' Amendment','')
+    end
+    if words < 4
+      name += ' site:nz'
+    end
+    name
+  end
+
+  def news_items
+    begin
+      url = "http://news.google.co.nz/news?hl=en&ned=nz&ie=UTF-8&scoring=n&q=#{URI.escape(query_for_search)}&output=atom"
+
+      xml = open(url).read
+      results = Morph.from_hash(Hash.from_xml(xml.gsub('id>','id_name>').gsub('type=','type_name=')))
+      results.entries = [results.entry] if results.respond_to?(:entry) && results.entry
+      results.entries = [] if !results.respond_to?(:entries) || results.entries.blank?
+
+      results.entries.each do |e|
+        doc = Hpricot "<html><body>#{e.content}</body></html>"
+        e.author = doc.at('font[@color="#6f6f6f"]').inner_text
+        e.publisher = e.author.split(',')[0]
+        e.full_title = e.title
+        e.title = doc.at('a').inner_text
+        e.title = e.full_title.sub(e.publisher,'').strip.chomp('-') if e.title.blank?
+        e.content = doc.at('font[@size="-1"]:eq(1)').to_s
+        e.published_date = e.issued
+        e.display_date = Date.parse(e.published_date).to_s(:long)
+        e.url = e.link.href
+      end
+
+      results.entries.sort_by {|x| Date.parse(x.published_date) }.reverse
+    rescue Exception => e
+      raise e
+      nil
+    end
+  end
+
+  def blog_items
+    begin
+      url = "http://blogsearch.google.co.nz/blogsearch_feeds?hl=en&scoring=d&q=#{URI.escape(query_for_search)}&ie=utf-8&num=10&output=atom"
+
+      xml = open(url).read
+      results = Morph.from_hash(Hash.from_xml(xml.gsub('id>','id_name>').gsub('type=','type_name=')))
+      results.entries = [results.entry] if results.respond_to?(:entry) && results.entry
+      results.entries = [] if !results.respond_to?(:entries) || results.entries.blank?
+
+      results.entries.each do |e|
+        e.full_title = e.title
+        if (split = e.title.split('|')).size == 2
+          e.title = split[0]
+          e.author.name = split[1]
+        end
+        if e.author.name[/unknown|Anonymous|nospam@example\.com/i]
+          e.author.name = e.author.uri.sub('http://','').sub('www.','').chomp('/')
+        end
+        e.publisher = e.author.name
+        e.published_date = e.published
+        e.display_date = Date.parse(e.published_date).to_s(:long)
+        e.url = e.link.href
+        e.content = %Q|<font size="-1">#{e.content.sub('Contents; « Previous · Next » · Search within this Bill.','')}</font>|
+      end
+
+      # results.entries.delete_if {|x| x.publisher[/example\.com/]}
+      results.entries.sort_by {|x| Date.parse(x.published_date) }.reverse
+    rescue Exception => e
+      raise e
+      nil
     end
   end
 
@@ -262,7 +392,7 @@ class Bill < ActiveRecord::Base
 
   def probably_not_divided?
     year = Date.today.year
-    divided_into_bills.empty? or (divided_into_bills.size > 0 and (last_event and last_event[0].year == year))
+    divided_into_bills.empty? or (divided_into_bills.size > 0 and (last_event and (last_event[0].year == year || last_event[0].year == year-1) ))
   end
 
   def missing_events?
@@ -273,15 +403,24 @@ class Bill < ActiveRecord::Base
   end
 
   def current?
+    is_current = ( (not(negatived? or assented? or withdrawn? or discharged?)) and probably_not_divided? )
     if divided_into_bills.empty?
-      ( (not(negatived? or assented? or withdrawn? or discharged?)) and probably_not_divided? )
+      is_current
     else
-      divided_into_bills.inject(false) {|current, bill| current && bill.current?}
+      divided_into_bills.inject(is_current) {|current, bill| current && bill.current?}
     end
   end
 
   def full_name
-    bill_name
+    if url[/_(\d\d\d\d)$/]
+      "#{bill_name} #{$1}"
+    else
+      bill_name
+    end
+  end
+
+  def is_appropriation_bill?
+    bill_name[/^Appropriation/]
   end
 
   def negatived?
@@ -366,10 +505,11 @@ class Bill < ActiveRecord::Base
   end
 
   def have_votes?
-    votes_by_name = votes_in_groups_by_name
+    # votes_by_name = votes_in_groups_by_name
     have_votes = false
     bill_events.each do |bill_event|
-      votes = votes_by_name.blank? ? nil : votes_by_name[bill_event.name]
+      # votes = votes_by_name.blank? ? nil : votes_by_name[bill_event.name]
+      votes = bill_event.votes
       have_votes = (votes && !votes.empty?) || bill_event.is_reading_before_nov_2005?
       break if have_votes
     end
@@ -445,7 +585,7 @@ class Bill < ActiveRecord::Base
   end
 
   def strip_name name
-    name.tr("-:/,'",'').gsub('(','').gsub(')','')
+    name.tr("-:/,'",'').gsub('(','').gsub(')','').gsub('’','')
   end
 
   def expire_cached_pages
@@ -461,6 +601,7 @@ class Bill < ActiveRecord::Base
     if member_in_charge
       uncache "/mps/#{member_in_charge.id_name}.cache"
     end
+
     uncache "/bills.cache"
     uncache "/bills.atom.atom.cache"
   end
@@ -484,9 +625,9 @@ class Bill < ActiveRecord::Base
     def get_votes_by_name debates_in_groups_by_name
       debates_in_groups_by_name.inject({}) do |by_name, list|
         debate = list.first
-        votes = debate.votes.select { |v| v and v.question.include?('be now read') }
+        votes = debate.votes.select { |v| v && v.question[/be (now )?read/] }
         if votes.empty?
-          votes = debate.votes.select { |v| v and v.result.include?('Bill referred') }
+          votes = debate.votes.select { |v| v && v.result.include?('Bill referred') }
         else
           contributions = debate.contributions
           if (contributions.last and contributions.last.is_vote?)
@@ -625,6 +766,11 @@ class Bill < ActiveRecord::Base
         end
       end
     end
+
+    def populate_parliament_id
+      self.parliament_id = Bill.parliament_id(parliament_url) if parliament_id.blank?
+    end
+
   protected
     def default_negatived
       self.first_reading_negatived = 0 unless self.first_reading_negatived
@@ -635,6 +781,7 @@ class Bill < ActiveRecord::Base
       if bill_name and not url
         url = bill_name.to_latin.to_s.downcase.
             tr(',:','').gsub('(','').gsub(')','').
+            gsub('’','').
             gsub('/ ',' ').tr('/',' ').
             gsub(/ng\S*ti/, 'ngati').
             tr("'",'').gsub(' and', '').
@@ -665,6 +812,7 @@ class Bill < ActiveRecord::Base
             url = url[0..34].chomp('_')+num[1]
           end
         end
+
         bill = Bill.find_by_url(url)
 
         if bill

@@ -1,3 +1,4 @@
+# coding:utf-8
 require 'rubygems'
 require 'open-uri'
 require 'hpricot'
@@ -10,7 +11,10 @@ class HansardParser
     end
     def load_doc file
       text = load_file file
-      text = text.gsub(/<caption>[^<]*<p>/,'<caption>').gsub(/<\/p>[^<]*<\/caption>/,'</caption>')
+      text.gsub!(/<caption>[^<]*<p>/,'<caption>')
+      text.gsub!(/<\/p>[^<]*<\/caption>/,'</caption>')
+      text.gsub!(%Q|<p class="a">\n        <strong>Prayers</strong>.</p>|, '')
+      text.gsub!(%Q|<p class="a">\n        <strong>Karakia</strong>.</p>|, '')
       Hpricot text
     end
   end
@@ -115,9 +119,15 @@ class HansardParser
 
     def create_oral_answers debate_index
       qoa = (@doc/'.QOA')[0]
-      name = (qoa/'h2[1]/text()')[0].to_clean_s
-      if is_date?(name)
-        name = (qoa/'h2[2]/text()')[0].to_clean_s
+      no_questions = false
+      if qoa.inner_text[/no questions have been lodged today/]
+        name = 'Questions for Oral Answer'
+        no_questions = true
+      else
+        name = (qoa/'h2[1]/text()')[0].to_clean_s
+        if is_date?(name)
+          name = (qoa/'h2[2]/text()')[0].to_clean_s
+        end
       end
 
       answers_array = []
@@ -183,7 +193,7 @@ class HansardParser
             # should be handled in the handling of 'h4'
           elsif node.name == 'a'
             @page = node['name'].sub('page_','').to_i
-          elsif (node.name == 'p' and (node.to_s.include?('took the Chair') or node.to_s.include?('Prayers')))
+          elsif (node.name == 'p' and (node.to_s.include?('took the Chair') || node.to_s.include?('Prayers') || node.to_s.include?('Karakia') ))
             # ignore
           elsif (not(hit_first_question) and node.name == 'p')
             handle_paragraph node, answers
@@ -191,7 +201,7 @@ class HansardParser
             raise 'unexpected element under "QOA"[' + index.to_s + ']: ' + node.to_s
           end
         end
-      end
+      end unless no_questions
 
       answers_array
     end
@@ -213,7 +223,12 @@ class HansardParser
     end
 
     def part_of_parent_or_subdebate_title? debate, text
-      debate.debate.name.include?(text) || debate.name.include?(text)
+      begin
+        debate.debate.name.include?(text) || debate.name.include?(text)
+      rescue Exception => e
+        puts text
+        raise e
+      end
     end
 
     def speaker_recalled_title? title_h, type, text
@@ -246,7 +261,9 @@ class HansardParser
         elsif type == title_h
           sub_debates = debate.debate.sub_debates
           next_index = sub_debates.index(debate) + 1
-          raise 'expected more sub-debates than: ' + sub_debates.size.to_s + " (hit #{title_h}: #{node.to_s} in debate: #{debate.name}, parent debate: #{debate.debate.name})" if (sub_debates.size < (next_index+1))
+          if (sub_debates.size < (next_index+1))
+            raise 'expected more sub-debates than: ' + sub_debates.size.to_s + " (hit #{title_h}: #{node.to_s} in debate: #{debate.name}, parent debate: #{debate.debate.name})"
+          end
           debate = sub_debates[next_index]
           raise "expected sub_debate for #{title_h}: " + node.to_s + ', but found: ' + debate.name unless (debate.name == text)
         else
@@ -267,7 +284,8 @@ class HansardParser
           :vote_label => name,
           :mp_name => name,
           :party_name => 'Independent',
-          :present => false
+          :present => false,
+          :date => @debate_date
       begin
         vote_cast.valid?
       rescue Exception => e
@@ -314,7 +332,22 @@ class HansardParser
               :vote_label => mp_name,
               :mp_name => mp_name,
               :party_name => party_name,
-              :present => false
+              :present => false,
+              :date => @debate_date
+          vote.vote_casts << vote_cast
+        end
+      elsif (text.include? '(') && (match = /([^\d]+) \(([^\(]+)\) (\d+)\.?/.match text.strip)
+        party_name = match[1]
+        cast_count = match[3].to_i
+        mps = match[2].split(',').collect{|m| m.strip}
+        mps.each do |mp_name|
+          vote_cast = VoteCast.new :cast => cast,
+              :cast_count => 1,
+              :vote_label => mp_name,
+              :mp_name => mp_name,
+              :party_name => party_name,
+              :present => false,
+              :date => @debate_date
           vote.vote_casts << vote_cast
         end
       elsif (match = /([^\d]+) (\d+)\.?/.match text.strip)
@@ -325,7 +358,8 @@ class HansardParser
             :cast_count => cast_count,
             :vote_label => party_name,
             :party_name => party_name,
-            :present => false
+            :present => false,
+            :date => @debate_date
         vote.vote_casts << vote_cast
 
       else
@@ -365,7 +399,8 @@ class HansardParser
             :cast_count => 1,
             :vote_label => text,
             :mp_name => name,
-            :present => present
+            :present => present,
+            :date => @debate_date
 
           vote.vote_casts << vote_cast
         end
@@ -417,6 +452,7 @@ class HansardParser
         when 'table'
           if debate.contributions.last != placeholder
             placeholder.vote = vote
+            vote.contribution = placeholder
             placeholder.spoken_in = debate
             debate.contributions << placeholder
           end
@@ -621,7 +657,7 @@ class HansardParser
         if type == 'a' || MAKE_CSS_TYPES.include?(type) || is_continue_speech
           text = node.inner_html.to_clean_s
 
-          if debate.contributions.empty? && (text[/took the Chair/] || text[/Prayers/])
+          if debate.contributions.empty? && (text[/took the Chair/] || text[/Prayers/] || text[/Karakia/])
             # ignore this procedural stuff for now
           else
             raise 'no last contribution for text ' + text unless debate.contributions.last
@@ -675,7 +711,8 @@ class HansardParser
     def create_oral_answer name, answer_root, number_in_name, debate_index
       if (match = /Question No\.? (\d+) to Minister/.match name)
         re_oral_answer_no = $1
-      elsif (name != 'Question Time' && !name.starts_with?('Question No.') && name != 'Urgent Question—Leave to Ask' && !name.starts_with?('Personal Explanation') )
+      elsif (name != 'Question Time' && !name.starts_with?('Question No.') && name != 'Urgent Question—Leave to Ask' && !name.starts_with?('Personal Explanation') && !name.starts_with?('Urgent Question to Minister') )
+        question_p = answer_root.at('.SubsQuestion[1]')
         strongs = (answer_root/'.SubsQuestion[1]/strong')
         if strongs.size > 0
           last = strongs.last.at('text()')
@@ -699,6 +736,8 @@ class HansardParser
         else
           if (match = /(\d+)\.?.*/.match strongs.first.inner_html)
             oral_answer_no = $1.to_i
+          elsif (match = /(\d+)\.?.*/.match question_p.inner_html)
+            oral_answer_no = $1.to_i
           else
             raise 'cannot find oral answer number: ' + name
           end
@@ -721,6 +760,12 @@ class HansardParser
           :start_page => @page
 
       handle_contributions answer_root, debate
+      if debate.contributions.size > 0
+        question = debate.contributions.first
+        if question.text[/^<p>#{debate.oral_answer_no}\./]
+          question.text = question.text.sub(/^<p>#{debate.oral_answer_no}\./, '<p>')
+        end
+      end
       debate
     end
 
@@ -738,7 +783,7 @@ class HansardParser
             raise 'unexpected element ' + node.to_s
           end
         elsif (child.text? and child.to_clean_s.strip.size > 0)
-          raise 'unexpected text ' + child.to_clean_s
+          raise 'unexpected text ' + child.to_clean_s + node.to_s
         end
       end
       proceduals
@@ -877,7 +922,7 @@ class HansardParser
 
         sibling = headings[1].next_sibling
         while sibling
-          if (sibling.elem? and sibling.name == 'h2')
+          if sibling.elem? && sibling.name == 'h2'
             sub_names << sibling.inner_html.to_clean_s
           end
           sibling = sibling.next_sibling
@@ -930,6 +975,7 @@ class HansardParser
     end
 
     def make_when_sub_debates_not_empty debate_index, type, sub_debates
+      headings = debate_headings(type)
       sub_names = []
       sub_debates.each { |sub_debate| add_sub_heading(sub_debate, sub_names) }
 
@@ -957,8 +1003,18 @@ class HansardParser
         if node.name == 'div' && node['class'] == 'SubDebate'
           index = index.next
           handle_contributions node, debate.sub_debates[index]
+        elsif node.name == 'a'
+          @page = node['name'].sub('page_','').to_i
+        elsif node.name == 'p' && node['class'] == 'Urgency'
+          procedural = Procedural.new :text => node.inner_html.to_clean_s
+          debate.contributions << procedural
         else
-          text = node.at('text()').to_clean_s
+          begin
+            text = node.at('text()').to_clean_s
+          rescue Exception => e
+            puts node.insp
+            raise e
+          end
           if node.name[/^h\d$/] && text == debate.sub_debates[index+1].name
             index = index.next
           elsif !is_date?(text) && text != debate.name
@@ -1089,7 +1145,7 @@ end
 
 class String
   def to_clean_s
-    to_s.chars.gsub("\r\n",' ').gsub("\n",' ').squeeze(' ').gsub(' ,',',').strip.to_s
+    to_s.mb_chars.gsub("\r\n",' ').gsub("\n",' ').squeeze(' ').gsub(' ,',',').strip.to_s
   end
 end
 

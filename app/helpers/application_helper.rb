@@ -15,6 +15,22 @@ module ApplicationHelper
     # end
   # end
 
+  def voted_same_way matrix, party1, party2
+    percent = nil
+    0.upto(7) do |x|
+      0.upto(7) do |y|
+        if matrix[x] && matrix[x][y]
+          first_match = (matrix[x][y].first == party1)
+          second_match = (matrix[x][y].second == party2)
+          both_match = first_match && second_match
+          percent = matrix[x][y][2] if both_match
+        end
+      end
+    end
+
+    number_to_percentage(percent, :precision => 0)
+  end
+
   def calendar_nav current_date, heading_prefix=''
     sitting_days = SittingDay.find(:all)
     first_sitting = sitting_days.select{|s| s.date.year == current_date.year && s.date.month == current_date.month}.first
@@ -34,6 +50,7 @@ module ApplicationHelper
     else
       month = Date::MONTHNAMES[current_date.month][0..2]
       %Q|<table class="calendar" border="0" cellpadding="0" cellspacing="0"><thead><tr class="monthName"><th>#{heading_prefix} #{month} #{current_date.year}</th></tr></thead><tbody><tr><td style="text-align:center">(no sittings in  #{month} #{current_date.year})</td></tr></tbody></table>|
+      ""
     end
   end
 
@@ -64,12 +81,14 @@ module ApplicationHelper
     d
   end
 
- def inside_layout(layout, &block)
+  def inside_layout(layout, &block)
     @template.instance_variable_set("@content_for_layout", capture(&block))
 
     layout = layout.include?("/") ? layout : "layouts/#{layout}" if layout
     buffer = eval("_erbout", block.binding)
-    buffer.concat(@template.render_file(layout, true))
+    # buffer.concat(@template.render_file(layout, true))
+
+    buffer.concat(@template.render( :file => layout, :use_full_path => true ))
   end
 
   def format_date date
@@ -91,6 +110,8 @@ module ApplicationHelper
       if mp.img.blank?
         if mp.member && mp.member.image
           src = mp.member.image
+        elsif mp.members.last && mp.members.last.image
+          src = mp.members.last.image
         else
           src = nil
         end

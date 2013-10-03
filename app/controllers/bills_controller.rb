@@ -25,8 +25,15 @@ class BillsController < ApplicationController
 
   def assented
     @bills_on = true
-    @bills_assented = Bill.find_all_assented.group_by(&:url)
-    @letter_to_assented = @bills_assented.keys.group_by {|b| b[0..0]}
+    assented_by_parliament = Bill.find_all_assented_by_parliament
+    @letter_to_assented_by_parliament = []
+    @bills_assented_by_parliament = assented_by_parliament.collect do |by_parliament|
+      parliament = by_parliament[0]
+      grouped_by_url = by_parliament[1].group_by(&:url)
+      @letter_to_assented_by_parliament << [parliament, grouped_by_url.keys.group_by {|b| b[0..0]}]
+      [parliament, grouped_by_url]
+    end
+    @parliaments = @bills_assented_by_parliament.collect{|x| x[0]}
   end
 
   def show_bill_submissions
@@ -64,6 +71,8 @@ class BillsController < ApplicationController
       @top_level_bill_events = @bill.top_level_bill_events
       @have_votes = @bill.have_votes?
       @missing_votes = @bill.is_missing_votes?
+
+      # retrieve_news_stories
     end
   end
 
@@ -75,6 +84,23 @@ class BillsController < ApplicationController
   end
 
   protected
+
+    def retrieve_news_stories
+      @news_items = @bill.news_items
+      @blog_items = @bill.blog_items
+      misplaced = @blog_items.inject([]) {|list, x| list << x if x.publisher[/Stuff\.co\.nz|scoop\.co\.nz/] || x.url[/tvnz\.co\.nz/]; list }
+      unless misplaced.empty?
+        @news_items += misplaced
+        @news_items = @news_items.sort_by {|x| Date.parse(x.published_date) }.reverse
+        @blog_items -= misplaced
+      end
+      @govt_items = @blog_items.inject([]) {|list, x| list << x if x.url[/govt\.nz/]; list }
+      if @govt_items.empty?
+        @govt_items = nil
+      else
+        @blog_items -= @govt_items
+      end
+    end
 
     def get_bill name
       if read_fragment(:action => 'show_bill' )

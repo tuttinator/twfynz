@@ -1,4 +1,5 @@
-RAILS_GEM_VERSION = '2.1' unless defined? RAILS_GEM_VERSION
+require 'thread'
+RAILS_GEM_VERSION = '2.3.2' unless defined? RAILS_GEM_VERSION
 require File.join(File.dirname(__FILE__), 'boot')
 
 Rails::Initializer.run do |config|
@@ -6,19 +7,19 @@ Rails::Initializer.run do |config|
 
   config.frameworks -= [ :active_resource ]
 
-  config.gem 'ar_fixtures'
-  config.gem 'css_graphs'
+  # config.gem 'ar_fixtures'
+  # config.gem 'css_graphs'
   # config.gem 'haml'
-  config.gem 'hpricot', :source => 'http://code.whytheluckystiff.net'
-  config.gem 'has_many_polymorphs'
-  config.gem 'sparklines'
-  config.gem 'htmlentities'
-  config.gem 'morph'
-  config.gem 'rugalytics'
-  config.gem 'twitter'
-  config.gem 'ar-extensions'
-  config.gem 'will_paginate'
-  config.gem 'color'
+  # config.gem 'hpricot', :source => 'http://code.whytheluckystiff.net'
+  # config.gem 'has_many_polymorphs'
+  # config.gem 'sparklines'
+  # config.gem 'htmlentities'
+  # # config.gem 'morph'
+  # config.gem 'rugalytics'
+  # config.gem 'twitter', :version => '~> 0.2.7'
+  # config.gem 'ar-extensions'
+  # config.gem 'will_paginate'
+  # config.gem 'color'
 
   # Only load the plugins named here, by default all plugins in vendor/plugins are loaded
   # config.plugins = %W( exception_notification ssl_requirement )
@@ -62,9 +63,13 @@ Rails::Initializer.run do |config|
     :authentication => :login
   }
 
+  if RAILS_ENV == 'production'
+    config.load_paths += [ '/home/x/opt/my_ruby_modules' ]
+  end
 end
 
-#require 'htmlentities'
+require 'htmlentities'
+require 'has_many_polymorphs'
 require 'acts_as_slugged'
 require 'acts_as_wikipedia'
 require 'string_extensions_for_maori'
@@ -73,10 +78,29 @@ require 'in_groups_by'
 require 'route_helper'
 require 'sitemap'
 require 'expire_cache'
+require 'color'
+require 'will_paginate'
 
 module Twfynz
   def self.twitter_update message
-    twitter = Twitter::Base.new(twitter_user, twitter_password)
+    httpauth = Twitter::HTTPAuth.new(twitter_user, twitter_password)
+    twitter = Twitter::Base.new(httpauth)
     twitter.update message
   end
 end
+
+module ActiveSupport
+  module Cache
+    class FileStore < Store
+
+      def write_with_chmod(name, value, options = nil)
+        result = write_without_chmod(name, value, options)
+        system "chmod a+w #{real_file_path(name)}" if result
+        result
+      end
+
+      alias_method_chain :write, :chmod
+    end
+  end
+end
+

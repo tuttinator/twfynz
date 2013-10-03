@@ -10,6 +10,7 @@
     - else
       %meta{ :name=>"keywords", :content=> @title }
     %link{ :rel=>"home", :title=>"Home", :href=>"http://www.theyworkforyou.co.nz/" }
+    %meta{ :name=>"viewport", :content=>"width = 490" }
     = stylesheet_link_tag 'default', :media => 'screen'
     = stylesheet_link_tag 'print', :media => 'print'
     - if @atom
@@ -24,7 +25,7 @@
       = javascript_include_tag(@javascript)
     - unless @javascript == :defaults
       = javascript_include_tag 'prototype'
-    - if @home
+    - if false && @home
       = javascript_include_tag('twitter_feeds')
     = javascript_include_tag 'cookie'
     = javascript_include_tag 'json'
@@ -58,21 +59,23 @@
       #sign_in
       - if @home
         #search-home
-          - form_tag({:controller => 'application', :action => :search}, {:method=>"get"}) do
-            - if @term
-              = text_field_tag(:q, '', :maxlength=>"100", :size=>"12", :value => @term)
-            - else
-              = text_field_tag(:q, '', :maxlength=>"100", :size=>"12")
-            = submit_tag "Search", :class => 'submit'
+          - if true
+            - form_tag({:controller => 'application', :action => :search}, {:method=>"get"}) do
+              - if @term
+                = text_field_tag(:q, '', :maxlength=>"100", :size=>"12", :value => @term)
+              - else
+                = text_field_tag(:q, '', :maxlength=>"100", :size=>"12")
+              = submit_tag "Search", :class => 'submit'
         - #headerpic
       - else
         #search
-          - form_tag({:controller => 'application', :action => :search}, {:method=>"get"}) do
-            - if @term
-              = text_field_tag(:q, '', :maxlength=>"100", :size=>"12", :value => @term)
-            - else
-              = text_field_tag(:q, '', :maxlength=>"100", :size=>"12")
-            = submit_tag "Search", :class => 'submit'
+          - if true
+            - form_tag({:controller => 'application', :action => :search}, {:method=>"get"}) do
+              - if @term
+                = text_field_tag(:q, '', :maxlength=>"100", :size=>"12", :value => @term)
+              - else
+                = text_field_tag(:q, '', :maxlength=>"100", :size=>"12")
+              = submit_tag "Search", :class => 'submit'
       #menu
         %ul
           - @hansard_on = false if @search_on
@@ -91,6 +94,15 @@
       #menubottom
       - unless (@bill || @home || @organisation)
         = ''
+      %div{ :style => 'color: #eee; padding: 1em 1em 0.7em 1em; background:#373737 none repeat scroll 0 0; position:relative; margin-bottom: 2em;' }
+        %p{ :style => 'padding-right: 0.5em; margin-bottom: 0.5em;' }
+          - if false
+            Site last updated July 2011, it contains NZ Parliament debates from November 2005 to July 2011.
+          Please <a href="https://apps.facebook.com/promosapp/183177/entry/185251">vote for this site</a> in the great New Zealand <a href="https://apps.facebook.com/promosapp/183177/entry/185251">Mix and Mash</a> competition: <a href="https://apps.facebook.com/promosapp/183177/entry/185251">vote here</a> - thanks!
+        - if false
+          %p{ :style => 'padding-right: 0.25em; padding-left: 0.25em;' }
+            TheyWorkForYou.co.nz is volunteer run, and has been in operation since
+            November 2006.
       #content
         = @content_for_layout
       #footer
@@ -111,12 +123,14 @@
             - rlinks += spacer +  link_to("About", {:controller=>'application', :action=>'about'}, :title=>'About TheyWorkForYou.co.nz', :class=>(@about_on ? 'active' : nil) )
             = rlinks
     - if RAILS_ENV == 'production'
-      = %Q[<script type="text/javascript">]
-      = %Q[var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");]
-      = %Q[document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));]
-      = %Q[</script>]
-      = %Q[<script type="text/javascript">]
-      = %Q[var pageTracker = _gat._getTracker("UA-981751-1");]
-      = %Q[pageTracker._initData();]
-      = %Q[pageTracker._trackPageview();]
-      = %Q[</script>]
+      = %Q|<script type="text/javascript">|
+      = %Q^  var _gaq = _gaq || [];^
+      = %Q|  _gaq.push(['_setAccount', 'UA-18183959-1']);|
+      = %Q|  _gaq.push(['_trackPageview']);|
+      = %Q|  (function() {|
+      = %Q|    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;|
+      = %Q|    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';|
+      = %Q|    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);|
+      = %Q|  })();|
+      = %Q|</script>|
+

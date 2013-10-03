@@ -52,6 +52,8 @@ ActionController::Routing::Routes.draw do |map|
     make_route 'contact', application
     make_route 'search', application
     make_route 'parliaments/:id', application, :parliament
+    make_route 'parliaments/:id/third_reading_and_negatived_votes.:format', application, :third_reading_and_negatived_votes_by_parliament
+    make_route 'parliaments/:id/third_reading_and_negatived_votes_for_r.:format', application, :third_reading_and_negatived_votes_by_parliament_for_r
 
     application.with_options(single_date_options) do |single_date|
       make_route single_date_path, single_date, :show_single_date
@@ -134,8 +136,8 @@ ActionController::Routing::Routes.draw do |map|
     index_route 'bills', bill
     make_route 'bills/assented', bill
     make_route 'bills/negatived', bill
-    make_route 'bills/:bill_url', bill
     make_route 'bills/:bill_url.atom', bill, :show_bill_atom
+    make_route 'bills/:bill_url', bill
     make_route 'bills/:bill_url/submissions', bill, :show_bill_submissions
   end
 
@@ -164,10 +166,11 @@ ActionController::Routing::Routes.draw do |map|
     make_route 'parties/third_reading_and_negatived_votes.:format', party, :third_reading_and_negatived_votes
     make_route 'parties/:name', party
     make_route 'parties/:name/:other_name', party, :compare_parties
+    make_route 'parties/:name/:other_name/:parliament_number', party, :compare_parties_by_parliament
   end
 
-  map.resources :trackings
-  map.resources :submissions
+  map.resources :trackings, :except => [:index]
+  map.resources :submissions, :except => [:destroy] #, :only => [:index, :show]
 
   with_controller :submissions, map do |submission|
     make_route 'submissions/set_submission_submitter_url/:id', submission, :set_submission_submitter_url
