@@ -30,3 +30,4 @@ gem 'mysql2'
 #   gem 'webrat'
 # end
 gem 'haml'
+gem 'acts_as_xapian'
