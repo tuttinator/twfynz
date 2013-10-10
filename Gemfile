@@ -31,3 +31,4 @@ gem 'mysql2'
 # end
 gem 'haml'
 gem 'acts_as_xapian'
+gem 'calendar_helper'
