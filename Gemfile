@@ -30,6 +30,8 @@ gem 'mysql2'
 #   gem 'webrat'
 # end
 gem 'haml'
+# when 1.2.9 is released by the maintainer, we can stop using this fork:
+gem 'xapian-full-alaveteli', '~> 1.2.9.5'
 gem 'acts_as_xapian'
 gem 'calendar_helper'
 gem 'in_place_editing'
