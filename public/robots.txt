@@ -1,29 +1,5 @@
-User-Agent: *
-Disallow: /search?search_term=
-Disallow: /search?q=
-Disallow: /search?page=
-Disallow: /debates/search?search_term=
-Disallow: /debates/search?q=
-Disallow: /debates/search?page=
-Disallow: /debates/contribution_match?expand=
-‎
-User-Agent: BecomeBot
-Disallow: /
-
-User-Agent: SurveyBot
-Disallow: /
-
-User-Agent: SurveyBot_IgnoreIP
-Disallow: /
-
-User-Agent: ichiro
-Disallow: /
-
-User-Agent: dotbot
-Disallow: /
-
-User-Agent: CazoodleBot
-Disallow: /
-
-User-Agent: Slurp
-Crawl-delay: 3
+# See http://www.robotstxt.org/wc/norobots.html for documentation on how to use the robots.txt file
+#
+# To ban all spiders from the entire site uncomment the next two lines:
+# User-Agent: *
+# Disallow: /
