@@ -1,6 +1,7 @@
 # encoding: UTF-8
-class Party < ActiveRecord::Base
+require 'acts_as_wikipedia'
 
+class Party < ActiveRecord::Base
   acts_as_wikipedia
 
   has_many :parliament_parties
