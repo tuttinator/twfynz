@@ -1,3 +1,4 @@
+# encoding: UTF-8
 module DebatesHelper
 
   def format_debate_category(category)
@@ -51,7 +52,7 @@ module DebatesHelper
       bill_link = link_to(bill_name, show_bill_url(:bill_url => bill.url))
       transcript.gsub!(bill_name, bill_link)
 
-      transcript.gsub!(bill_name.gsub("'","’"), bill_link) if bill_name.include?("'")
+      transcript.gsub!(bill_name.gsub("'", "’"), bill_link) if bill_name.include?("'")
     end
   end
 
