@@ -1,5 +1,6 @@
 # encoding: UTF-8
 require 'acts_as_slugged'
+require 'expire_cache'
 
 class Debate < ActiveRecord::Base
 
@@ -9,7 +10,7 @@ class Debate < ActiveRecord::Base
 
   after_save :expire_cached_contributor_pages, :expire_cached_pages, :update_bill_events
 
-  #include ExpireCache
+  include ExpireCache
 
   acts_as_slugged
 
