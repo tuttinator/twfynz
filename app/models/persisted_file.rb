@@ -3,7 +3,7 @@ require 'yaml'
 
 class PersistedFile < ActiveRecord::Base
 
-  before_validation_on_create :default_persisted
+  before_validation :default_persisted
 
   def others_exists_on_date?
     PersistedFile.persisted_version_exists?(debate_date, publication_status)
@@ -15,7 +15,7 @@ class PersistedFile < ActiveRecord::Base
       persisted = find_all_by_persisted_and_debate_date_and_publication_status(true, date, publication_status_code)
       !persisted.empty?
     end
-    
+
     def load_written_questions
       require File.dirname(__FILE__) + '/../../lib/written_question_parser.rb'
       dates = unpersisted_dates('W')

@@ -1,3 +1,4 @@
+# encoding: UTF-8
 class Bill < ActiveRecord::Base
 
   belongs_to :member_in_charge, :class_name => 'Mp', :foreign_key => 'member_in_charge_id'
@@ -25,7 +26,7 @@ class Bill < ActiveRecord::Base
       :reset_earliest_date,
       :populate_committee
 
-  before_validation_on_create :populate_member_in_charge,
+  before_validation :populate_member_in_charge,
       :default_negatived,
       :create_url_identifier,
       :populate_plain_bill_name,
@@ -33,7 +34,7 @@ class Bill < ActiveRecord::Base
 
   after_save :expire_cached_pages
 
-  include ExpireCache
+  #include ExpireCache
 
   class << self
 

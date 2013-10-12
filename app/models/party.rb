@@ -1,3 +1,4 @@
+# encoding: UTF-8
 class Party < ActiveRecord::Base
 
   acts_as_wikipedia

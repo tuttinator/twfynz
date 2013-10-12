@@ -14,8 +14,8 @@ class ApplicationController < ActionController::Base
 
   def is_twfynz_request?
     request.host == 'theyworkforyou.co.nz' ||
-      (RAILS_ENV == 'development' && request.host == 'localhost') ||
-      (RAILS_ENV == 'test' && request.host == 'test.host')
+      (Rails.env == 'development' && request.host == 'localhost') ||
+      (Rails.env == 'test' && request.host == 'test.host')
   end
 
   def is_parlywords_request?
@@ -247,6 +247,10 @@ class ApplicationController < ActionController::Base
     items
   end
 
+#  def config
+#    @analytics_config ||= config_setup(RAILS_ROOT)
+#  end
+
   def config_setup root
     config_file = "#{root}/config/rugalytics.yml"
     config_file = "#{root}/rugalytics.yml" unless File.exist? config_file
@@ -301,10 +305,7 @@ class ApplicationController < ActionController::Base
   end
 
   def remove_trailing_slash
-    printf request.inspect.to_s
-    uri = request.url
-
-    printf uri
+    uri = request.fullpath
 
     if uri.length > 1 and uri[-1,1] == '/'
       uri = request.protocol + request.host + uri.chop
@@ -324,7 +325,7 @@ class ApplicationController < ActionController::Base
   end
 
   def make_map geonames_to_debates, lat, long, zoom=6
-    if RAILS_ENV == 'test' || RAILS_ENV == 'development' || RAILS_ENV == 'production'
+    if Rails.env == 'test' || Rails.env == 'development' || Rails.env == 'production'
       return nil
     end
     map = GMap.new("map_div")

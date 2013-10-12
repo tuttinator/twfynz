@@ -1,3 +1,4 @@
+# encoding: UTF-8
 require 'acts_as_slugged'
 
 class Debate < ActiveRecord::Base
@@ -8,7 +9,7 @@ class Debate < ActiveRecord::Base
 
   after_save :expire_cached_contributor_pages, :expire_cached_pages, :update_bill_events
 
-  include ExpireCache
+  #include ExpireCache
 
   acts_as_slugged
 
@@ -672,7 +673,7 @@ class Debate < ActiveRecord::Base
     contributions.collect(&:geonames).flatten.uniq
   end
 
-  CACHE_ROOT = RAILS_ROOT + '/../../shared/cache/views/theyworkforyou.co.nz'
+  CACHE_ROOT = Rails.root + '/../../shared/cache/views/theyworkforyou.co.nz'
 
   def update_bill_events
     if bill = find_related_bill
