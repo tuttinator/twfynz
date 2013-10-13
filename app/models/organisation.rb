@@ -17,7 +17,7 @@ class Organisation < ActiveRecord::Base
   validates_uniqueness_of :url, :allow_nil => true
   validates_uniqueness_of :slug
 
-  before_validation_on_create :normalize_site_url,
+  before_validation :normalize_site_url,
     :normalize_name,
     :create_slug_from_name,
     :grab_thumbnail,
