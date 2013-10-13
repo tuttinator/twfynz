@@ -1,3 +1,4 @@
+# encoding: UTF-8
 class BillDebate < ParentDebate
 
   alias_method :original_populate_sub_debate, :populate_sub_debate

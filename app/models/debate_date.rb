@@ -1,3 +1,4 @@
+# encoding: UTF-8
 class DebateDate
 
   attr_reader :year, :month, :day, :hash

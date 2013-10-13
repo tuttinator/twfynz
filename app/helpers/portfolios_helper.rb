@@ -1,3 +1,4 @@
+# encoding: UTF-8
 module PortfoliosHelper
 
 	def activity_sparkline_tag(portfolio)

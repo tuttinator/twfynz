@@ -1,3 +1,4 @@
+#encoding: utf-8
 class OrganisationsController < ApplicationController
 
   caches_action :index, :show_organisation, :show_organisation_mentions

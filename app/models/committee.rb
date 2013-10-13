@@ -1,3 +1,4 @@
+# encoding: UTF-8
 class Committee < ActiveRecord::Base
 
   has_many :committee_chairs

@@ -1,3 +1,4 @@
+# encoding: UTF-8
 class DebateAlone < Debate
 
   belongs_to :about, :polymorphic => true

@@ -1,3 +1,4 @@
+# encoding: UTF-8
 namespace :kiwimp do
 
   desc 'downloads new www.legislation.govt.nz events via RSS'

@@ -1,3 +1,4 @@
+# encoding: UTF-8
 class CommitteesController < ApplicationController
 
   caches_action :index, :show_committee

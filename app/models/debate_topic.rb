@@ -1,3 +1,4 @@
+# encoding: UTF-8
 class DebateTopic < ActiveRecord::Base
 
   belongs_to :topic, :polymorphic => true

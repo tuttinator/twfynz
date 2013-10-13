@@ -1,3 +1,4 @@
+# encoding: UTF-8
 require "#{RAILS_ROOT}/config/initializers/geoname_config"
 
 # Configuration is in: config/initializers/geoname_config.rb

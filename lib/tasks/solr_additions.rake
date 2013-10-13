@@ -1,3 +1,4 @@
+# encoding: UTF-8
 namespace :solr do
 
   desc 'switches off solr indexing'
@@ -100,9 +101,12 @@ namespace :solr do
   def env_to_bool(env, default)
     env = ENV[env] || ''
     case env
-      when /^true$/i: true
-      when /^false$/i: false
-      else default
+      when /^true$/i
+        true
+      when /^false$/i
+        false
+      else 
+        default
     end
   end
 

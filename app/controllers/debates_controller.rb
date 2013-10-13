@@ -1,3 +1,4 @@
+# encoding: UTF-8
 class DebatesController < ApplicationController
 
   caches_action :index,

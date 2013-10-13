@@ -1,3 +1,4 @@
+# encoding: UTF-8
 require 'hpricot'
 
 class Contribution < ActiveRecord::Base

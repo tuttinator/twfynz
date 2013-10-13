@@ -1,3 +1,4 @@
+# encoding: UTF-8
 namespace :kiwimp do
 
   task :migrate_down do

@@ -1,3 +1,4 @@
+# encoding: UTF-8
 module BillsHelper
 
   def summissions_meta_description bill

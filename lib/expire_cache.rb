@@ -1,3 +1,4 @@
+# encoding: UTF-8
 module ExpireCache
 
   CACHE_ROOT = Rails.root + '/../../shared/cache/views/theyworkforyou.co.nz' unless defined? CACHE_ROOT

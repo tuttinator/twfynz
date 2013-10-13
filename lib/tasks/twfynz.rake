@@ -1,3 +1,4 @@
+# encoding: UTF-8
 namespace :kiwimp do
   task :init do
     `git submodule init`

@@ -1,3 +1,4 @@
+#encoding: utf-8
 class WrittenQuestionsController < ApplicationController
   before_filter :written_questions_on
 

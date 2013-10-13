@@ -1,3 +1,4 @@
+# encoding: UTF-8
 class Donation < ActiveRecord::Base
 
   belongs_to :party

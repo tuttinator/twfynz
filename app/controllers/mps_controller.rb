@@ -1,3 +1,4 @@
+# encoding: UTF-8
 class MpsController < ApplicationController
 
   caches_action :index, :by_first, :by_party, :by_electorate, :show_mp

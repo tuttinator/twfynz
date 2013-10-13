@@ -1,3 +1,4 @@
+# encoding: UTF-8
 class PlacesController < ApplicationController
 
   def index

@@ -1,3 +1,4 @@
+# encoding: UTF-8
 class BillEvent < ActiveRecord::Base
 
   belongs_to :bill

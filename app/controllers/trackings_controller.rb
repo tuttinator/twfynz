@@ -1,3 +1,4 @@
+# encoding: UTF-8
 class TrackingsController < ApplicationController
   # GET /trackings
   # GET /trackings.xml

@@ -1,5 +1,4 @@
-# require 'sparklines'
-
+# encoding: UTF-8
 class PortfoliosController < ApplicationController
 
   before_filter :flag_up, :only => [:index, :show_portfolio]

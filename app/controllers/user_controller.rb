@@ -1,3 +1,4 @@
+#encoding: utf-8
 class UserController < ApplicationController
 
   before_filter :logged_in, :only=>['change_password', 'hidden']

@@ -1,3 +1,4 @@
+# encoding: UTF-8
 namespace :kiwimp do
 
   desc "corrects topic of third readings"

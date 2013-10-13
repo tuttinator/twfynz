@@ -1,3 +1,4 @@
+#encoding: utf-8
 class BillsController < ApplicationController
 
   caches_action :index, :negatived, :assented, :show_bill_atom, :show_bill

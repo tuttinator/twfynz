@@ -1,3 +1,4 @@
+#encoding: utf-8
 class PartiesController < ApplicationController
 
   caches_action :index, :show_party, :third_reading_and_negatived_votes, :compare_parties

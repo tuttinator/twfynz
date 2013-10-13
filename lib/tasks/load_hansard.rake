@@ -1,3 +1,4 @@
+# encoding: UTF-8
 namespace :kiwimp do
 
   task :update_organisation_mentions => :environment do

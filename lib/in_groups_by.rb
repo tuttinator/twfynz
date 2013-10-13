@@ -1,3 +1,4 @@
+# encoding: UTF-8
 class Array
 
   # Group elements into individual array's by the result of a block

@@ -1,3 +1,4 @@
+# encoding: UTF-8
 module SubmissionsHelper
 
   def org_check_box submission

@@ -1,4 +1,4 @@
-
+# encoding: UTF-8
 namespace :geonames do
 
   task :find => :environment do

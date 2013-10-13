@@ -1,5 +1,6 @@
 # encoding: UTF-8
 require 'acts_as_slugged'
+# encoding: UTF-8
 require 'expire_cache'
 
 class Debate < ActiveRecord::Base

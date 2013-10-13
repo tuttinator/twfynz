@@ -1,3 +1,4 @@
+# encoding: UTF-8
 data = File.expand_path(File.dirname(__FILE__) + '/../../data')
 donation_file = "#{data}/donations_1996_to_2007.csv"
 

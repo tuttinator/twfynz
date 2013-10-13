@@ -1,3 +1,4 @@
+# encoding: UTF-8
 require 'ostruct'
 require 'open-uri'
 require 'hpricot'
