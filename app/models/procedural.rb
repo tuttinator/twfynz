@@ -1,3 +1,4 @@
+# encoding: UTF-8
 class Procedural < Contribution
 
   alias_method :original_is_procedural?, :is_procedural?

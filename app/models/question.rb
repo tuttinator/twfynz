@@ -1,3 +1,4 @@
+# encoding: UTF-8
 class Question < Contribution
 
   alias_method :original_is_question?, :is_question?

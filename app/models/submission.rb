@@ -1,3 +1,4 @@
+# encoding: UTF-8
 class Submission < ActiveRecord::Base
 
   belongs_to :business_item, :polymorphic => true

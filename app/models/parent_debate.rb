@@ -1,6 +1,7 @@
+# encoding: UTF-8
 class ParentDebate < Debate
 
-  before_validation_on_create :populate_sub_debate
+  before_validation :populate_sub_debate
 
   has_many :sub_debates, :class_name => 'SubDebate',
            :order => 'debate_index',
@@ -14,7 +15,7 @@ class ParentDebate < Debate
   def last_debate_index
     sub_debates.last.debate_index
   end
-  
+
   def sub_debate
     sub_debates.first
   end

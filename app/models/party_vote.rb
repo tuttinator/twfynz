@@ -1,3 +1,4 @@
+# encoding: UTF-8
 class PartyVote < Vote
 
   after_save :expire_cached_pages

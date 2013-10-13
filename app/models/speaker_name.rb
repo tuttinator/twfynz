@@ -1,3 +1,4 @@
+# encoding: UTF-8
 class SpeakerName
 
   attr_reader :name, :remaining

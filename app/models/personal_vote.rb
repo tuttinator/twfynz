@@ -1,3 +1,4 @@
+# encoding: UTF-8
 class PersonalVote < Vote
 
   def ayes_cast

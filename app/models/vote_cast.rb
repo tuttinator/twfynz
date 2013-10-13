@@ -1,3 +1,4 @@
+# encoding: UTF-8
 class VoteCast < ActiveRecord::Base
 
   belongs_to :vote

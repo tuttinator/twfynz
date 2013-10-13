@@ -1,3 +1,4 @@
+# encoding: UTF-8
 class VotePlaceholder < Contribution
 
   before_destroy :destroy_vote

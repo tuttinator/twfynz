@@ -1,3 +1,4 @@
+# encoding: UTF-8
 class ParliamentParty < ActiveRecord::Base
   belongs_to :party
   belongs_to :parliament

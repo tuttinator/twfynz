@@ -1,3 +1,4 @@
+# encoding: UTF-8
 class Portfolio < ActiveRecord::Base
 
   has_many :ministers, :foreign_key => 'responsible_for_id'

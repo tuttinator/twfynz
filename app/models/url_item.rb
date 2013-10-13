@@ -1,3 +1,4 @@
+# encoding: UTF-8
 class UrlItem
 
   attr_reader :title, :date

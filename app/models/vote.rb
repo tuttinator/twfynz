@@ -1,3 +1,4 @@
+# encoding: UTF-8
 class Vote < ActiveRecord::Base
 
   has_one :contribution

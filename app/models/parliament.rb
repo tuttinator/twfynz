@@ -1,3 +1,4 @@
+# encoding: UTF-8
 class Parliament < ActiveRecord::Base
 
   has_many :members, :include => [:person, :party]

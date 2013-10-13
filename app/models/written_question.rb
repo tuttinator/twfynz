@@ -1,3 +1,4 @@
+# encoding: UTF-8
 class WrittenQuestion < ActiveRecord::Base
   belongs_to :asker, :class_name => "Mp"
   belongs_to :portfolio

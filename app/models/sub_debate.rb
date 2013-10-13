@@ -1,3 +1,4 @@
+# encoding: UTF-8
 class SubDebate < Debate
 
   belongs_to :debate

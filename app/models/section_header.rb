@@ -1,3 +1,4 @@
+# encoding: UTF-8
 class SectionHeader < Contribution
 
   alias_method :original_populate_spoken_by_id, :populate_spoken_by_id
