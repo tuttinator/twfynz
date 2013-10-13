@@ -4,11 +4,15 @@
   %h1 MPs
   .contentarea
     %p MPs in the 49th New Zealand Parliament.
-    - first = @by_first ? 'First name' : link_to('First name', {:action=>'by_first'})
     - last = @by_last   ? 'Last name'  : link_to('Last name', {:controller=>'mps'})
     - party = @by_party ? 'Party'      : link_to('Party', {:action=>'by_party'})
     - electorate = @by_electorate ? 'Electorate' : link_to('Electorate', {:action=>'by_electorate'})
-    %p= %Q[Sort by: #{first} | #{ last } | #{ party } | #{ electorate }]
+    %p
+      Sort by:
+      =link_to_unless @by_first, "First name", by_first_mps_url
+      =link_to_unless @by_last, "Last name", mps_url
+      =link_to_unless @by_party, "Party", by_party_mps_url
+      =link_to_unless @by_electorate, "Electorate", by_electorate_mps_url
     %table
       %thead
         %th Re-sitting MP
