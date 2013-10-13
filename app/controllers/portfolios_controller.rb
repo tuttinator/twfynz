@@ -30,6 +30,8 @@ class PortfoliosController < ApplicationController
     WrittenQuestion.count(:group => 'status').each{|result|
       @statuses[result[0]] = result[1]
     }
+    @statuses['reply'] ||= 0
+    @statuses['question'] ||= 0
 
 =begin
     @portfolios_image_map_areas = [
