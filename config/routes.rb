@@ -3,7 +3,12 @@ Twfynz::Application.routes.draw do
   match "search" => "application#search"
   match "about" => "application#about"
 
-  resources :bills
+  resources :bills do
+    collection do
+      get "assented"
+      get "negatived"
+    end
+  end
   resources :portfolios
   resources :mps
   resources :organisations
