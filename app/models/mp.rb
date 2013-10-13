@@ -1,4 +1,6 @@
 # encoding: UTF-8
+require 'expire_cache'
+
 class Mp < ActiveRecord::Base
 
   validates_presence_of :last
