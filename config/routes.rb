@@ -10,7 +10,14 @@ Twfynz::Application.routes.draw do
     end
   end
   resources :portfolios
-  resources :mps
+  resources :mps do
+    collection do
+      get "by_first"
+      get "by_party"
+      get "by_electorate"
+      get "contribution_match"
+    end
+  end
   resources :organisations
   resources :parliaments
   resources :debates
