@@ -1,4 +1,6 @@
 # encoding: UTF-8
+
+require 'in_groups_by'
 class BillDebate < ParentDebate
 
   alias_method :original_populate_sub_debate, :populate_sub_debate
