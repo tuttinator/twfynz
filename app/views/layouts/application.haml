@@ -55,7 +55,7 @@
       - else
         #header
           #headercontent
-            %p= link_to "<span class='site-name'>TheyWorkForYou.co.nz</span>", {:controller=>'application', :action=>'home'}
+            %p= link_to "TheyWorkForYou.co.nz", root_path, :class => "site-name"
       #sign_in
       - if @home
         #search-home
@@ -95,7 +95,7 @@
       - unless (@bill || @home || @organisation)
         = ''
       #content
-        = @content_for_layout
+        =content_for?(:content) ? yield(:content) : yield
       #footer
         - if true # if not @home
           .left
