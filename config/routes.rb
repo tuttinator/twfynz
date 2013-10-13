@@ -15,4 +15,5 @@ Twfynz::Application.routes.draw do
   resources :parliaments
   resources :debates
   resources :parties
+  resources :written_questions
 end
