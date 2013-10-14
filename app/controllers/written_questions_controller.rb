@@ -25,7 +25,7 @@ class WrittenQuestionsController < ApplicationController
     end
   end
 
-  def written_questions_by_portfolio_index
+  def by_portfolio
     @portfolios = WrittenQuestion.count(:all, :group => "portfolio", :include => "portfolio", :order => "count_all desc")
   end
 
@@ -34,7 +34,7 @@ class WrittenQuestionsController < ApplicationController
     @questions = WrittenQuestion.paginate :page => params[:page], :conditions => ["portfolio_id = ?", portfolio.id], :order => "question_year desc, question_number desc", :per_page => PAGE_SIZE
   end
 
-  def written_questions_by_asker_index
+  def by_asker
     @askers = WrittenQuestion.count(:all, :group => "asker", :include => "asker", :order => "count_all desc")
   end
 

@@ -22,5 +22,10 @@ Twfynz::Application.routes.draw do
   resources :parliaments
   resources :debates
   resources :parties
-  resources :written_questions
+  resources :written_questions do
+    collection do
+      get "by_asker"
+      get "by_portfolio"
+    end
+  end
 end
