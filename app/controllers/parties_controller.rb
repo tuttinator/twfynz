@@ -8,8 +8,9 @@ class PartiesController < ApplicationController
   def index
     @parties = Party.all_size_ordered
     @title = "Parties in Aotearoa New Zealand's Parliament"
-    @total_mps_48 = @parties.inject(0) {|count, p| count + p.mp_count(48) }
-    @total_mps_49 = @parties.inject(0) {|count, p| count + p.mp_count(49) }
+    @total_mps = @parties.inject(0) {|count, p| count + p.mp_count }
+#    @total_mps_48 = @parties.inject(0) {|count, p| count + p.mp_count(48) }
+#    @total_mps_49 = @parties.inject(0) {|count, p| count + p.mp_count(49) }
     @parliament = Parliament.latest
     # @third_reading_matrix = Vote.third_reading_matrix(@parliament.id)
   end

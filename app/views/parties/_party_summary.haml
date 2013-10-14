@@ -2,7 +2,5 @@
   - party = party_summary
   %tr.party
     %td= party_logo_small party
-    %td= link_to_party(party, party.name)
-    %td.count= party.mp_count(48)
-    %td.count= party.mp_count(49)
-
+    %td= link_to(party.name, party)
+    %td.count= party.mp_count(:latest)

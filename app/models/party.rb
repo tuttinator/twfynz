@@ -58,7 +58,8 @@ class Party < ActiveRecord::Base
     end
 
     def all_size_ordered
-      find(:all, :include => :mps).select{|p| p.mps.size > 0}.sort_by {|p| p.mp_count(49) }.reverse
+      latest_id = Parliament.latest.id
+      find(:all, :include => :mps).select{|p| p.mps.size > 0}.sort_by {|p| p.mp_count(latest_id) }.reverse
     end
 
     def get_party name
@@ -315,10 +316,11 @@ class Party < ActiveRecord::Base
     Debate.wordlize_text mps.collect{|mp| mp.unique_contributions.collect(&:wordle_text)}.flatten.join("\n"), name, 1.1
   end
 
-  def mp_count parliament_id=49
+  def mp_count parliament_id=:latest
+    parliament_id = Parliament.latest.id if parliament_id == :latest
     @mp_count_hash ||= {}
     unless @mp_count_hash[parliament_id]
-      count = members.select { |m| m.in_parliament?(parliament_id) && (parliament_id < 49 || m.is_active_on(Date.today) ) }.size
+      count = members.select { |m| m.in_parliament?(parliament_id) && m.is_active_on(Date.today) }.size
       @mp_count_hash[parliament_id] = count
     end
     @mp_count_hash[parliament_id]

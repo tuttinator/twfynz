@@ -10,6 +10,10 @@ class Parliament < ActiveRecord::Base
       find(maximum('id'))
     end
 
+    def latest_id
+      latest.id
+    end
+
     def dissolution_date parliament_id
       @dissolution_dates ||= []
       unless @dissolution_dates[parliament_id]
