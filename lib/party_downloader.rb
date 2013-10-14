@@ -54,27 +54,32 @@ module PartyDownloader
   end
 
   def self.add_new_parties
-    doc = Hpricot open('http://www.elections.org.nz/record/registers/registered-political-parties.html')
+    doc = Hpricot open('http://www.elections.org.nz/parties-candidates/registered-political-parties-0/register-political-parties')
 
-    new_parties = (doc/'td').in_groups_of(3).collect do |g|
+    new_parties = (doc/'li.party-bio-content').collect do |p|
       party = PartyProxy.new
-      party.registered_name = g[1].to_plain_text.split('[').first.strip
-      party.logo = (img = g[0].at('img')) ? img[:src].sub('../..','') : ''
-      party.url = g[1].at('a') ? g[1].at('a')[:href] : ''
-      party.abbreviation = g[2].to_plain_text.sub('?','').strip
+      title = p.at('h2 a')
+
+      next unless title
+
+      party.registered_name = title.inner_text
+      uri = URI(p.at('.party-logo img')[:src])
+      uri.query = nil
+      party.logo = uri.to_s
+      party.url = p.at('h2 a')[:href]
+      party.abbreviation = p.at('.party-left-col p:nth(1)').inner_text
 
       unless party.logo.blank?
-        logo_name = party.registered_name.sub(' logo','').sub("M\xC4\x81ori","Maori").sub("Jim Anderton's ",'').sub('The ','').sub('RAM - ','').downcase.gsub(' ','_').sub('new_zealand','nz').sub(',_the_green_party_of_aotearoa/nz','')
-        ext = File.extname(party.logo).downcase
-        party.logo_file = logo_name+ext
+        party.logo_file = party.abbreviation.parameterize + File.extname(party.logo).downcase
       end
 
       party
-    end; nil
+    end
 
     parties = Party.all
 
     new_parties.each do |data|
+      next unless data
       party = parties.find {|p| p.name.downcase == data.registered_name.downcase}
 
       unless party
@@ -86,19 +91,20 @@ module PartyDownloader
         party.short = data.abbreviation.blank? ? party.name.sub('The ','').sub(' of New Zealand','') : data.abbreviation
       end
 
-      party.short = party.short.sub('ALCP','Aotearoa Legalise Cannabis').sub('N W O','New World Order').sub('New Zealand','NZ').sub('RAM - Residents Action Movement','Residents Action Movement').sub('B&B','Bill and Ben Party').sub('RONZP','Republic of NZ Party')
-
       party.abbreviation = data.abbreviation unless data.abbreviation.blank?
       party.url = data.url unless data.url.blank?
 
       if data.logo_file
         party.logo = data.logo_file
-        logo_path = RAILS_ROOT + '/public/images/parties/' + party.logo
+        logo_path = "#{Rails.root}/public/images/parties/#{party.logo}"
+
         unless File.exists?(logo_path)
           puts 'opening ' + data.logo
           resp = response 'www.elections.org.nz', data.logo
           if resp.code == "200"
-            File.open(logo_path, 'w') do |f|
+            puts File.dirname(logo_path)
+            FileUtils.mkdir_p File.dirname(logo_path)
+            File.open(logo_path, 'wb') do |f|
               f.write resp.body
             end
             puts 'written ' + logo_path
