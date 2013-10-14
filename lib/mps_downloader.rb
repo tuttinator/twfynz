@@ -100,6 +100,8 @@ class MpsDownloader
   end
 
   def self.download
+    parliament = Parliament.latest
+    parliament_id = parliament.id
     doc = Hpricot open('http://www.parliament.nz/en-NZ/MPP/MPs/MPs/Default.htm?pf=&sf=&lgc=1')
 
     (doc.at('table.listing').at('tbody') / 'a').each do |link|
@@ -111,7 +113,6 @@ class MpsDownloader
 
       person = Mp.from_name name, Date.today
       party_name, electorate = link.at('..').next_sibling.inner_text.split(',')
-      party_name.sub!(' Party','') unless party_name.include?('Maori')
       party_name.strip!
       electorate.strip!
 
@@ -134,12 +135,12 @@ class MpsDownloader
           person.save!
         end
 
-        member = Member.find_by_parliament_id_and_person_id(49, person.id)
+        member = Member.find_by_parliament_id_and_person_id(parliament_id, person.id)
 
         unless member
           member = Member.new({:from_what => 'General Election 2008',
             :electorate => electorate,
-            :parliament_id => 49,
+            :parliament_id => parliament_id,
             :from_date => "2008-11-08",
             :party_id => party.id,
             :person_id => person.id})
