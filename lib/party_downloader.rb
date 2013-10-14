@@ -68,6 +68,7 @@ module PartyDownloader
       party.logo = uri.to_s
       party.url = p.at('h2 a')[:href]
       party.abbreviation = p.at('.party-left-col p:nth(1)').inner_text
+      party.abbreviation = party.registered_name if party.abbreviation.blank?
 
       unless party.logo.blank?
         party.logo_file = party.abbreviation.parameterize + File.extname(party.logo).downcase
