@@ -28,21 +28,14 @@ class BillProxy
     self.parliament_url = url
 
     text = ''
-    file = url.tr('/','')
-    if File.exists? file
-      puts 'reading from cache: ' + file
-      File.open(file, 'r') {|f| text = f.read}
-    else
-      open(url) do |f|
-        text = f.read
-      end
-      if text[/Oops - there has been an error/]
-        text = nil
-      else
-        puts 'caching: ' + file
-        File.open(file, 'w') {|f| f.write text}
-      end
+    open(url) do |f|
+      text = f.read
     end
+
+    if text[/Oops - there has been an error/]
+      text = nil
+    end
+
     text
   end
 
