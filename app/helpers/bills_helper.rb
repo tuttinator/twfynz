@@ -308,9 +308,13 @@ module BillsHelper
   end
 
   def party_name bill
-    party = bill.party_in_charge ? bill.party_in_charge.short : 'no party '+ bill.member_in_charge.full_name
-    party = 'Progres-<br/>sive' if party == 'Progressive'
-    party
+    if bill.party_in_charge
+      bill.party_in_charge.short
+    elsif bill.member_in_charge
+      "no party #{bill.member_in_charge.full_name}"
+    else
+      "no party"
+    end
   end
 
   def show_committee_url args
