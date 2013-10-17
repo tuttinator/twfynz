@@ -1,4 +1,7 @@
 # encoding: UTF-8
+
+require 'extend_string'
+
 class Committee < ActiveRecord::Base
 
   has_many :committee_chairs
@@ -20,7 +23,7 @@ class Committee < ActiveRecord::Base
       name = name.gsub(' Committee', '').sub('Māori','Maori').strip
       find(:all).select do |c|
         committee = c.committee_name
-        committee == name || committee.to_latin == name
+        committee == name || committee.removeaccents == name
       end.first
     end
 
