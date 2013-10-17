@@ -1,4 +1,7 @@
 # encoding: UTF-8
+
+require 'expire_cache'
+
 class Bill < ActiveRecord::Base
 
   belongs_to :member_in_charge, :class_name => 'Mp', :foreign_key => 'member_in_charge_id'
@@ -34,7 +37,7 @@ class Bill < ActiveRecord::Base
 
   after_save :expire_cached_pages
 
-  #include ExpireCache
+  include ExpireCache
 
   class << self
 
