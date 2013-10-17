@@ -61,6 +61,18 @@ module ApplicationHelper
     src ? image_tag('mps/'+src, :size => '49x59', :class => 'portrait', :alt => mp.last) : ''
   end
 
+  def current_user
+    session[:user]
+  end
+
+  def about_title about
+    if about
+      about.full_name + ': ' + about.class.to_s.gsub(/([a-z])([A-Z])/, '\1 \2') + ': NZ Parliament '
+    else
+      'Parliamentary Debates: '
+    end
+  end
+
   def bill_type bill
     case bill.class.to_s
       when 'GovernmentBill'
