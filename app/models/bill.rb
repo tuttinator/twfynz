@@ -780,39 +780,9 @@ class Bill < ActiveRecord::Base
 
     def create_url_identifier
       if bill_name and not url
-        url = bill_name.to_latin.to_s.downcase.
-            tr(',:','').gsub('(','').gsub(')','').
-            gsub('’','').
-            gsub('/ ',' ').tr('/',' ').
-            gsub(/ng\S*ti/, 'ngati').
-            tr("'",'').gsub(' and', '').
-            gsub('new zealand', 'nz').
-            gsub(' bill', '').
-            gsub(' miscellaneous', '').
-            gsub(' provisions', '').
-            gsub(' as a','').gsub(' - ','-').
-            gsub('  ',' ').tr(' ','_')
-
-        num = /.*(_no_.*)/.match url
-
-        if url.size > 40
-          cut_off = url[40..40]
-          in_word = /[A-Za-z0-9]/.match cut_off
-
-          url = url[0..39]
-
-          if in_word
-            url = url[0..(url.rindex('_')-1)]
-          end
-        end
-
-        if num and not url.include? num[1]
-          if url.size < 35
-            url = url + num[1]
-          else
-            url = url[0..34].chomp('_')+num[1]
-          end
-        end
+        tokens = bill_name.parameterize.split('-')
+        tokens.reject!{|tok| %w(and bill miscellaneous provisions as a).include?(tok) }
+        url = tokens.join('-')
 
         bill = Bill.find_by_url(url)
 
