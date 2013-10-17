@@ -60,4 +60,19 @@ module ApplicationHelper
     end
     src ? image_tag('mps/'+src, :size => '49x59', :class => 'portrait', :alt => mp.last) : ''
   end
+
+  def bill_type bill
+    case bill.class.to_s
+      when 'GovernmentBill'
+        'Government bill'
+      when 'MembersBill'
+        "Member's bill"
+      when 'PrivateBill'
+        'Private bill'
+      when 'LocalBill'
+        'Local bill'
+      else
+        ''
+    end
+  end
 end
