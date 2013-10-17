@@ -95,6 +95,7 @@
       - unless (@bill || @home || @organisation)
         = ''
       #content
+        = yield(:header) if content_for(:header)
         =content_for?(:content) ? yield(:content) : yield
       #footer
         - if true # if not @home
