@@ -23,12 +23,12 @@ class BillProxy
   end
 
   def obtain_text url
-    @url = url
+    @url = URI.parse(URI.encode(url)) # sanitise malformed URIs
     puts '  downloading ' + url
     self.parliament_url = url
 
     text = ''
-    open(url) do |f|
+    open(@url) do |f|
       text = f.read
     end
 
