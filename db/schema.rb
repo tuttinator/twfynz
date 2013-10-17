@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131017044935) do
+ActiveRecord::Schema.define(:version => 20131017212634) do
 
   create_table "acts_as_xapian_jobs", :force => true do |t|
     t.string  "model",    :null => false
@@ -67,6 +67,7 @@ ActiveRecord::Schema.define(:version => 20131017044935) do
     t.string  "plain_bill_name"
     t.string  "plain_former_name"
     t.date    "committee_of_the_whole_house_discharged"
+    t.string  "formerly_part_of_text"
   end
 
   add_index "bills", ["bill_name"], :name => "index_bills_on_bill_name"
