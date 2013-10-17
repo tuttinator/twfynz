@@ -8,7 +8,12 @@ class Committee < ActiveRecord::Base
   has_many :debate_alones, :as => :about
   has_many :bills, :foreign_key => 'referred_to_committee_id'
 
+  after_initialize :init
   before_validation :default_former
+
+  def init
+    self.committee_type = "select"
+  end
 
   class << self
     def from_name name
