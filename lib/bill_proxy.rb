@@ -33,7 +33,7 @@ class BillProxy
       puts 'reading from cache: ' + file
       File.open(file, 'r') {|f| text = f.read}
     else
-      open('http://www.parliament.nz/en-NZ/PB/Legislation/Bills/'+url) do |f|
+      open(url) do |f|
         text = f.read
       end
       if text[/Oops - there has been an error/]
@@ -71,7 +71,7 @@ class BillProxy
     }
 
     attributes[:bill_no] = data_bill_no if respond_to? :data_bill_no
-    attributes[:type] = data_type_of_bill.gsub("'",'')+'Bill'
+    type = data_type_of_bill.gsub("'",'')+'Bill'
 
     attributes[:description] = data_info if respond_to? :data_info
     attributes[:act_name] = data_act if respond_to? :data_act
@@ -86,7 +86,7 @@ class BillProxy
     attributes.delete(:sc_reports_interim_report_interim_report) # temp fix
     attributes.delete(:first_reading_withdrawn) # temp fix
 
-    bill = Object.const_get(attributes[:type]).new(attributes)
+    bill = Object.const_get(type).new(attributes)
     bill.reset_earliest_date
 
     if bill.earliest_date.nil? && respond_to?(:nzgls_date)
