@@ -717,10 +717,9 @@ class Bill < ActiveRecord::Base
       if formerly_part_of.blank?
         if bill_change and bill_change[/Formerly part of/]
           former = bill_change.gsub('(Formerly part of ', '').chomp(')')
+          self.formerly_part_of_text = former
           if former_bill = Bill.find_by_bill_name(former)
             self.formerly_part_of_id = former_bill.id
-          else
-            raise 'Validation failed: cannot find former bill from bill_change: ' + bill_change
           end
         end
       end
