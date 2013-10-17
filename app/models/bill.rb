@@ -19,7 +19,6 @@ class Bill < ActiveRecord::Base
   validates_presence_of :bill_name
   validates_presence_of :url
   validates_presence_of :earliest_date
-  validates_presence_of :member_in_charge_id
 
   validates_presence_of :parliament_url
   validates_uniqueness_of :parliament_id, :allow_blank => true
@@ -746,8 +745,6 @@ class Bill < ActiveRecord::Base
           mp = Mp.from_name(mp_name, Date.today)
           if mp
             self.member_in_charge_id = mp.id
-          else
-            raise 'Validation failed: cannot find member in charge from mp_name: ' + mp_name
           end
         else
           raise 'Validation failed: :mp_name can\'t be blank'

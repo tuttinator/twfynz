@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131017030733) do
+ActiveRecord::Schema.define(:version => 20131017044552) do
 
   create_table "acts_as_xapian_jobs", :force => true do |t|
     t.string  "model",    :null => false
@@ -35,7 +35,7 @@ ActiveRecord::Schema.define(:version => 20131017030733) do
     t.string  "url",                                     :limit => 45
     t.string  "bill_no",                                 :limit => 8
     t.integer "formerly_part_of_id"
-    t.integer "member_in_charge_id",                                    :null => false
+    t.integer "member_in_charge_id"
     t.integer "referred_to_committee_id"
     t.string  "type",                                    :limit => 15,  :null => false
     t.string  "bill_name",                               :limit => 155, :null => false
