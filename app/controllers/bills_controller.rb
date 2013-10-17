@@ -61,7 +61,8 @@ class BillsController < ApplicationController
     @bill_events = @bill.bill_events.sort_by(&:date).reverse
   end
 
-  def show_bill
+  def show
+    @bill = Bill.find(params[:id])
     @admin = admin?
     @bills_on = true
     @tracking = get_tracking @bill
