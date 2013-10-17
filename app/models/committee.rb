@@ -8,7 +8,7 @@ class Committee < ActiveRecord::Base
   has_many :debate_alones, :as => :about
   has_many :bills, :foreign_key => 'referred_to_committee_id'
 
-  before_validation_on_create :default_former
+  before_validation :default_former
 
   class << self
     def from_name name

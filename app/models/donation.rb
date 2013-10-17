@@ -4,7 +4,7 @@ class Donation < ActiveRecord::Base
   belongs_to :party
   belongs_to :organisation
 
-  before_validation_on_create :populate_party
+  before_validation :populate_party
 
   class << self
     def per_page

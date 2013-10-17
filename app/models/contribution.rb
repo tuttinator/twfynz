@@ -6,7 +6,7 @@ class Contribution < ActiveRecord::Base
   belongs_to :spoken_in, :class_name => 'Debate', :foreign_key => 'spoken_in_id'
   belongs_to :mp, :foreign_key => 'spoken_by_id'
 
-  before_validation_on_create :populate_spoken_by_id
+  before_validation :populate_spoken_by_id
   before_validation :populate_date
 
   # acts_as_xapian :texts => [ :text ],

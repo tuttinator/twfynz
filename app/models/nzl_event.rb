@@ -4,7 +4,7 @@ class NzlEvent < ActiveRecord::Base
 
   belongs_to :about, :polymorphic => true
 
-  before_validation_on_create :populate_publication_date, :populate_description_data
+  before_validation :populate_publication_date, :populate_description_data
   after_create :create_bill_event, :clean_cache
 
   class << self

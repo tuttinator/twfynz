@@ -5,7 +5,7 @@ class VoteCast < ActiveRecord::Base
   belongs_to :mp
   belongs_to :party
 
-  before_validation_on_create :populate_party, :populate_mp,
+  before_validation :populate_party, :populate_mp,
     :default_present, :default_teller
 
   def date= date

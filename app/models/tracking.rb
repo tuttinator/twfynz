@@ -7,7 +7,7 @@ class Tracking < ActiveRecord::Base
   validates_presence_of :user
   validates_presence_of :item
 
-  before_validation_on_create :set_created_at_date, :default_booleans
+  before_validation :set_created_at_date, :default_booleans
 
   class << self
     def from_user_and_item user, item

@@ -5,7 +5,7 @@ class Submission < ActiveRecord::Base
   belongs_to :submitter, :polymorphic => true
   belongs_to :committee
 
-  before_validation_on_create :populate_committee_id,
+  before_validation :populate_committee_id,
       :populate_business_item
 
   before_validation :create_submitter_if_is_from_organisation

@@ -2,7 +2,7 @@ require 'digest/sha1'
 
 class OrganisationUser < User
 
-  before_validation_on_create :normalize_site_url,
+  before_validation :normalize_site_url,
       :check_email_domain_matches_site_url_domain,
       :create_login_from_site_url_domain,
       :set_email_confirmed_to_false

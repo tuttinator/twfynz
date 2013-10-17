@@ -1,6 +1,6 @@
 class OralAnswer < SubDebate
 
-  before_validation_on_create :populate_sub_debate
+  before_validation :populate_sub_debate
 
   belongs_to :answer_from, :polymorphic => true
 
