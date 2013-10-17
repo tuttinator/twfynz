@@ -729,8 +729,7 @@ class Bill < ActiveRecord::Base
     def populate_committee
       if referred_to_committee_id.blank?
         if referred_to
-          name = referred_to.gsub(/M.*ori /, 'Maori ')
-          if (committee = Committee.from_name name)
+          if (committee = Committee.from_name referred_to)
             self.referred_to_committee_id = committee.id
           else
             raise 'Validation failed: cannot find committee from referred_to: ' + referred_to
