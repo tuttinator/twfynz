@@ -1,5 +1,7 @@
 require File.dirname(__FILE__) + '/../bill_proxy.rb'
 
+require 'hpricot'
+
 namespace :kiwimp do
 
   desc 'update bill events'
@@ -128,7 +130,6 @@ namespace :kiwimp do
 
     if bill
       try_bill_update url, bill if update_existing
-
     elsif bill_no
       bills = Bill.find_all_by_bill_name_and_bill_no(name, bill_no)
       puts "  (found #{bills.size} existing bill#{bills.size == 1 ? 's' : ''})"
@@ -145,59 +146,39 @@ namespace :kiwimp do
   end
 
   def update_bills update_existing=true
-    names, types, refs, urls = [], [], [], []
-    while urls.empty?
+    try_count = 0
+    bills = []
+    while bills.empty? and try_count < 3
+      try_count += 1
       begin
-        names, types, refs, urls = get_bill_list
+        bills = get_bill_list
       rescue Exception => e
         puts 'problem ... trying again'
       end
     end
-    urls.each_with_index do |url, i|
-      name = names[i]
-      bill_no = refs[i]
-      puts ''
-      puts "#{name}, bill_no: #{bill_no}"
-
-      # prevent accessing Progress of Legislation page
-      proceed = !(url.include? '00HOOOCProgressLegislation1-Progress-of-Legislation.htm')
-
-      if proceed
-        # begin
-          update_bill(update_existing, url, name, bill_no) if proceed
-        # rescue Exception => e
-          # puts("#{e.class.name} #{e.to_s} #{e.backtrace.join("\n")}")
-        # end
-      end
+    bills.sort!{|a,b| Date.parse(a[:last_activity]) - Date.parse(b[:last_activity])}
+    bills.each_with_index do |bill, i|
+      update_bill(update_existing, bill[:url], bill[:name], bill[:ref])
     end
   end
 
   def get_bill_list
-    bill_list_url = 'http://www.parliament.nz/en-NZ/PB/Legislation/Bills/Default.htm?lgc=1&sort=Title&order=0'
+    bill_list_url = 'http://www.parliament.nz/en-nz/PB/Legislation/Bills/?Criteria.ViewAll=1'
     p "downloading list of bills: #{bill_list_url}"
-    names, types, refs, urls = [], [], [], []
+    bills = []
 
-    open(bill_list_url) do |f|
-      f.each_line do |line|
-        if (match = /				<h4><a [^>]* href="\/en-NZ\/PB\/Legislation\/Bills\/([^\/]+\/[^\/]+\/[^\/]+\/.*.htm)">([^<]*)<\/a><\/h4>/.match line)
-          if (match[2] != "Schedule of divided bills" and match[2] != "Progress of legislation")
-            name = match[2].squeeze(' ')
-            puts '+ ' + name
-            $stdout.flush
-            names << name
-            urls << match[1]
-          end
+    doc = Hpricot open(bill_list_url)
 
-        elsif (match = /<td class="attr attrDocumentType">([^<]*)<\/td>/.match line)
-          types << match[1].sub('Bill - ','')
-
-        elsif (match = /<td class="attr attrReference">([^<]*)<\/td>/.match line)
-          refs << match[1]
-        end
-      end
+    (doc/'table.listing tbody tr').each do |b|
+      bill = {}
+      bill[:name] = b.at('h4 a').inner_text
+      bill[:url] = "http://www.parliament.nz/" + b.at('h4 a')[:href]
+      bill[:last_activity] = b.at('td:nth(1)').inner_text.to_s.squish
+      bill[:ref] = b.at('td:nth(2)').inner_text.to_s.squish
+      bills << bill
     end
 
-    return names, types, refs, urls
+    bills
   end
 
 end
