@@ -41,4 +41,23 @@ module ApplicationHelper
       ''
     end
   end
+
+  def portrait mp, new=false
+    if mp.image.blank?
+      if mp.img.blank?
+        if mp.member && mp.member.image
+          src = mp.member.image
+        elsif mp.members.last && mp.members.last.image
+          src = mp.members.last.image
+        else
+          src = nil
+        end
+      else
+        src = mp.img
+      end
+    else
+      src = mp.image
+    end
+    src ? image_tag('mps/'+src, :size => '49x59', :class => 'portrait', :alt => mp.last) : ''
+  end
 end
