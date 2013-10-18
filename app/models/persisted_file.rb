@@ -178,11 +178,11 @@ class PersistedFile < ActiveRecord::Base
     end
 
     def storage_path
-      RAILS_ROOT + '/nz-hansard/'
+      Rails.root + '/nz-hansard/'
     end
 
     def data_path
-      RAILS_ROOT + '/data/'
+      Rails.root + '/data/'
     end
 
     def file_name(date, status, name)
