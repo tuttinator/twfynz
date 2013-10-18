@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131017212634) do
+ActiveRecord::Schema.define(:version => 20131018004118) do
 
   create_table "acts_as_xapian_jobs", :force => true do |t|
     t.string  "model",    :null => false
@@ -358,7 +358,7 @@ ActiveRecord::Schema.define(:version => 20131017212634) do
     t.boolean "oral_answer"
     t.boolean "downloaded"
     t.date    "download_date"
-    t.boolean "persisted"
+    t.boolean "is_persisted"
     t.date    "persisted_date"
     t.string  "file_name"
     t.string  "parliament_name"

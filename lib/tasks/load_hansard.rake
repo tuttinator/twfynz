@@ -37,9 +37,9 @@ namespace :kiwimp do
   task :unpersist => :environment do
     count = 0
     PersistedFile.find(:all).each do |f|
-      if f.persisted
+      if f.is_persisted
         count += 1
-        f.persisted = false
+        f.is_persisted = false
         f.persisted_date = nil
         f.save!
       end

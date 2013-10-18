@@ -150,7 +150,7 @@ class PersistedFile < ActiveRecord::Base
 
         if stored.parliament_url
           existing = PersistedFile.find_by_parliament_url_and_publication_status(stored.parliament_url, stored.publication_status)
-          if existing && (existing.persisted || existing.debate_date < Date.new(2008,12,1) )
+          if existing && (existing.is_persisted || existing.debate_date < Date.new(2008,12,1) )
             msg = "#{stored.debate_date} #{stored.publication_status} #{files.size}"
             puts "existing #{msg}"
           else
@@ -393,7 +393,7 @@ class PersistedFile < ActiveRecord::Base
   def do_persist!
     existing = PersistedFile.find_by_parliament_url_and_publication_status(self.parliament_url, self.publication_status)
     existing = existing ? existing : self
-    existing.persisted = true
+    existing.is_persisted = true
     existing.persisted_date = Date.today
     existing.save!
   end
