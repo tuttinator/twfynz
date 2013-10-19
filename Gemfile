@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'rails', '3.2.11'
+gem 'rails', '3.2.15'
 
 
 # Postgresql database
@@ -14,11 +14,6 @@ gem 'kaminari'
 
 # Devise for use authentication
 gem 'devise'
-
-# Spine JS for JS MVC
-gem 'spine-rails'
-# ECO templating
-gem 'eco' 
 
 # HAML templating
 gem 'haml-rails'
