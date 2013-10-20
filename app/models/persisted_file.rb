@@ -350,7 +350,7 @@ class PersistedFile < ActiveRecord::Base
       dates = files.collect(&:debate_date).uniq.sort
 
       if publication_status == 'A'
-        where(publication_status: 'F', is_persisted: true).collect(&:debate_date).uniq.sort
+        finals = where(publication_status: 'F', is_persisted: true).collect(&:debate_date).uniq.sort
         dates.delete_if {|d| finals.include? d }
       end
       dates
