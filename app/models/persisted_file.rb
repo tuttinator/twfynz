@@ -342,18 +342,18 @@ class PersistedFile < ActiveRecord::Base
     end
 
     def unpersisted_dates publication_status
-      files = find_all_by_publication_status_and_persisted(publication_status, false)
+      files = where(publication_status: publication_status, is_persisted: false)
       dates = files.collect(&:debate_date).uniq.sort
 
       if publication_status == 'A'
-        finals = find_all_by_publication_status_and_persisted('F', true).collect(&:debate_date).uniq.sort
+        where(publication_status: 'F', is_persisted: true).collect(&:debate_date).uniq.sort
         dates.delete_if {|d| finals.include? d }
       end
       dates
     end
 
     def unpersisted_files date, publication_status
-      find_all_by_debate_date_and_publication_status_and_persisted(date, publication_status, false)
+      where(debate_date: date, publication_status: publication_status, is_persisted: false)
     end
   end
 
