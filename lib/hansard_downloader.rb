@@ -1,7 +1,7 @@
 # encoding: UTF-8
 require 'rubygems'
 require 'open-uri'
-require 'hpricot'
+require 'nokogiri'
 require 'fileutils'
 
 class HansardDownloader
@@ -12,7 +12,7 @@ class HansardDownloader
     @downloading_uncorrected = downloading_uncorrected
 
     finished = false
-    index_page = 0
+    index_page = 1
     debates = debates_in_index(index_page)
 
     while debates.size > 0 && !finished
@@ -28,7 +28,8 @@ class HansardDownloader
       end
     end
 
-    if suppress_git_push
+    if true
+    #if suppress_git_push
       puts 'suppressing git push'
     else
       PersistedFile.set_all_indexes_on_date
@@ -119,24 +120,33 @@ class HansardDownloader
     end
 
     def open_index_page page
-      if @downloading_uncorrected
-        url = 'http://www.parliament.nz/en-NZ/PB/Business/QOA/Default.htm?p='+page.to_s
-      else
-        url = 'http://www.parliament.nz/en-NZ/PB/Debates/Debates/Default.htm?p='+page.to_s
-      end
+      url = "http://www.parliament.nz/en-nz/pb/business/qoa/?Criteria.Parliament=50&Criteria.PageNumber=#{page}"
       puts 'opening: ' + url
-      Hpricot open(url)
+      Nokogiri::HTML(open(url))
     end
 
     def debates_in_index page
       doc = open_index_page page
-      debates = (doc/'h4/a')
-      debates
+      rows = doc.search('.listing tbody tr')
+      rows.map{|row|
+        debate = {}
+        link = row.search('a')
+        debate[:title] = link.inner_text
+        puts "http://www.parliament.nz" + link.attr('href').to_s
+        debate[:href] = to_url link
+        debate[:date] = Date.parse(row.search('.attr').inner_text)
+
+        debate
+      }
+    end
+
+    def to_url link
+      URI.parse(URI.encode("http://www.parliament.nz" + link.attr('href').to_s)).to_s # sanitise bad URLs
     end
 
     def already_saved? debate
-      date = debate_date(debate)
-      PersistedFile.exists?(date, 'final', debate_name(debate)) || (date <= Date.new(2008,12,1))  # ignoring older content for now
+      date = debate[:date]
+      PersistedFile.exists?(date, 'final', debate[:title]) || (date <= Date.new(2008,12,1))  # ignoring older content for now
     end
 
     def download_debates debates
@@ -151,14 +161,7 @@ class HansardDownloader
     end
 
     def ignore_debate? debate
-      name = debate.inner_text
-      name.sub!(', ','') if name.starts_with? ', '
-      name == 'List of questions for oral answer' ||
-          name == 'Daily debates' ||
-          name == 'Speeches' ||
-          name.include?('Parliamentary Debates (Hansard)') ||
-          debate_date(debate) == Date.new(2009,5,17) ||
-          debate_date(debate) == Date.new(2009,5,14)
+      [ 'List of questions for oral answer', 'Daily debates', 'Speeches' ].include?(debate[:title])
     end
 
     def ignore_old_content date
@@ -190,23 +193,22 @@ class HansardDownloader
     end
 
     def download_debate debate
-      date = debate_date(debate)
-      finished = if keep_looking(date)
-                   false
-                 elsif past_date_we_wanted(date)
-                   true
-                 else
-                   continue_download_debate(date, debate)
-                 end
-      finished
+      date = debate[:date]
+      if keep_looking(date)
+        false
+      elsif past_date_we_wanted(date)
+        true
+      else
+        continue_download_debate(date, debate)
+      end
     end
 
     def continue_download_debate date, debate
       persisted_file = PersistedFile.new({
-          :debate_date => date,
-          :oral_answer => @downloading_uncorrected,
-          :parliament_name => parliament_name(debate),
-          :parliament_url => debate_url(debate)
+        :debate_date => date,
+        :oral_answer => @downloading_uncorrected,
+        :parliament_name => debate[:title],
+        :parliament_url => debate[:href]
       })
       persisted_file.set_publication_status(@downloading_uncorrected ? 'uncorrected' : 'final')
 
@@ -228,18 +230,24 @@ class HansardDownloader
         advance_exists = persisted_file.exists?
 
         # if advance_exists && (!@check_for_final || @download_date)
-          # puts 'persisted_file exists'
-          # PersistedFile.add_if_missing persisted_file
+        # puts 'persisted_file exists'
+        # PersistedFile.add_if_missing persisted_file
         # else
-          if advance_exists
-            puts "checking status: #{persisted_file.parliament_url}"
-            persisted_file.set_publication_status('final')
-          end
-          finished = download_this_debate persisted_file
+        if advance_exists
+          puts "checking status: #{persisted_file.parliament_url}"
+          persisted_file.set_publication_status('final')
+        end
+        finished = download_this_debate persisted_file
         # end
       end
 
       finished
+    end
+
+    def metadata contents
+      doc = Nokogiri::HTML(contents)
+      url = to_url doc.search('.BtnMetadata')
+
     end
 
     def download_this_debate persisted_file
@@ -278,39 +286,18 @@ class HansardDownloader
       contents
     end
 
-    def debate_url debate
-      'http://www.parliament.nz'+debate.attributes['href']
-    end
-
-    def debate_name debate
-      debate.attributes['href'].split('/').last
-    end
-
-    def parliament_name debate
-      parliament_name = debate.inner_text
-      parliament_name.sub!(', ','') if parliament_name.starts_with? ', '
-      parliament_name
-    end
-
-    def debate_date debate
-      name = debate_name debate
-      if (match = /Hans(D|Q)_(\d\d\d\d)(\d\d)(\d\d)/.match name)
-        Date.new($2.to_i, $3.to_i, $4.to_i)
-      else
-        raise "can't figure out date from url " + name
-      end
-    end
-
     def publication_status_from contents
-      if contents.include?('[Advance Copy') || contents.include?('[Advance copy')
-        'advance'
-      elsif contents.include? '[Uncorrected transcript'
-        'uncorrected'
-      elsif contents.include? '[Volume'
-        'final'
-      else
-        nil
-      end
+      doc = Nokogiri::HTML(contents)
+
+      meta_uri = "http://www.parliament.nz" + doc.search('#BtnMetadata').attr('href')
+
+      meta = Nokogiri::HTML(open(meta_uri))
+
+      terms = meta.search('dt').map(&:inner_text)
+      values = meta.search('dd').map(&:inner_text)
+      hash = Hash[*(terms.zip(values)).flatten]
+
+      hash['Status'].downcase
     end
 
 end
