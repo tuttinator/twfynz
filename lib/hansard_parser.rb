@@ -1,7 +1,7 @@
 # encoding: UTF-8
 require 'rubygems'
 require 'open-uri'
-require 'hpricot'
+require 'nokogiri'
 
 class HansardParser
 
@@ -9,13 +9,9 @@ class HansardParser
     def load_file file
       open(file).read
     end
+
     def load_doc file
-      text = load_file file
-      text.gsub!(/<caption>[^<]*<p>/,'<caption>')
-      text.gsub!(/<\/p>[^<]*<\/caption>/,'</caption>')
-      text.gsub!(%Q|<p class="a">\n        <strong>Prayers</strong>.</p>|, '')
-      text.gsub!(%Q|<p class="a">\n        <strong>Karakia</strong>.</p>|, '')
-      Hpricot text
+      Nokogiri::HTML(load_file(file))
     end
   end
 
@@ -28,8 +24,9 @@ class HansardParser
 
   def parse_oral_answer debate_index, oral_answers=nil
     answer = parse debate_index + 1
-    unless oral_answers
-      oral_answers = OralAnswers.new({
+
+    unless answer.nil?
+      oral_answers ||= OralAnswers.new({
         :name => 'Questions for Oral Answer',
         :date => answer.date,
         :publication_status => answer.publication_status,
@@ -39,14 +36,22 @@ class HansardParser
         :hansard_volume => answer.hansard_volume,
         :start_page => answer.start_page
       })
+      oral_answers.add_oral_answer(answer)
     end
-    oral_answers.add_oral_answer(answer)
+
     oral_answers
   end
 
   def parse debate_index=1
-    @doc ? @doc : (@doc = HansardParser.load_doc(@file))
-    type = @doc.at('.copy/.section[1]/div[1]')['class']
+    @doc ||= HansardParser.load_doc(@file)
+    type_el = @doc.search('.copy/.section[1]/div[1]')
+
+    if type_el.empty?
+      puts "Could not find type element. continuing"
+      return nil
+    else
+      type = type_el.attr('class')
+    end
 
     document_reference = @doc.at('.copy/.section[1]/p[1]').inner_html
     if (document_reference.include?('Volume:') and document_reference.include?('Page:'))
