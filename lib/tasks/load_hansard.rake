@@ -59,7 +59,7 @@ namespace :kiwimp do
   end
 
   task :git_pull_data do
-    PersistedFile.git_pull
+    #PersistedFile.git_pull
   end
 
   desc 'load questions'

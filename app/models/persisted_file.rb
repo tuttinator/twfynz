@@ -64,6 +64,10 @@ class PersistedFile < ActiveRecord::Base
         parser = HansardParser.new(file.storage_name, file.parliament_url, file.debate_date)
         oral_answers = parser.parse_oral_answer(index+1, oral_answers)
       end
+
+      # if nothing found, escape
+      return if oral_answers.nil?
+
       puts "saving: #{oral_answers.class.name}"
       oral_answers.save!
       files.each { |f| f.do_persist! }
