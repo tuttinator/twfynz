@@ -13,8 +13,7 @@ class PersistedFile < ActiveRecord::Base
   class << self
 
     def persisted_version_exists? date, publication_status_code
-      persisted = find_all_by_persisted_and_debate_date_and_publication_status(true, date, publication_status_code)
-      !persisted.empty?
+      where(is_persisted: true, debate_date: date, publication_status: publication_status_code).count > 0
     end
 
     def load_written_questions
