@@ -5,7 +5,7 @@ class Minister < ActiveRecord::Base
 
   class << self
     def from_name name
-      name = name.sub('Acting ', '').strip.downcase.to_latin.gsub('’',"'")
+      name = name.sub('Acting ', '').squish
       find(:all).select {|m| m.title.downcase == name}.first
     end
 
