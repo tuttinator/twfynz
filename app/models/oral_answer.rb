@@ -1,3 +1,4 @@
+# encoding: UTF-8
 class OralAnswer < SubDebate
 
   before_validation :populate_sub_debate
