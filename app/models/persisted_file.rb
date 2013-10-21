@@ -110,7 +110,7 @@ class PersistedFile < ActiveRecord::Base
           debate_list.each {|d| d.valid?}
           index = debate_list.last.last_debate_index
           debate_list.each {|d| debates << d }
-        else
+        elsif not debate.nil?
           debate.valid?
           index = debate.last_debate_index if debate.respond_to?(:last_debate_index)
           debates << debate
