@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131018004118) do
+ActiveRecord::Schema.define(:version => 20131021032349) do
 
   create_table "acts_as_xapian_jobs", :force => true do |t|
     t.string  "model",    :null => false
@@ -374,7 +374,7 @@ ActiveRecord::Schema.define(:version => 20131018004118) do
   create_table "portfolios", :force => true do |t|
     t.integer "beehive_id"
     t.string  "portfolio_name",      :limit => 82, :null => false
-    t.string  "url",                 :limit => 82
+    t.text    "url"
     t.string  "dpmc_id",             :limit => 42
     t.boolean "dpmc_responsibility"
   end
