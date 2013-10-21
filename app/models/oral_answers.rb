@@ -1,3 +1,4 @@
+# encoding: UTF-8
 class OralAnswers < Debate
 
   has_many :oral_answers, :class_name => 'OralAnswer',

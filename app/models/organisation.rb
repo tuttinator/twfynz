@@ -1,3 +1,4 @@
+# encoding: UTF-8
 require 'rubygems'
 require 'hpricot'
 require 'acts_as_wikipedia'

@@ -1,5 +1,4 @@
-# require 'twitter'
-
+# encoding: UTF-8
 class OrderPaperAlert < ActiveRecord::Base
 
   def tweet_alert

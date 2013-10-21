@@ -1,3 +1,4 @@
+# encoding: UTF-8
 class NotificationMailer < ActionMailer::Base
 
   def forgot_password(to, login, pass, sent_at = Time.now)

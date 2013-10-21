@@ -1,5 +1,4 @@
 # encoding: UTF-8
-
 require 'expire_cache'
 
 class Bill < ActiveRecord::Base

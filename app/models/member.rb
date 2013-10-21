@@ -1,3 +1,4 @@
+# encoding: UTF-8
 class Member < ActiveRecord::Base
 
   belongs_to :parliament

@@ -1,3 +1,4 @@
+# encoding: UTF-8
 class Minister < ActiveRecord::Base
 
   belongs_to :portfolio, :foreign_key => 'responsible_for_id'

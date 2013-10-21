@@ -1,5 +1,4 @@
 # encoding: UTF-8
-
 require 'extend_string'
 
 class Committee < ActiveRecord::Base
