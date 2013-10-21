@@ -1,14 +1,13 @@
 # encoding: UTF-8
+require 'mps_downloader.rb'
 namespace :kiwimp do
 
   task :download_nats => :environment do
-    require File.dirname(__FILE__) + '/../mps_downloader.rb'
     MpsDownloader.download_nats
   end
 
   desc 'download mp page urls from parliament.nz'
   task :download_mps => :environment do
-    require File.dirname(__FILE__) + '/../mps_downloader.rb'
     MpsDownloader.download
   end
 
@@ -19,4 +18,8 @@ namespace :kiwimp do
     MpsDownloader.download_images image_path
   end
 
+  desc "download former MPs from parliament.nz"
+  task :download_former_mps => :environment do
+    MpsDownloader.download_former
+  end
 end
