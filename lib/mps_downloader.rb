@@ -2,6 +2,7 @@
 require 'rubygems'
 require 'open-uri'
 require 'hpricot'
+require 'nokogiri'
 require 'uri'
 
 class MpsDownloader
@@ -171,4 +172,64 @@ class MpsDownloader
       resp
     end
 
+  class << self
+    def download_former
+      doc = Nokogiri::HTML(open("http://www.parliament.nz/en-nz/mpp/mps/former/?Criteria.ViewAll=1"))
+
+      doc.search('.listing tbody tr').each do |el|
+        link = el.at_css('a')
+        name = link.inner_text
+        names = name.split(',')
+        last = names[0].squish
+        first = names[1].squish
+        name = first + ' ' + last
+
+        person = Mp.where(first: first, last: last).first
+        details = el.at_css('p').inner_text
+        term = details.split(',').last.squish
+        whole_line, party_name, start_date, end_date = *term.match(/(?:([^\d]+).* )?(\d{1,2} .+ \d{4})\s*(?:-|to)\s*(\d{1,2} .+ \d{4})/)
+
+        puts "term is #{term}"
+
+        if party_name.blank?
+          party_name = details.match(/^([^\d]+)/)[1].squish
+        end
+        party_name.gsub!('Pary', 'Party')
+
+        puts "party name: #{party_name} start_date: #{start_date} end_date: #{end_date}"
+
+        party = Party.from_vote_name(party_name)
+
+        unless person
+          person = Mp.create(
+            :alt_last => last,
+            :last => last,
+            :first => first,
+            :img => '',
+            :parliament_url => 'http://www.parliament.nz' + link.attr('href'),
+            :wikipedia_url => "http://en.wikipedia.org/wiki/#{first}_#{last}",
+            :former => true,
+            :elected => Date.parse(start_date).year,
+            :member_of_id => party.id,
+            :id_name => first.downcase+'_'+last.downcase
+          )
+          puts "Created person #{person.full_name}"
+        end
+
+        member = Member.where(person_id: person.id).first
+
+        unless member
+          member = Member.new(
+            :from_what => 'General Election',
+            :from_date => Date.parse(start_date),
+            :to_date => Date.parse(end_date),
+            :party_id => party.id,
+            :person_id => person.id
+          )
+          puts 'saving member: ' + person.full_name + ' ' + party.short
+          member.save!
+        end
+      end
+    end
+  end
 end
