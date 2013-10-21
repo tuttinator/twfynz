@@ -97,9 +97,8 @@ class HansardParser
   end
 
   protected
-
     def get_date
-      yyyy_mm_dd = @doc.search('meta[@name="DC.Date"]').attr('content').to_s
+      yyyy_mm_dd = @doc.search('meta[name="DC.Date"]').attr('content').to_s
       year = yyyy_mm_dd[0..3].to_i
       month = yyyy_mm_dd[5..6].to_i
       day = yyyy_mm_dd[8..9].to_i
@@ -673,6 +672,7 @@ class HansardParser
           raise 'what is this: ' + node.to_s
         end
       elsif model_type = attributes[:type]
+        attributes.delete(:type)
         attributes[:page] = @page if @page
         contribution = model_type.new(attributes)
         contribution.spoken_in = debate
@@ -685,7 +685,7 @@ class HansardParser
     end
 
     def handle_contributions element, debate
-      element.children.each do |node|
+      element.elements.each do |node|
         case node.name
           when 'p'
             handle_paragraph(node, debate)
@@ -703,7 +703,7 @@ class HansardParser
             raise_unexpected_element(node) unless @title_is_h2
           else
             raise_unexpected_element(node)
-        end if node.elem?
+        end
 
         raise "unexpected text #{node.to_s}" if (node.text? && node.squish.size > 0)
       end
@@ -726,6 +726,7 @@ class HansardParser
         else
           raise 'unexpected absence of strong elements: ' + name
         end
+        puts "to is #{to}"
 
         if number_in_name
           if (match = /(\d+)\. (.*)/.match name)
@@ -745,20 +746,25 @@ class HansardParser
         end
       end
 
+      puts "answer number is #{oral_answer_no}"
+
       if name.ends_with? '—'
         raise "didn't expect oral question name to end with '—': " + name
       end
-      debate = OralAnswer.new :name => name.sub(" —","—"),
-          :date => get_date,
-          :publication_status => publication_status,
-          :css_class => 'oralanswer',
-          :debate_index => debate_index,
-          :question_to => to,
-          :source_url => @parliament_url,
-          :oral_answer_no => oral_answer_no,
-          :re_oral_answer_no => re_oral_answer_no,
-          :hansard_volume => @hansard_volume,
-          :start_page => @page
+
+      debate = OralAnswer.new(
+        :name => name,
+        :date => get_date,
+        :publication_status => publication_status,
+        :css_class => 'oralanswer',
+        :debate_index => debate_index,
+        :question_to => to,
+        :source_url => @parliament_url,
+        :oral_answer_no => oral_answer_no,
+        :re_oral_answer_no => re_oral_answer_no,
+        :hansard_volume => @hansard_volume,
+        :start_page => @page
+      )
 
       handle_contributions answer_root, debate
       if debate.contributions.size > 0
@@ -845,7 +851,7 @@ class HansardParser
       @on_behalf_of = false
 
       paragraph.children.each do |node|
-        if node.text? && (text = node.squish).size > 0
+        if node.text? && (text = node.to_s.squish).size > 0
           populate_from_text text, type, node, a
         elsif node.elem?
           populate_from_element type, node, a, spoken
