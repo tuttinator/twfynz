@@ -1,4 +1,5 @@
 # encoding: UTF-8
+require 'extend_string'
 require 'rubygems'
 require 'hpricot'
 require 'acts_as_wikipedia'
@@ -244,10 +245,7 @@ class Organisation < ActiveRecord::Base
 
     def create_slug_from_name
       if name
-        slug = name.to_latin.to_s.downcase.strip.
-            gsub(' ','_').gsub("'",'').gsub('"','').
-            gsub('(','').gsub(')','').gsub('.','').
-            gsub(',','').gsub('&','and')
+        slug = name.parameterize
         slug.sub!('the_','') if slug.starts_with?('the_')
         slug.chomp!('_inc')
 

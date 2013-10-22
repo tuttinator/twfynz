@@ -1,4 +1,6 @@
 # encoding: UTF-8
+require 'extend_string'
+
 class SpeakerName
 
   attr_reader :name, :remaining
@@ -69,7 +71,7 @@ class SpeakerName
 
   protected
     def to_id text
-      text.to_latin.to_s.downcase.gsub(' ', '_')
+      text.removeaccents.downcase.gsub(' ', '_')
     end
 
     def anchor_from_remaining

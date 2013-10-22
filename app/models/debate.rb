@@ -1,6 +1,7 @@
 # encoding: UTF-8
 require 'acts_as_slugged'
 require 'expire_cache'
+require 'extend_string'
 
 class Debate < ActiveRecord::Base
 
@@ -171,7 +172,7 @@ class Debate < ActiveRecord::Base
     end
 
     def top_word_frequency text
-      words = text.to_latin.to_s.split(/[^a-zA-Z~]/)
+      words = text.removeaccents.split(/[^a-zA-Z~]/)
       freqs = Hash.new(0)
       words.each do |word|
         downcase = word.downcase

@@ -1,5 +1,6 @@
 # encoding: UTF-8
 require "#{RAILS_ROOT}/config/initializers/geoname_config"
+require 'extend_string'
 
 # Configuration is in: config/initializers/geoname_config.rb
 class Geoname < ActiveRecord::Base
@@ -21,7 +22,7 @@ class Geoname < ActiveRecord::Base
   end
 
   def create_slug
-    self.slug = make_slug(name.to_latin) do |candidate_slug|
+    self.slug = name.parameterize do |candidate_slug|
       duplicate_found = Geoname.find_all_by_slug(candidate_slug).size > 0
       duplicate_found
     end
@@ -39,7 +40,7 @@ class Geoname < ActiveRecord::Base
 
   def find_mentions
     contributions = Contribution::search_name(name)
-    contributions = contributions.select {|c| Geoname.matches(c.text.to_latin, self).size > 0 }
+    contributions = contributions.select {|c| Geoname.matches(c.text.removeaccents, self).size > 0 }
     if contributions
       Contribution::group_by_about_and_debate contributions
     else

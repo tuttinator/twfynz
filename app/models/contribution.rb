@@ -1,5 +1,6 @@
 # encoding: UTF-8
 require 'hpricot'
+require 'extend_string'
 
 class Contribution < ActiveRecord::Base
 
@@ -134,7 +135,7 @@ class Contribution < ActiveRecord::Base
         elsif bank_of_nz
           c.text.gsub('Reserve Bank of New Zealand','').include? name
         else
-          c.text.to_latin.to_s.include? name
+          c.text.removeaccents.include? name
         end
       end
     end
