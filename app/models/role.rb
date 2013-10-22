@@ -1,11 +1,19 @@
 # encoding: UTF-8
 
 class Role < ActiveRecord::Base
-  class << self
-    def by_date date
-      role = where("start_date > ? AND (end_date IS NULL OR end_date < ?)", date, date).first
+  belongs_to :mp
 
-      speaker.mp unless speaker.nil?
+  class << self
+    def find_speaker_at title, date
+      title.downcase!
+
+      %w(madam mr).each{|tok| title.gsub!(tok, '') }
+
+      title.squish!
+
+      role = where("title = ? AND start_date > ? AND (end_date IS NULL OR end_date < ?)", title, date, date).first
+
+      role.mp unless role.nil?
     end
   end
 end

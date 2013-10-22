@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131021235618) do
+ActiveRecord::Schema.define(:version => 20131022002400) do
 
   create_table "acts_as_xapian_jobs", :force => true do |t|
     t.string  "model",    :null => false
@@ -383,6 +383,7 @@ ActiveRecord::Schema.define(:version => 20131021235618) do
     t.integer "mp_id",      :null => false
     t.date    "start_date"
     t.date    "end_date"
+    t.string  "title"
   end
 
   create_table "sitting_days", :force => true do |t|

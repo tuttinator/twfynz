@@ -85,44 +85,15 @@ class Mp < ActiveRecord::Base
           end
         end
 
-        if (speaker == 'madam speaker' or speaker == 'madam speaker-elect' or speaker == 'madsam speaker')
-          if Parliament.date_within?(48, date)
-            mp = Mp.find_by_first_and_last 'Margaret','Wilson'
-          end
-
-        elsif (speaker == 'mr speaker' or speaker == 'mr speaker-elect')
-          if Parliament.date_within?(49, date)
-            mp = Mp.find_by_first_and_last 'Lockwood','Smith'
-          end
-
-        elsif speaker == 'prime minister'
-          if Parliament.date_within?(48, date)
-            mp = Mp.find_by_first_and_last 'Helen','Clark'
-          elsif Parliament.date_within?(49, date)
-            mp = Mp.find_by_first_and_last 'John','Key'
-          end
-
-        elsif speaker == 'deputy prime minister'
-          if Parliament.date_within?(48, date)
-            mp = Mp.find_by_first_and_last 'Michael','Cullen'
-          elsif Parliament.date_within?(49, date)
-            mp = Mp.find_by_first_and_last 'Bill','English'
-          end
-
-        elsif speaker == 'mr deputy speaker'
-          if Parliament.date_within?(48, date)
-            mp = Mp.find_by_first_and_last 'Clem','Simich'
-          elsif Parliament.date_within?(49, date)
-            mp = Mp.find_by_first_and_last 'Lindsay','Tisch'
-          end
-
-        elsif ((speaker == 'the assistant speaker' or
-            speaker == 'the chairperson' or
-            speaker == 'the temporary speaker' or
-            speaker == 'the temporary chairperson') and name.include?('('))
+        if [ 'the assistant speaker',
+          'the chairperson',
+          'the temporary speaker',
+          'the temporary chairperson' ].include?(speaker)
           sub_name = name.split('(')[1].chop.strip
           mp = Mp.from_name sub_name, date
         end
+
+        mp = Role.find_speaker_at(speaker, date) if mp.nil?
       end
       mp
     end
