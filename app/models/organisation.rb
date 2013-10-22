@@ -3,6 +3,7 @@ require 'extend_string'
 require 'rubygems'
 require 'hpricot'
 require 'acts_as_wikipedia'
+require 'expire_cache'
 
 class Organisation < ActiveRecord::Base
 
