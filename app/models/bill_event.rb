@@ -82,11 +82,7 @@ class BillEvent < ActiveRecord::Base
       if stage == 'Imprest Supply Debate' && bill.is_appropriation_bill?
         stage = 'Third Reading' if bill.third_reading.to_s == date.to_s
       end
-      returning(BillEvent.new) do |e|
-        e.bill_id     = bill.id
-        e.name        = stage
-        e.date        = date
-      end
+      BillEvent.new(:bill_id => bill.id, :name => stage, :date => date)
     end
 
   end
