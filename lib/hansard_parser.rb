@@ -789,7 +789,7 @@ class HansardParser
           else
             raise 'unexpected element ' + node.to_s
           end
-        elsif (child.text? and child.squish.size > 0)
+        elsif (child.text? and child.inner_text.squish.size > 0)
           raise 'unexpected text ' + child.squish + node.to_s
         end
       end
