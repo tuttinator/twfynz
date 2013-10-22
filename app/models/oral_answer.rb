@@ -48,8 +48,7 @@ class OralAnswer < SubDebate
     def populate_sub_debate
       unless @question_to.blank?
         question_to = @question_to
-        question_to = question_to.chomp(')') if question_to.ends_with?('Bill)')
-        if question_to.ends_with? 'Bill'
+        if question_to.index(/Bill(\)| \(No \d+\))?$/)
           name = question_to.sub('Member in charge of the ','').sub('Member in charge of ','')
           if (bill = Bill.from_name_and_date(name, self.date))
             self.answer_from_type = Mp.name
@@ -68,7 +67,7 @@ class OralAnswer < SubDebate
           else
             raise "can't find committee chair from: " + question_to
           end
-        elsif (minister = Minister.find_by_title(question_to.gsub("Associate", '').squish))
+        elsif (minister = Minister.from_name(question_to))
           self.answer_from_type = Minister.name
           self.answer_from_id = minister.id
           self.about_type = Portfolio.name
