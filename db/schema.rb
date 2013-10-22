@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131021060122) do
+ActiveRecord::Schema.define(:version => 20131021235618) do
 
   create_table "acts_as_xapian_jobs", :force => true do |t|
     t.string  "model",    :null => false
@@ -192,12 +192,6 @@ ActiveRecord::Schema.define(:version => 20131021060122) do
   end
 
   add_index "geonames", ["first_word_in_name"], :name => "index_geonames_on_first_word_in_name"
-
-  create_table "house_speakers", :force => true do |t|
-    t.integer "mp_id",      :null => false
-    t.date    "start_date"
-    t.date    "end_date"
-  end
 
   create_table "members", :force => true do |t|
     t.integer  "person_id"
@@ -383,6 +377,12 @@ ActiveRecord::Schema.define(:version => 20131021060122) do
     t.text    "url"
     t.string  "dpmc_id",             :limit => 42
     t.boolean "dpmc_responsibility"
+  end
+
+  create_table "roles", :force => true do |t|
+    t.integer "mp_id",      :null => false
+    t.date    "start_date"
+    t.date    "end_date"
   end
 
   create_table "sitting_days", :force => true do |t|
