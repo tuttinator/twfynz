@@ -1,5 +1,4 @@
 # encoding: UTF-8
-require 'acts_as_slugged'
 require 'expire_cache'
 require 'extend_string'
 
@@ -12,8 +11,6 @@ class Debate < ActiveRecord::Base
   after_save :expire_cached_contributor_pages, :expire_cached_pages, :update_bill_events
 
   include ExpireCache
-
-  acts_as_slugged
 
   CATEGORIES = %w[visitors motions urgent_debates_declined points_of_order
       tabling_of_documents obituaries speakers_rulings personal_explanations
@@ -485,7 +482,7 @@ class Debate < ActiveRecord::Base
   end
 
   def populate_url_slug slug_text
-    self.url_slug = make_slug(slug_text) do |candidate_slug|
+    self.url_slug = slug_text.parameterize do |candidate_slug|
       non_numbered_slug = !candidate_slug[/_\d+$/]
 
       duplicate = find_by_candidate_slug candidate_slug
