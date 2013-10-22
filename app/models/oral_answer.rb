@@ -68,7 +68,7 @@ class OralAnswer < SubDebate
           else
             raise "can't find committee chair from: " + question_to
           end
-        elsif (minister = Minister.find_by_title(question_to))
+        elsif (minister = Minister.find_by_title(question_to.gsub("Associate", '').squish))
           self.answer_from_type = Minister.name
           self.answer_from_id = minister.id
           self.about_type = Portfolio.name
