@@ -11,7 +11,7 @@ class Role < ActiveRecord::Base
 
       title.squish!
 
-      role = where("title = ? AND start_date > ? AND (end_date IS NULL OR end_date < ?)", title, date, date).first
+      role = where("title = ? AND start_date < ? AND (end_date IS NULL OR end_date > ?)", title, date, date).first
 
       role.mp unless role.nil?
     end
