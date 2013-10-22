@@ -73,11 +73,14 @@ class Mp < ActiveRecord::Base
         name.strip!
         speaker = name.split('(')[0].downcase.strip.gsub('’',"'")
 
+        speaker.gsub!(/\b -/, '-') # bad formatting of "Jami -Lee Ross"
+
         unless speaker[/speaker|member|chairperson/]
           all_mps.each do |m|
             if ((m.downcase_name == speaker) or
                 (m.alt_downcase_name and m.alt_downcase_name == speaker) or
                 (m.downcase_name.gsub(' ','') == speaker) or
+                (speaker.index(m.downcase_name)) or
                 (m.alt_downcase_name and m.alt_downcase_name.sub(' ','') == speaker))
               mp = find(m.id)
               break
