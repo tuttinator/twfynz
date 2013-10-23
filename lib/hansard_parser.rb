@@ -726,7 +726,6 @@ class HansardParser
         else
           raise 'unexpected absence of strong elements: ' + name
         end
-        puts "to is #{to}"
 
         if number_in_name
           if (match = /(\d+)\. (.*)/.match name)
@@ -745,8 +744,6 @@ class HansardParser
           end
         end
       end
-
-      puts "answer number is #{oral_answer_no}"
 
       if name.ends_with? '—'
         raise "didn't expect oral question name to end with '—': " + name
