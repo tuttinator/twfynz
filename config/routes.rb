@@ -20,7 +20,14 @@ Twfynz::Application.routes.draw do
   end
   resources :organisations
   resources :parliaments
-  resources :debates
+
+  match "portfolios/:portfolio_url/:year/:month/:day/:url_slug" => "debates#show_portfolio_debate", :as => "show_portfolio_debate"
+
+  resources :debates do
+    collection do
+      get ":date", to: "debates#show_debates_on_date", as: "on_date"
+    end
+  end
   resources :parties
   resources :written_questions do
     collection do
