@@ -1,4 +1,7 @@
 # encoding: UTF-8
+
+require 'date_extension'
+
 module ApplicationHelper
   def calendar_nav current_date, heading_prefix=''
     sitting_days = SittingDay.find(:all)
@@ -8,7 +11,7 @@ module ApplicationHelper
       calendar(:year => current_date.year, :month => current_date.month, :heading_prefix => heading_prefix) do |date|
         day = date.matching_day(sitting_days)
         unless day.nil?
-          display = date.has_debates? ? to_show_debates_on_date_url(date) : date.mday
+          display = date.has_debates? ? on_date_debates_url(date) : date.mday
           css_class = "sitting-day"
           css_class = css_class + ' current-day' if date.mday == current_date.day
           [display, {:class => "sitting-day", :title => 'Sitting day'+title_for_sitting_day(day)}]
@@ -86,5 +89,64 @@ module ApplicationHelper
       else
         ''
     end
+  end
+
+  def link_to_recent_debate debate, include_date=false
+    if (debate.is_a? BillDebate)
+      text = debate.sub_debate.name
+    elsif (debate.is_a? SubDebate and !debate.is_a?(OralAnswer))
+      text = debate.parent.name + ' <br /> ' + debate.name
+    elsif debate.is_a? OralAnswer
+      text = debate.title_name
+    elsif debate.instance_of?(ParentDebate) && debate.sub_debate
+      text = debate.name + ' - ' + debate.sub_debate.name
+    else
+      text = debate.name
+    end
+    url = get_url(debate)
+    date = include_date ? %Q[<span class="inform_date">#{format_date(debate.date)}</span>] : ''
+    link_to(text, url) + ' ' + date
+  end
+
+  def format_date date
+    text = date.strftime "%d %b %Y"
+    text = text[1..(text.size-1)] if text.size > 0 and text[0..0] == '0'
+    text
+  end
+
+  def get_url debate
+    if debate.is_a? OralAnswer
+      if debate.about_type == Portfolio.name
+        show_portfolio_debate_url(debate.id_hash)
+      elsif (debate.about_type == Bill.name && debate.about_id)
+        show_bill_debate_url(debate.id_hash)
+      elsif debate.about_type == Committee.name
+        show_committee_debate_url(debate.id_hash)
+      else
+        show_debate_url(debate.id_hash)
+      end
+    elsif debate.is_a? OralAnswers and debate.sub_debates.size > 0
+      get_url debate.sub_debates.sort_by(&:debate_index)[0]
+    elsif (debate.is_a? SubDebate and debate.about_type == Bill.name)
+      show_bill_debate_url(debate.id_hash)
+    elsif (debate.is_a?(BillDebate) && debate.sub_debate.about_id)
+      show_bill_debate_url(debate.sub_debate.id_hash)
+    elsif debate.is_a?(ParentDebate)
+      show_debate_url(debate.sub_debate.id_hash)
+    else
+      show_debate_url(debate.id_hash)
+    end
+  end
+
+  def title_for_sitting_day day
+    title = ''
+    if day.has_final?
+      title = ' with final debates'
+    elsif day.has_advance?
+      title = ' with advance debates'
+    elsif day.has_oral_answers?
+      title = ' with uncorrected oral answers'
+    end
+    title
   end
 end
