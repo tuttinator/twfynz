@@ -25,7 +25,7 @@ class DebatesController < ApplicationController
   def index
     @recent_bill_debates = BillDebate.recent_grouped
     @recent_debates = Debate.recent
-    @recent_qoa = OralAnswers.recent_grouped
+    @recent_qoa = OralAnswer.recent
     @all_recent = @recent_qoa + @recent_debates + @recent_bill_debates
     @all_recent.sort! do |a,b|
       a = a.first if a.is_a?(Array)

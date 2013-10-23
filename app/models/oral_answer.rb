@@ -26,6 +26,12 @@ class OralAnswer < SubDebate
     contributions.select {|o| o.is_question? }
   end
 
+  class << self
+    def recent limit = 20
+      limit(limit).order("date DESC")
+    end
+  end
+
   protected
 
     def find_by_candidate_slug candidate_slug
