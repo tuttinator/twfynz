@@ -120,9 +120,9 @@ class HansardDownloader
     end
 
     def open_index_page page
-      url = "http://www.parliament.nz/en-nz/pb/business/qoa/?Criteria.Parliament=50&Criteria.PageNumber=#{page}"
+      url = "http://www.parliament.nz/en-nz/pb/debates/debates/?Criteria.PageNumber=#{page}"
       puts 'opening: ' + url
-      sleep(0.1)
+      sleep(0.3)
       Nokogiri::HTML(open(url))
     end
 
@@ -292,7 +292,9 @@ class HansardDownloader
 
       meta_uri = "http://www.parliament.nz" + doc.search('#BtnMetadata').attr('href')
 
-      sleep(0.1)
+      puts "Getting status from #{meta_uri}"
+
+      sleep(0.3)
 
       meta = Nokogiri::HTML(open(meta_uri))
 
@@ -300,7 +302,12 @@ class HansardDownloader
       values = meta.search('dd').map(&:inner_text)
       hash = Hash[*(terms.zip(values)).flatten]
 
-      hash['Status'].downcase
+      status = hash['Status']
+      if status
+        status.downcase
+      else
+        'final'
+      end
     end
 
 end
