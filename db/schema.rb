@@ -27,8 +27,8 @@ ActiveRecord::Schema.define(:version => 20131022002400) do
     t.date     "date"
     t.string   "source_type"
     t.integer  "source_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
   end
 
   create_table "bills", :force => true do |t|
@@ -159,8 +159,8 @@ ActiveRecord::Schema.define(:version => 20131022002400) do
     t.string   "donor_address"
     t.integer  "amount"
     t.integer  "year"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",      :null => false
+    t.datetime "updated_at",      :null => false
   end
 
   add_index "donations", ["organisation_id"], :name => "index_donations_on_organisation_id"
@@ -209,8 +209,8 @@ ActiveRecord::Schema.define(:version => 20131022002400) do
     t.string   "valedictory_statement_url"
     t.integer  "replaced_by_id"
     t.integer  "term"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                :null => false
+    t.datetime "updated_at",                :null => false
     t.integer  "parliament_id"
     t.string   "image"
   end
@@ -277,8 +277,8 @@ ActiveRecord::Schema.define(:version => 20131022002400) do
     t.string   "name"
     t.date     "alert_date"
     t.string   "url"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",       :null => false
+    t.datetime "updated_at",       :null => false
   end
 
   add_index "order_paper_alerts", ["alert_date"], :name => "index_order_paper_alerts_on_alert_date"
