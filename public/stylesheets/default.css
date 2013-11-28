@@ -1,0 +1,1202 @@
+/* line 1, sass/default.sass */
+* {
+  padding: 0em;
+  margin: 0em;
+}
+
+/* line 5, sass/default.sass */
+body {
+  font-family: Verdana, Arial, Geneva, Sans-serif;
+  background: white;
+  padding: 0px 0px 30px 0px;
+  font-size: 10.5pt;
+  color: #333333;
+}
+
+/* line 12, sass/default.sass */
+p {
+  line-height: 1.5em;
+  margin-bottom: 1em;
+}
+
+/* line 15, sass/default.sass */
+p.tab {
+  margin-left: 2em;
+}
+
+/* line 18, sass/default.sass */
+.procedural {
+  font-style: italic;
+}
+
+/* line 21, sass/default.sass */
+.clauseheading, .clausedescription, .clauseindent1, .clauseindent2, .clauseindent3, .clausepart, .clausemodel, .clauseoutline, .clauseparagraph, .clausesubclause, .clausesubparagraph {
+  margin-left: 1em;
+}
+
+/* line 24, sass/default.sass */
+.clauseheading {
+  font-weight: bold;
+}
+
+/* line 27, sass/default.sass */
+a {
+  color: #864b00;
+  text-decoration: none;
+}
+
+/* line 31, sass/default.sass */
+a.link_to_contribution {
+  font-size: 0.8em;
+  color: grey;
+  float: right;
+}
+
+/* line 36, sass/default.sass */
+a:visited {
+  color: #b96d00;
+}
+
+/* line 39, sass/default.sass */
+a:visited.link_to_contribution {
+  color: grey;
+}
+
+/* line 42, sass/default.sass */
+a.high_vote_correlation {
+  color: #111111;
+  font-weight: bold;
+}
+
+/* line 45, sass/default.sass */
+a.moderate_vote_correlation {
+  color: #333333;
+}
+
+/* line 47, sass/default.sass */
+a.low_vote_correlation {
+  color: #666666;
+}
+
+/* line 49, sass/default.sass */
+a.minimumal_vote_correlation {
+  color: #999999;
+}
+
+/* line 53, sass/default.sass */
+#ni_map a {
+  text-decoration: none;
+}
+/* line 55, sass/default.sass */
+#ni_map li {
+  list-style-type: none;
+  padding-top: 0.1em;
+  margin-left: 0;
+}
+
+/* line 60, sass/default.sass */
+#si_map a {
+  text-decoration: none;
+}
+/* line 62, sass/default.sass */
+#si_map li {
+  list-style-type: none;
+  padding-top: 0.1em;
+  margin-left: 0;
+}
+
+/* line 66, sass/default.sass */
+a:hover {
+  text-decoration: underline;
+}
+
+/* line 69, sass/default.sass */
+th {
+  padding-right: 0.5em;
+  text-align: left;
+  line-height: 1.5em;
+  padding-bottom: 0.5em;
+}
+
+/* line 75, sass/default.sass */
+td {
+  padding-right: 1em;
+}
+
+/* line 78, sass/default.sass */
+td.count, td.percentage {
+  text-align: right;
+}
+
+/* line 81, sass/default.sass */
+#content h1, h2 {
+  font-weight: bold;
+  background-repeat: no-repeat;
+  background-position: right;
+}
+
+/* line 86, sass/default.sass */
+#content h1 {
+  font-size: 1.8em;
+  padding-right: 34px;
+  margin-bottom: 0.7em;
+}
+/* line 90, sass/default.sass */
+#content h1 span {
+  font-weight: normal;
+}
+
+/* line 93, sass/default.sass */
+h2 {
+  font-size: 1.4em;
+  padding-right: 28px;
+  margin-top: 1.5em;
+  margin-bottom: 0.7em;
+}
+
+/* line 99, sass/default.sass */
+#bill_events h2 {
+  margin-bottom: 0em;
+}
+
+/* line 102, sass/default.sass */
+h3 {
+  font-size: 1.1em;
+  padding-right: 28px;
+  margin-top: 1.5em;
+  padding-bottom: 0.5em;
+}
+
+/* line 108, sass/default.sass */
+h3.debates_about {
+  padding-bottom: 0.25em;
+}
+
+/* line 112, sass/default.sass */
+#mentions h2 {
+  font-size: 1.3em;
+  margin-bottom: 0.5em;
+}
+/* line 115, sass/default.sass */
+#mentions h2 .date {
+  font-weight: normal;
+}
+/* line 117, sass/default.sass */
+#mentions h3 {
+  margin-top: 0.5em;
+  padding-bottom: 0.25em;
+}
+/* line 120, sass/default.sass */
+#mentions h3 .date {
+  font-weight: normal;
+}
+/* line 122, sass/default.sass */
+#mentions div {
+  margin-top: 0.25em;
+}
+
+/* line 126, sass/default.sass */
+.searchresult h3 {
+  font-size: 1.1em;
+  padding-right: 28px;
+  padding-top: 1em;
+  padding-bottom: 0.5em;
+}
+
+/* line 132, sass/default.sass */
+.voteabstentions, .voteayes, .votenoes {
+  margin-left: 1em;
+  font-weight: bold;
+}
+
+/* line 136, sass/default.sass */
+.abstentionslist, .ayeslist, .noeslist {
+  margin-top: 0em;
+  padding-bottom: 1em;
+}
+
+/* line 141, sass/default.sass */
+.abstentionslist li, .ayeslist li, .noeslist li, .votes li {
+  margin-left: 2em;
+  margin-bottom: 0.3em;
+  list-style: none;
+}
+
+/* line 146, sass/default.sass */
+.votequestion {
+  font-style: italic;
+}
+
+/* line 149, sass/default.sass */
+.votequestion {
+  font-style: italic;
+}
+
+/* line 152, sass/default.sass */
+.contentarea, .speech, .continuespeech, .subsquestion, .supquestion, .interjection, .subsanswer, .supanswer, .procedural {
+  padding-bottom: 0em;
+  margin: 0.5em 0em 0.5em 0em;
+}
+
+/* line 156, sass/default.sass */
+.speechtype {
+  font-style: italic;
+}
+
+/* line 159, sass/default.sass */
+.regmemcategory {
+  font-weight: bold;
+}
+
+/* line 162, sass/default.sass */
+.regmemitem {
+  margin: 0.5em 0 0.5em 2em;
+}
+
+/* line 165, sass/default.sass */
+img {
+  border: solid 1px #6f5230;
+}
+
+/* line 167, sass/default.sass */
+img.link {
+  border-width: 0px;
+}
+
+/* line 169, sass/default.sass */
+img.pie_chart {
+  border-width: 0px;
+}
+
+/* line 171, sass/default.sass */
+img.sparkline {
+  border-width: 0px;
+}
+
+/* line 173, sass/default.sass */
+img.left, img.portrait {
+  position: relative;
+  float: left;
+  margin: 0em 1.8em 1.4em 0em;
+}
+
+/* line 177, sass/default.sass */
+img.logo, img.logo_small {
+  border-width: 0px;
+  vertical-align: middle;
+  margin: 0px;
+  padding: 0px;
+}
+
+/* line 182, sass/default.sass */
+img.logo_small {
+  margin-right: 0.8em;
+}
+
+/* line 184, sass/default.sass */
+img.logo {
+  margin-right: 1em;
+  margin-bottom: 1em;
+}
+
+/* line 187, sass/default.sass */
+img.right {
+  position: relative;
+  float: right;
+  margin: 0em 0em 1.8em 1.8em;
+}
+
+/* line 191, sass/default.sass */
+img.logo_vote {
+  margin-left: 1em;
+  border-width: 0px;
+}
+
+/* line 195, sass/default.sass */
+.divider1 {
+  position: relative;
+  background: white url("../images/border2.gif") repeat-x;
+  height: 14px;
+  margin: 2em 0em 1.5em 0em;
+  clear: both;
+}
+
+/* line 202, sass/default.sass */
+.divider2 {
+  position: relative;
+  height: 1px;
+  border-bottom: solid 1px #cccccc;
+  margin: 1.2em 0em 1.4em 0em;
+}
+
+/* line 208, sass/default.sass */
+.divider3 {
+  position: relative;
+  height: 1px;
+  margin: 1em 0em 1em 0em;
+}
+
+/* line 214, sass/default.sass */
+.post .details {
+  position: relative;
+  top: -1.5em;
+  font-size: 0.8em;
+  color: #787878;
+}
+/* line 219, sass/default.sass */
+.post ul.controls {
+  clear: both;
+}
+/* line 221, sass/default.sass */
+.post ul.controls li {
+  display: inline;
+  font-size: 0.8em;
+}
+/* line 224, sass/default.sass */
+.post ul.controls li a {
+  background-repeat: no-repeat;
+  background-position: left;
+  padding: 0em 1em 0em 20px;
+}
+/* line 228, sass/default.sass */
+.post ul.controls li a.printerfriendly {
+  background-image: url("../images/icon-printerfriendly.gif");
+}
+/* line 230, sass/default.sass */
+.post ul.controls li a.comments {
+  background-image: url("../images/icon-comments.gif");
+}
+/* line 232, sass/default.sass */
+.post ul.controls li a.more {
+  background-image: url("../images/icon-more.gif");
+}
+
+/* line 235, sass/default.sass */
+.box {
+  position: relative;
+  background: #fdfcf6 url("../images/boxbg.gif") repeat-x;
+  left: 0em;
+  top: -1.5em;
+  padding: 1em;
+  border-bottom: solid 1px #e1d2bd;
+  margin-bottom: 1em;
+}
+
+/* line 243, sass/default.sass */
+.blank_box {
+  position: relative;
+  left: 0em;
+  top: -1.5em;
+  padding: 1em;
+  margin-bottom: 1em;
+}
+
+/* line 250, sass/default.sass */
+li {
+  margin-left: 1em;
+}
+
+/* line 253, sass/default.sass */
+ol {
+  margin-bottom: 1em;
+}
+
+/* line 255, sass/default.sass */
+ol li {
+  margin-left: 3em;
+  padding-top: 0.25em;
+  padding-bottom: 0.25em;
+}
+
+/* line 260, sass/default.sass */
+.inform_date {
+  color: grey;
+}
+
+/* line 263, sass/default.sass */
+ul.debate_list {
+  list-style: none;
+}
+/* line 265, sass/default.sass */
+ul.debate_list li {
+  padding-top: 0.2em;
+  padding-bottom: 0.2em;
+}
+
+/* line 269, sass/default.sass */
+span.page_views {
+  color: grey;
+}
+
+/* line 272, sass/default.sass */
+#column_content {
+  margin-top: 2em;
+}
+/* line 274, sass/default.sass */
+#column_content ul {
+  list-style: none;
+}
+/* line 276, sass/default.sass */
+#column_content ul li {
+  margin-left: 0em;
+  padding-top: 0.2em;
+  padding-bottom: 0.2em;
+}
+
+/* line 281, sass/default.sass */
+#column_content {
+  margin-top: 0em;
+}
+
+/* line 284, sass/default.sass */
+ul.linklist {
+  list-style: none;
+}
+/* line 286, sass/default.sass */
+ul.linklist li {
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+}
+/* line 290, sass/default.sass */
+ul.linklist li ul li {
+  padding-top: 0.2em;
+  padding-bottom: 0.2em;
+}
+/* line 293, sass/default.sass */
+ul.linklist li.debate_links {
+  padding-top: 0.75em;
+}
+/* line 295, sass/default.sass */
+ul.linklist li.debate_links .debate_title {
+  font-weight: bold;
+}
+
+/* line 298, sass/default.sass */
+ul#trackers_list {
+  list-style: none;
+}
+/* line 300, sass/default.sass */
+ul#trackers_list li {
+  padding-bottom: 0.3em;
+}
+
+/* line 303, sass/default.sass */
+#outer {
+  z-index: 2;
+  position: relative;
+  width: 53.5em;
+  background-color: white;
+  margin: 0 auto;
+}
+
+/* line 310, sass/default.sass */
+#header-home {
+  position: relative;
+  width: 100%;
+  height: 7em;
+  background: #373737;
+  margin-bottom: 2px;
+}
+
+/* line 317, sass/default.sass */
+#headercontent-home {
+  position: absolute;
+  bottom: 0em;
+  padding-top: 0em;
+  padding-left: 2em;
+  padding-right: 2em;
+  padding-bottom: 0.3em;
+}
+/* line 324, sass/default.sass */
+#headercontent-home h1 {
+  font-weight: normal;
+  color: white;
+  font-size: 2.5em;
+}
+/* line 328, sass/default.sass */
+#headercontent-home h1 a {
+  color: white;
+  text-decoration: none;
+}
+/* line 331, sass/default.sass */
+#headercontent-home p {
+  font-size: 1em;
+  font-weight: normal;
+  color: #bbbbbb;
+}
+/* line 335, sass/default.sass */
+#headercontent-home p a {
+  color: #bbbbbb;
+  text-decoration: none;
+}
+
+/* line 339, sass/default.sass */
+#header {
+  position: relative;
+  width: 100%;
+  height: 5em;
+  background: #373737;
+  margin-bottom: 1.2px;
+}
+
+/* line 346, sass/default.sass */
+#headercontent {
+  position: absolute;
+  bottom: 0em;
+  padding-top: 0em;
+  padding-left: 1.5em;
+  padding-right: 2em;
+  padding-bottom: 0em;
+}
+/* line 353, sass/default.sass */
+#headercontent .site-name {
+  font-weight: normal;
+  color: white;
+  font-size: 2.5em;
+  text-decoration: none;
+}
+/* line 358, sass/default.sass */
+#headercontent p {
+  font-size: 0.8em;
+  font-weight: normal;
+  margin-top: 0.2em;
+  margin-bottom: 1.9em;
+  color: #bbbbbb;
+}
+/* line 364, sass/default.sass */
+#headercontent p a {
+  color: #bbbbbb;
+  text-decoration: none;
+}
+
+/* line 368, sass/default.sass */
+#sign_in {
+  position: absolute;
+  top: 0.5em;
+  right: 1.2em;
+  padding-right: 0em;
+  color: #eeeeee;
+}
+/* line 374, sass/default.sass */
+#sign_in span {
+  padding: 0.3em;
+}
+/* line 376, sass/default.sass */
+#sign_in span a {
+  color: #eeeeee;
+}
+
+/* line 379, sass/default.sass */
+#individual_signup, #organisation_signup {
+  padding: 1em;
+  padding-left: 5em;
+}
+
+/* line 383, sass/default.sass */
+.user_type input, #login input, #signup input {
+  padding: 0.3em 0.5em 0.3em 0.5em;
+  font-size: 1.1em;
+  vertical-align: middle;
+}
+
+/* line 388, sass/default.sass */
+#search-home {
+  position: absolute;
+  top: 2.3em;
+  right: 0.8em;
+  padding-right: 0em;
+}
+/* line 393, sass/default.sass */
+#search-home input.text {
+  margin-right: 0.5em;
+  vertical-align: middle;
+  border-top: solid 1px black;
+  border-right: 0px;
+  border-bottom: solid 1px #777777;
+  border-left: 0px;
+  padding: 0.15em;
+  width: 10em;
+}
+/* line 402, sass/default.sass */
+#search-home input.submit {
+  background: #939b00 url("../images/buttonbg.gif") repeat-x;
+  border: solid 1px #5f6800;
+  font-weight: bold;
+  padding: 0.25em;
+  font-size: 0.8em;
+  color: #f2f3de;
+  vertical-align: middle;
+}
+
+/* line 411, sass/default.sass */
+#search {
+  position: absolute;
+  top: 2.3em;
+  right: 0.8em;
+  padding-right: 0em;
+}
+/* line 416, sass/default.sass */
+#search input.text {
+  margin-right: 0.5em;
+  vertical-align: middle;
+  border-top: solid 1px black;
+  border-right: 0px;
+  border-bottom: solid 1px #777777;
+  border-left: 0px;
+  padding: 0.15em;
+  width: 10em;
+}
+/* line 425, sass/default.sass */
+#search input.submit {
+  background: #939b00 url("../images/buttonbg.gif") repeat-x;
+  border: solid 1px #5f6800;
+  font-weight: bold;
+  padding: 0.25em;
+  font-size: 0.8em;
+  color: #f2f3de;
+  vertical-align: middle;
+}
+
+/* line 434, sass/default.sass */
+#headerpic {
+  position: relative;
+  height: 109px;
+  background: #2b2b2b url("../images/parl.jpg") no-repeat top left;
+  margin-bottom: 2px;
+}
+
+/* line 440, sass/default.sass */
+#menu {
+  position: relative;
+  background: #7f8400 url("../images/menubg.gif") repeat-x top left;
+  height: 3.5em;
+  padding: 0em 1em 0em 1em;
+  margin-bottom: 2px;
+}
+/* line 446, sass/default.sass */
+#menu ul {
+  position: absolute;
+  top: 1.1em;
+}
+/* line 449, sass/default.sass */
+#menu ul li {
+  position: relative;
+  display: inline;
+  margin-left: 0em;
+}
+/* line 453, sass/default.sass */
+#menu ul li a {
+  padding: 0.5em 0.6em 0.9em 0.6em;
+  color: white;
+  text-decoration: none;
+}
+/* line 457, sass/default.sass */
+#menu ul li a.active {
+  background: #7f8400 url("../images/menuactive.gif") repeat-x top left;
+  text-decoration: none;
+}
+/* line 460, sass/default.sass */
+#menu ul li a:hover {
+  text-decoration: underline;
+}
+
+/* line 463, sass/default.sass */
+#menubottom {
+  background: white url("../images/border1.gif") repeat-x;
+  height: 1em;
+  margin-bottom: 1.5em;
+}
+
+/* line 468, sass/default.sass */
+.shift-right {
+  padding-left: 6em;
+}
+
+/* line 471, sass/default.sass */
+.hansard-source {
+  padding-left: 17em;
+}
+
+/* line 474, sass/default.sass */
+#content {
+  padding: 0em 0em 0em 1em;
+}
+
+/* line 479, sass/default.sass */
+#primarycontainer {
+  float: left;
+  margin-right: -18em;
+  width: 100%;
+}
+/* line 484, sass/default.sass */
+#primarycontainer .debates ul {
+  margin-top: 0em;
+}
+/* line 487, sass/default.sass */
+#primarycontainer #bill_details ul {
+  margin-top: 0em;
+}
+
+/* line 490, sass/default.sass */
+#primarycontent, div.debates, div.debatealone, div.debate, div.billdebate, div.billdebate2, div.billdebate_mid, div.oralanswers, div.qoa {
+  margin: 0em 19.5em 0em 0em;
+}
+
+/* line 493, sass/default.sass */
+#trackers {
+  margin-top: 1em;
+}
+
+/* line 496, sass/default.sass */
+#bill_description {
+  margin-right: 19.5em;
+  padding-bottom: 0.7em;
+}
+
+/* line 500, sass/default.sass */
+#bill_description_gap {
+  min-height: 9em;
+  height: auto !important;
+  height: 9em;
+}
+
+/* line 505, sass/default.sass */
+#bill_description_gap {
+  margin: 1.5em 19.5em 0em 0em;
+}
+
+/* line 508, sass/default.sass */
+#news_feed, #left_column_content {
+  float: left;
+  margin-right: -26em;
+  width: 100%;
+}
+/* line 512, sass/default.sass */
+#news_feed div.hfeed, #left_column_content div.hfeed {
+  margin: 1.5em 27.5em 0em 0em;
+}
+/* line 514, sass/default.sass */
+#news_feed div.popular_last_day, #left_column_content div.popular_last_day {
+  margin: 1.5em 27.5em 0em 0em;
+}
+/* line 516, sass/default.sass */
+#news_feed div.latest_debates, #left_column_content div.latest_debates {
+  margin: 1.5em 27.5em 0em 0em;
+}
+/* line 518, sass/default.sass */
+#news_feed div.popular_last_week, #left_column_content div.popular_last_week {
+  margin: 1.5em 27.5em 0em 0em;
+}
+/* line 520, sass/default.sass */
+#news_feed div.latest_orals, #left_column_content div.latest_orals {
+  margin: 1.5em 27.5em 0em 0em;
+}
+
+/* line 523, sass/default.sass */
+#blog_feed, #right_column_content {
+  margin-top: 0.5em;
+  float: right;
+  width: 25em;
+}
+
+/* line 528, sass/default.sass */
+#project_summary {
+  margin-top: 0.5em;
+}
+
+/* line 531, sass/default.sass */
+#calendarcontent {
+  margin-top: 0.5em;
+  float: right;
+  width: 17em;
+}
+
+/* line 536, sass/default.sass */
+#secondarycontent {
+  padding-top: 1.5em;
+  margin-top: 1.5em;
+  float: right;
+  width: 17em;
+}
+
+/* line 542, sass/default.sass */
+#questions_section {
+  padding-top: 1.5em;
+  margin-top: 8em;
+  float: right;
+  width: 17em;
+}
+
+/* line 548, sass/default.sass */
+#tracking_details {
+  float: right;
+  width: 17em;
+}
+
+/* line 552, sass/default.sass */
+#tracking, #not_tracking {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+  font-size: 1.2em;
+}
+
+/* line 557, sass/default.sass */
+#footer {
+  position: relative;
+  height: 2em;
+  clear: both;
+  padding-top: 5em;
+  background: white url("../images/border2.gif") repeat-x 0em 2.5em;
+  font-size: 0.9em;
+}
+/* line 564, sass/default.sass */
+#footer .spacer {
+  padding-right: 0.25em;
+  padding-left: 0.25em;
+}
+/* line 567, sass/default.sass */
+#footer .left {
+  position: absolute;
+  left: 2em;
+  bottom: 1.2em;
+}
+/* line 571, sass/default.sass */
+#footer .right {
+  position: absolute;
+  right: 2em;
+  bottom: 1.2em;
+}
+
+/* line 576, sass/default.sass */
+span.right {
+  position: absolute;
+  right: 0em;
+}
+
+/* line 580, sass/default.sass */
+table {
+  margin-bottom: 1em;
+}
+
+/* line 583, sass/default.sass */
+table.bill_votes tbody tr td {
+  width: 50%;
+}
+
+/* line 586, sass/default.sass */
+table.votematrix {
+  padding-top: 0.8em;
+  padding-bottom: 1em;
+}
+
+/* line 590, sass/default.sass */
+table.votematrix thead tr th {
+  font-weight: normal;
+  padding-right: 0em;
+}
+
+/* line 594, sass/default.sass */
+table.votematrix tbody tr td {
+  padding-right: 0em;
+}
+
+/* line 597, sass/default.sass */
+table.votematrix tbody tr td.logo {
+  padding: 0.25em 0.6em 0.25em 0.6em;
+}
+
+/* line 600, sass/default.sass */
+p.faq {
+  font-weight: bold;
+  margin-bottom: 0.5em;
+  font-size: 1.2em;
+}
+
+/* line 605, sass/default.sass */
+#submissions table {
+  margin-bottom: 0em;
+}
+
+/* line 608, sass/default.sass */
+.bill-table {
+  margin: 0em 0pt;
+}
+
+/* line 611, sass/default.sass */
+#bills table, #portfolios table, .portfolio-table, #items_tracked, #organisations table, .organisation-table {
+  margin: 1em 0pt;
+}
+
+/* line 614, sass/default.sass */
+#organisations table td.yui-dt-number {
+  text-align: right;
+  width: 6em;
+}
+
+/* line 618, sass/default.sass */
+#organisations table th, #organisations table td, #portfolios table th, #portfolios table td, .bill-table th, .bill-table td, .organisation-table th, .organisation-table td, .portfolio-table th, .portfolio-table td, #items_tracked th, #items_tracked td, #submissions th, #submissions td, #donations th, #donations td {
+  border-bottom: 1px solid #eeeeee;
+  padding: 0.3em 1em 0.3em 0em;
+  vertical-align: top;
+  text-align: left;
+}
+
+/* line 624, sass/default.sass */
+#donations td.donation, .yui-dt-col-donations {
+  text-align: right;
+}
+
+/* line 627, sass/default.sass */
+.yui-dt-col-mentions, .yui-dt-col-submissions {
+  text-align: center;
+}
+
+/* line 630, sass/default.sass */
+#organisations table td.mentions_count, #organisations table td.submission_count {
+  text-align: right;
+  width: 5em;
+}
+
+/* line 634, sass/default.sass */
+td.count, td.percentage, td.yui-dt-number, #portfolios table td.yui-dt-number {
+  text-align: right;
+}
+
+/* line 637, sass/default.sass */
+#bills .yui-dt-col-date {
+  width: 6em;
+  text-align: center;
+}
+
+/* line 641, sass/default.sass */
+#bills .yui-dt-col-party {
+  width: 4em;
+}
+
+/* line 644, sass/default.sass */
+#portfolios table th#yui-dtcol2 {
+  text-align: center;
+}
+
+/* line 647, sass/default.sass */
+#items_tracked {
+  margin-top: 1em;
+}
+
+/* line 650, sass/default.sass */
+table.signup td, table.login td, table.password td {
+  padding: 0.4em 0.5em 0.4em 0em;
+  vertical-align: top;
+}
+
+/* line 654, sass/default.sass */
+table.signup p, table.login p {
+  line-height: 0.9em;
+}
+
+/* line 657, sass/default.sass */
+table.login {
+  padding-bottom: 1em;
+}
+
+/* line 660, sass/default.sass */
+.fieldWithErrors {
+  border: 1px solid red;
+}
+
+/* line 663, sass/default.sass */
+.errorExplanation {
+  margin-bottom: 1em;
+}
+
+/* line 666, sass/default.sass */
+th.date, td.date, td.yui-dt-date {
+  width: 7em;
+  text-align: center;
+}
+
+/* line 671, sass/default.sass */
+.bill-table th.ayes, .bill-table th.noes, .bill-table th.abstentions {
+  text-align: center;
+}
+
+/* line 675, sass/default.sass */
+.bill-table td.ayes, .bill-table td.noes, .bill-table td.abstentions {
+  text-align: center;
+  width: 5em;
+}
+
+/* line 679, sass/default.sass */
+th.debate-column {
+  width: 9em;
+}
+
+/* line 683, sass/default.sass */
+#calendarcontent .calendar {
+  padding-left: 2em;
+}
+
+/* line 689, sass/default.sass */
+.calendar tbody tr td {
+  text-align: right;
+  color: grey;
+}
+/* line 692, sass/default.sass */
+.calendar tbody tr td.sitting-day {
+  font-weight: bold;
+  color: #333333;
+}
+
+/* line 696, sass/default.sass */
+.hentry {
+  padding: 0.4em 0em 0.4em 0em;
+}
+
+/* line 699, sass/default.sass */
+.entry-summary {
+  padding: 0.3em 0em 0.3em 0em;
+}
+
+/* line 702, sass/default.sass */
+.author {
+  color: #6f6f6f;
+  font-size: 0.8em;
+}
+
+/* line 706, sass/default.sass */
+.published, .acknowledgement {
+  font-size: 0.8em;
+}
+
+/* line 709, sass/default.sass */
+.acknowledgement {
+  margin-top: 0.3em;
+}
+
+/* line 712, sass/default.sass */
+tr.party {
+  height: 30px;
+}
+
+/* line 715, sass/default.sass */
+#party_of_mp_in_charge {
+  width: 2em;
+}
+
+/* line 718, sass/default.sass */
+#website_link {
+  float: right;
+  margin-left: 1.5em;
+  border: 0px;
+  width: 201px;
+}
+
+/* line 724, sass/default.sass */
+#submissions {
+  margin-top: 1.5em;
+}
+
+/* line 727, sass/default.sass */
+.dayName th {
+  font-weight: normal;
+}
+
+/* line 730, sass/default.sass */
+.former_name {
+  font-style: italic;
+}
+
+/* line 733, sass/default.sass */
+#project_summary {
+  font-size: 1.2em;
+}
+
+/* line 736, sass/default.sass */
+.pagination_links, .source {
+  float: right;
+}
+
+/* line 739, sass/default.sass */
+td.bill {
+  padding-top: 0.3em;
+}
+
+/* line 741, sass/default.sass */
+td.split_bill {
+  padding-left: 2em;
+}
+
+/* line 744, sass/default.sass */
+.assented_bill, .negatived_bill {
+  font-size: 0.8em;
+}
+
+/* line 747, sass/default.sass */
+.assented_bill {
+  font-weight: bold;
+}
+
+/* line 751, sass/default.sass */
+#written_questions li {
+  list-style: none;
+  margin-left: 0;
+}
+/* line 755, sass/default.sass */
+#written_questions li h1 {
+  margin: 0;
+  padding: 0.2em 8px 0;
+  font-size: 1.2em;
+  background-color: #f1f2da;
+  max-width: 584px;
+}
+/* line 761, sass/default.sass */
+#written_questions li div.bubble {
+  margin-bottom: 12px;
+}
+
+/* line 764, sass/default.sass */
+div.bubble {
+  width: auto;
+  max-width: 600px;
+  margin-bottom: 24px;
+  font-size: 0.8em;
+}
+/* line 770, sass/default.sass */
+div.bubble blockquote {
+  margin: 0;
+  padding: 0;
+  border: 1px solid #c9c2c1;
+  background-color: white;
+  font-size: 1.25em;
+}
+/* line 776, sass/default.sass */
+div.bubble blockquote p {
+  margin: 10px;
+  padding: 0;
+}
+/* line 780, sass/default.sass */
+div.bubble blockquote.answer {
+  font-style: italic;
+}
+/* line 782, sass/default.sass */
+div.bubble blockquote.question {
+  font-weight: bold;
+}
+/* line 785, sass/default.sass */
+div.bubble cite {
+  position: relative;
+  margin: 0px;
+  padding: 7px 0px 0px 15px;
+  top: 6px;
+  background: transparent url(tip.gif) no-repeat 20px 0;
+  font-style: normal;
+}
+
+/* line 793, sass/default.sass */
+#election_message {
+  font-size: 1.8em;
+}
+/* line 795, sass/default.sass */
+#election_message p {
+  margin-left: 0.5em;
+}

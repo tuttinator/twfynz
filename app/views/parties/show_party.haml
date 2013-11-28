@@ -1,0 +1,34 @@
+- @javascript = "prototype"
+- @title = %Q[#{@party.name}: Party in Aotearoa New Zealand's Parliament]
+- if @party.mp_count == 0
+  - description = 'registered political party that have no MPs in the 49th Parliament.'
+- else
+  - description = "registered political party that have #{pluralize(@party.mp_count,'MP')} in the 49th New Zealand Parliament."
+- @description = %Q[#{@party.name} are a #{description.sub('Reg','reg')}]
+#normalcontent
+  %h1= party_logo(@party) + @name.sub(', ',',<br />')
+  .divider3
+  - if @party.in_parliament(49)
+    = @party.in_parliament(49).parliament_description
+  - else
+    %p= @description
+  = render :partial => 'party_voting_stats', :locals => {:parliament_no => 49}
+  = render :partial => 'party_voting_stats', :locals => {:parliament_no => 48}
+  - if false
+    .divider3
+    - if @bills_in_charge_of.size > 0
+      %div{ :class=>"post", :id=>"bills_in_charge_of" }
+        %h3 Bills in charge of
+        .contentarea
+          %ul.linklist
+            = render :partial => 'bill_link', :collection => @bills_in_charge_of
+  .divider3
+  %div{ :class=>"post", :id=>"external_links" }
+    %h3 External links
+    .contentarea
+      %ul.linklist
+        %li#wikipedia= link_to('Wikipedia entry on ' + @party.short, @party.wikipedia_url)
+        - if @party.url
+          %li#party_website
+            = link_to('Website for ' + @party.short, @party.url, :rel=>"nofollow")
+

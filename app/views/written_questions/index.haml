@@ -1,0 +1,13 @@
+- @title = "House of Representatives written questions: Aotearoa New Zealand Parliament"
+
+#primary_container
+  %h1 Written Questions
+  %ul
+    %li=link_to("#{@statuses['reply'] || 'no'} answered questions", written_questions_path(:status => "replies"))
+    %li=link_to("#{@statuses['question'] || 'no'} unanswered questions", written_questions_path(:status => "questions"))
+    - unless @oldest_unanswered.nil?
+      %li=link_to("The oldest unanswered question (#{distance_of_time_in_words_to_now @oldest_unanswered.date_asked} old)", @oldest_unanswered) 
+    %li=link_to "Questions By Member", by_asker_written_questions_path
+    %li=link_to "Questions By Portfolio", by_portfolio_written_questions_path
+  %br
+  =render :partial => "questions", :locals => {:questions => @questions}

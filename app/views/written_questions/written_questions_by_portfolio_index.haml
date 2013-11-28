@@ -1,0 +1,6 @@
+- @title = "Written Questions: Aotearoa New Zealand's Parliament "
+%h1=link_to "Written Questions", written_questions_path
+%h2 Questions By Portfolio
+%ul
+  - for portfolio in @portfolios
+    %li=link_to "#{portfolio[0].portfolio_name} got asked #{portfolio[1]} questions", written_questions_by_portfolio_path(:name => portfolio[0].url)

@@ -1,0 +1,25 @@
+#normalcontent
+  %h1 Political Parties
+  .contentarea
+    %p#compare_parties
+      = link_to 'Compare party voting', parliament_url(:id => @parliament.id)
+      in the
+      = @parliament.ordinal
+      Parliament.
+    %table
+      %thead
+        %th
+        %th Party
+        %th{:style=>'text-align:center;'} MPs in 50th Parliament
+      %tbody
+        =render(:partial => 'party_summary', :collection => @parties, :locals => {:total_mps => @total_mps})
+        %tr
+          %td
+          %td &nbsp;
+          %td
+        %tr
+          %td
+          %td TOTAL MPS
+          %td.count= @total_mps
+
+

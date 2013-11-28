@@ -1,0 +1,6 @@
+- unless party_summary.nil?
+  - party = party_summary
+  %tr.party
+    %td= party_logo_small party
+    %td= link_to(party.name, party)
+    %td.count= party.mp_count(:latest)

@@ -1,0 +1,5 @@
+- @title = "Question #{@question.question_number}/#{@question.question_year}"
+.written_question
+  =render :partial => "question", :locals => {:question => @question}
+  - for q in @questions
+    = link_to_unless q.id == @question.id, "Q#{q.question_number}", q

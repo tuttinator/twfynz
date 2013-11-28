@@ -1,0 +1,73 @@
+/* line 1, sass/print.sass */
+#sign_in, #search, #menu, #menubottom, #footer, #secondarycontent, #calendarcontent, .link_to_contribution {
+  display: none;
+}
+
+/* line 4, sass/print.sass */
+#primarycontainer, #normalcontent {
+  float: none;
+  width: 100%;
+}
+
+/* line 8, sass/print.sass */
+#headercontent {
+  text-align: right;
+}
+
+/* line 11, sass/print.sass */
+body {
+  font-family: Georgia, "Times New Roman", serif;
+  padding: 0px 0px 30px 0px;
+  font-size: 12pt;
+  line-height: 20pt;
+  color: black;
+}
+
+/* line 19, sass/print.sass */
+#bills table {
+  font-size: 9pt;
+}
+
+/* line 21, sass/print.sass */
+a {
+  text-decoration: none;
+  color: black;
+}
+
+/* line 25, sass/print.sass */
+a:link:after, a:visited:after, a:hover:after, a:active:after {
+  content: " (" attr(href) ") ";
+  color: grey;
+  font-style: italic;
+  font-weight: normal;
+}
+
+/* line 31, sass/print.sass */
+a[href^="/"]:after {
+  content: " (http://theyworkforyou.co.nz" attr(href) ") ";
+}
+
+/* line 34, sass/print.sass */
+a[href^="#"]:after {
+  content: "";
+}
+
+/* line 37, sass/print.sass */
+a[href^="?"]:after {
+  content: "";
+}
+
+/* line 40, sass/print.sass */
+a.vote_caster:after {
+  content: "";
+}
+
+/* line 43, sass/print.sass */
+thead {
+  display: table-header-group;
+}
+
+/* line 46, sass/print.sass */
+tr {
+  page-break-inside: avoid;
+}
