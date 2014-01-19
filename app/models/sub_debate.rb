@@ -120,7 +120,7 @@ class SubDebate < Debate
 
     def populate_url_category category_text
       unless category_text.blank?
-        category = make_slug(category_text) { |candidate_category| nil }
+        category = category_text.parameterize
         if Debate::CATEGORIES.include?(category)
           self.url_category = category
         end
