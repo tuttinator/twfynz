@@ -1,12 +1,9 @@
 # encoding: UTF-8
-require "#{RAILS_ROOT}/config/initializers/geoname_config"
+require "#{Rails.root}/config/initializers/geoname_config"
 require 'extend_string'
 
 # Configuration is in: config/initializers/geoname_config.rb
 class Geoname < ActiveRecord::Base
-
-  acts_as_slugged
-
   before_create :clean_data, :create_slug
   before_save :populate_count_of_mentions
 
