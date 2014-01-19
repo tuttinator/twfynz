@@ -3,10 +3,6 @@ class Vote < ActiveRecord::Base
 
   has_one :contribution
 
-  has_many :ayes, :class_name => 'VoteCast', :conditions => 'cast = "aye"', :order => 'id'
-  has_many :noes, :class_name => 'VoteCast', :conditions => 'cast = "noe"', :order => 'id'
-  has_many :abstentions, :class_name => 'VoteCast', :conditions => 'cast = "abstention"', :order => 'id'
-
   has_many :vote_casts, :dependent => :destroy
 
   validates_presence_of :vote_question
@@ -179,6 +175,18 @@ class Vote < ActiveRecord::Base
       votes.delete_if {|v| (v.debate.publication_status != 'F') && !debate_ids[v.debate.id] }
       votes
     end
+  end
+
+  def abstentions
+    self.vote_casts.select{|v| v.cast == 'abstention' }
+  end
+
+  def noes
+    self.vote_casts.select{|v| v.cast == 'noe' }
+  end
+
+  def ayes
+    self.vote_casts.select{|v| v.cast == 'aye' }
   end
 
   def is_third_reading_vote?
