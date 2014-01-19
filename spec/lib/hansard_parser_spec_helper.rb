@@ -18,6 +18,7 @@ module ParserHelperMethods
   def def_party name, id
     party = double(Party)
     party.stub(:id).and_return id
+    party.stub(:id_name).and_return(nil)
     party.stub(:vote_name).and_return name
     Party.stub(:from_vote_name).with(name).and_return(party)
     Party.stub(:find).with(id, {:select=>nil, :conditions=>nil, :readonly=>nil, :include=>nil}).and_return(party)

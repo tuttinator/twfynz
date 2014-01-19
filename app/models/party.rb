@@ -17,7 +17,7 @@ class Party < ActiveRecord::Base
     def act; @act ||= from_vote_name("ACT New Zealand"); end
     def green; @green ||= from_vote_name("Green Party"); end
     def labour; @labour ||= from_vote_name("New Zealand Labour"); end
-    def maori; @maori ||= from_vote_name("Maori Party"); end
+    def maori; @maori ||= from_vote_name("Māori Party"); end
     def national; @national ||= from_vote_name("New Zealand National"); end
     def nz_first; @nz_first ||= from_vote_name("New Zealand First"); end
     def progressive; @progressive ||= from_vote_name("Progressive"); end
