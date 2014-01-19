@@ -489,7 +489,7 @@ class HansardParser
 
       div.children.each do |node|
         if node.text?
-          handle_personal_vote_text node.squish, placeholder, vote
+          handle_personal_vote_text node.text.squish, placeholder, vote
         elsif node.elem?
           handle_personal_vote_element node, vote, placeholder, debate
         end
