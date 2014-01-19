@@ -1,7 +1,6 @@
 # encoding: UTF-8
 require 'digest/sha1'
 require 'rubygems'
-require 'has_many_polymorphs'
 
 class User < ActiveRecord::Base
 
@@ -26,7 +25,7 @@ class User < ActiveRecord::Base
 
   attr_accessor :password, :password_confirmation
 
-  has_many_polymorphs :items, :from => [:bills, :portfolios, :committees], :through => :trackings
+  #has_many_polymorphs :items, :from => [:bills, :portfolios, :committees], :through => :trackings
 
   def self.authenticate(login, pass)
     user = find(:first, :conditions=>["login = ?", login])
