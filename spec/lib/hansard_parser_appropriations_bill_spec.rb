@@ -1,3 +1,4 @@
+# encoding: UTF-8
 require File.dirname(__FILE__) + '/hansard_parser_spec_helper'
 
 describe HansardParser, "when passed Appropriation (2007/08 Estimates) Bill—Third Reading, Imprest Supply Debate" do
@@ -16,7 +17,8 @@ describe HansardParser, "when passed Appropriation (2007/08 Estimates) Bill—Th
     @file_name = 'nil'
 
     def_parties
-    HansardParser.stub!(:load_file).and_return html
+    Parliament.stub(:latest).and_return double(Parliament)
+    HansardParser.stub(:load_file).and_return html
     @debate = parse_debate
     @sub_debate = @debate.sub_debate
     @vote = @sub_debate.contributions.last.vote
