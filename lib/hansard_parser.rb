@@ -66,7 +66,7 @@ class HansardParser
       create_oral_answers debate_index
 
     elsif type == 'SubsQuestion'
-      create_oral_answer document_title, @doc.search('.copy .section:nth(1) .SubsQuestion').first, true, debate_index
+      create_oral_answer document_title, @doc.at_css('.copy .section:nth(1) .SubsQuestion').first, true, debate_index
 
     elsif type == 'BillDebate'
       create_bill_debate debate_index
@@ -84,7 +84,7 @@ class HansardParser
       create_debate debate_index, 'Debate'
 
     elsif type == 'DebateDebate'
-      name = @doc.search('.DebateDebate > h2').inner_text.squish
+      name = @doc.at_css('.DebateDebate > h2').inner_text.squish
       if name.ends_with?('Bill')
         create_bill_debate_from_debate_debate debate_index
       else
@@ -98,7 +98,7 @@ class HansardParser
 
   protected
     def get_date
-      yyyy_mm_dd = @doc.search('meta[name="DC.Date"]').attr('content').to_s
+      yyyy_mm_dd = @doc.at_css('meta[name="DC.Date"]').attr('content').to_s
       year = yyyy_mm_dd[0..3].to_i
       month = yyyy_mm_dd[5..6].to_i
       day = yyyy_mm_dd[8..9].to_i
@@ -109,12 +109,12 @@ class HansardParser
     end
 
     def publication_status
-      status = @doc.search('.copy .section:nth(1) p:nth(1)').inner_text
+      status = @doc.at_css('.copy .section:nth(1) p:nth(1)').inner_text
       if status.include? 'Advance'
         'A'
       elsif status.include? 'Uncorrected'
         'U'
-      elsif (match = /Volume:\d+;Page:\d+/.match status)
+      elsif /Volume:\d+;Page:\d+/.match(status)
         'F'
       else
         raise 'publication status not found'
@@ -320,8 +320,8 @@ class HansardParser
 
         elsif text[/Independents?:/]
           names = text.split(':')[1].chomp('.').split(',')
-          names.each do |name|
-            handle_independent_vote_cast name.strip, cast, vote
+          names.each do |n|
+            handle_independent_vote_cast n.strip, cast, vote
           end
         else
           raise 'unexpected vote cast text: ' + text
@@ -372,7 +372,7 @@ class HansardParser
     end
 
     def handle_party_vote_casts type, cast, node, vote
-      line = node.next_sibling.inner_text.squish
+      line = node.next_element.inner_text.squish
       if line.include?('Independent')
         parts = line.split('Independent')
         line = parts[0] + 'Independent' + parts[1].gsub(';',',')
@@ -518,31 +518,21 @@ class HansardParser
     def handle_party_vote_table table, vote, placeholder
       vote_text = ''
       vote_question = ''
-      caption = table.at('caption')
-      caption.children.each do |child|
-        if child.text?
-          text = child.squish
-          if (match = /(.*)(That the .*)/.match text) || (match = /(.*)(That Vote .*)/.match text)
-            vote_text += match[1].strip
-            check_vote_text vote, vote_text
-            vote_question = match[2]
-            check_vote_question vote_question
-          elsif !text.blank?
-            vote_text += text
-            check_vote_text vote, vote_text
-          end
-        elsif child.elem?
-          if child.name == 'em'
-            if vote_question.blank?
-              vote_question = child.inner_text.squish
-            else
-              raise 'unexpected double vote_question text: ' + vote_question + ' AND ' + child.inner_text.squish
-            end
-          else
-            raise 'unexpected element in vote caption ' + child.to_s
-          end
-        end
+      caption = table.at('caption p')
+
+      question_tag = caption.at('em')
+
+      if question_tag
+        vote_text = caption.xpath('text()').text.squish
+        vote_question = question_tag.inner_text
+      else
+        text = caption.inner_text
+        match, vote_text, vote_question = /(.*)(That (the|Vote) .*)/.match text
       end
+
+      check_vote_text vote, vote_text
+      check_vote_question vote_question
+
       placeholder.text = vote_text.strip
       vote.vote_question = vote_question
       vote_result = table.at('.VoteResult')
@@ -612,8 +602,8 @@ class HansardParser
       div.children.each do |node|
         if node.elem?
           handle_party_vote_element node, placeholder, vote, debate
-        elsif node.text? && !node.squish.blank?
-          raise 'unexpected text in party vote: ' + node.squish
+        elsif node.text? && !node.inner_text.squish.blank?
+          raise 'unexpected text in party vote: ' + node.inner_text.squish
         end
       end
 
@@ -627,7 +617,7 @@ class HansardParser
     end
 
     def handle_div div, debate
-      case div['class']
+      case div.attr('class')
         when 'SubDebate'
           handle_contributions div, debate
         when 'Speech'
@@ -642,10 +632,13 @@ class HansardParser
           elsif (h3 = div.at('h3'))
             add_section_header h3, debate
           else
+            debugger
             raise 'unexpected div ' + div.to_s
           end
         else
-          raise 'unexpected div ' + div.to_s
+          puts "Ignoring unexpected div #{div}"
+
+          #raise 'unexpected div ' + div.to_s
       end
     end
 
@@ -892,7 +885,7 @@ class HansardParser
     end
 
     def create_debate_alone debate_index
-      name = @doc.search('.DebateAlone h2').inner_text
+      name = @doc.at_css('.DebateAlone h2').inner_text
       debate = DebateAlone.new :name => name,
           :date => get_date,
           :publication_status => publication_status,
@@ -900,7 +893,7 @@ class HansardParser
           :debate_index => debate_index,
           :source_url => @parliament_url,
           :hansard_volume => @hansard_volume
-      handle_contributions @doc.search('.DebateAlone'), debate
+      handle_contributions @doc.at_css('.DebateAlone'), debate
       debate
     end
 
@@ -910,21 +903,22 @@ class HansardParser
         headings = @doc.search(".#{type} h1")
         @title_is_h2 = false
       end
-      headings
+      headings.reject{|h|
+        h.inner_text.squish.empty?
+      }
     end
 
     def find_name_and_sub_names type, sub_names=[]
       headings = debate_headings(type)
-      name = headings.first.at('text()').squish
+      name = headings.first.inner_text.squish
       if is_date? name
-        name = headings[1].at('text()').squish
-        headings = headings[1, headings.length-1]
+        headings = headings.drop(1)
       end
 
       if headings.size > 1
-        sub_names << headings[1].at('text()').squish
+        sub_names << headings.second.inner_text.squish
 
-        sibling = headings[1].next_sibling
+        sibling = headings.second.next_sibling
         while sibling
           if sibling.elem? && sibling.name == 'h2'
             sub_names << sibling.inner_text.squish
@@ -935,7 +929,7 @@ class HansardParser
 
       raise "can't find sub heading" if sub_names.empty?
 
-      return name, sub_names
+      return name, sub_names.uniq
     end
 
     def make_parent_debate name, debate_index, sub_names
@@ -956,12 +950,11 @@ class HansardParser
     def make_when_sub_debates_empty debate_index, type
       name, sub_names = find_name_and_sub_names(type)
       debate = make_parent_debate(name, debate_index, sub_names)
-      handle_contributions @doc.search(".#{type}"), debate.sub_debates[0]
+      handle_contributions @doc.at_css(".#{type}"), debate.sub_debates[0]
       debate
     end
 
     def remove_empty_sub_debate empty_sub_debates, debate
-      headings = empty_sub_debates.collect(&:name).join(', ')
       sub_debates = debate.sub_debates
       empty_sub_debates.each do |empty_sub_debate|
         sub_debates.delete(empty_sub_debate)
@@ -979,7 +972,6 @@ class HansardParser
     end
 
     def make_when_sub_debates_not_empty debate_index, type, sub_debates
-      headings = debate_headings(type)
       sub_names = []
       sub_debates.each { |sub_debate| add_sub_heading(sub_debate, sub_names) }
 
@@ -1001,7 +993,7 @@ class HansardParser
     end
 
     def handle_mixed_subdebates type, debate
-      nodes = @doc.search(".#{type}").elements
+      nodes = @doc.at_css(".#{type}").elements
       index = -1
       nodes.each do |node|
         if node.name == 'div' && node.attr('class') == 'SubDebate'
@@ -1016,7 +1008,7 @@ class HansardParser
           begin
             text = node.inner_text.squish
           rescue Exception => e
-            puts node.insp
+            puts node.to_s
             raise e
           end
           if node.name[/^h\d$/] && text == debate.sub_debates[index+1].name
@@ -1038,17 +1030,20 @@ class HansardParser
     end
 
     def create_bill_debate debate_index
-      text = @doc.search('.BillDebate h2:nth(1)').inner_text
-      if text
-        name = text.squish
-        name = @doc.at_css('.BillDebate h2:nth(2)').inner_text.squish if is_date?(name)
-        sub_name = @doc.at_css('.SubDebate h3:nth(1)').inner_text.squish
-      else
-        name = @doc.at_css('.BillDebate h1:nth(1)').inner_text.squish
-        name = @doc.at_css('.BillDebate h1:nth(2)').inner_text.squish if is_date?(name)
-        sub_name = @doc.at_css('.SubDebate h2:nth(1)').inner_text.squish
-        @title_is_h2 = false
+      debate = @doc.at_css('.BillDebate')
+      header = debate.first_element_child
+
+      while header and !header.name.match(/h1|h2/)
+        header = header.next_element
       end
+      debugger unless header.name.match(/h1|h2/)
+      name = header.inner_text.squish
+      name = header.next_element.inner_text.squish if is_date?(name)
+
+      sub_name_el = debate.at_css('.SubDebate').first_element_child
+      debugger unless sub_name_el.name.match(/h2|h3/)
+      sub_name = sub_name_el.inner_text.squish
+
       make_bill_debate name, sub_name, debate_index, 'BillDebate', 'billdebate'
     end
 
@@ -1079,10 +1074,11 @@ class HansardParser
 
     def add_sub_heading sub_debate, sub_names
       h_element = @title_is_h2 ? 'h3' : 'h2'
-      sub_heading = (sub_debate/"#{h_element}[1]/text()")
+      sub_heading = sub_debate.at_css("#{h_element}")
+      sub_heading = sub_debate.at_css("h2") if sub_heading.nil?
 
-      if sub_heading.size > 0 || (sub_heading = (sub_debate/"h2[1]/text()") ).size > 0
-        sub_names << sub_heading[0].squish
+      unless sub_heading.nil?
+        sub_names << sub_heading.inner_text.squish
       else
         raise "can't find sub heading"
       end
@@ -1120,7 +1116,9 @@ class HansardParser
       sub_debates = @doc.search('.SubDebate')
       sub_names = add_sub_headings(sub_debates) if sub_debates.size > 0
 
-      headings = @doc.search('.BillDebate h1').collect(&:inner_text).collect(&:squish).select{|x| !is_date?(x)}
+      headings = @doc.search('.BillDebate h1').collect(&:inner_text).collect(&:squish).select{|x|
+        !is_date?(x) and !x.empty?
+      }
       if headings.size > 1
         headings = headings[1, headings.length-1]
         sub_names = add_more_sub_headings(sub_names, headings)
@@ -1139,7 +1137,7 @@ class HansardParser
       debate.sub_debates.each {|sub_debate| sub_debate.debate = debate}
 
       if sub_debates.size == 0 || sub_debates.size == 1
-        handle_contributions @doc.search(".#{type}"), debate.sub_debates[0]
+        handle_contributions @doc.at_css(".#{type}"), debate.sub_debates[0]
       else
         handle_mixed_subdebates 'BillDebate', debate
       end
