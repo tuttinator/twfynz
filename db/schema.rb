@@ -111,7 +111,7 @@ ActiveRecord::Schema.define(:version => 20131023062644) do
   add_index "contributions", ["date"], :name => "index_contributions_on_date"
   add_index "contributions", ["spoken_by_id"], :name => "index_contributions_on_spoken_by_id"
   add_index "contributions", ["spoken_in_id"], :name => "index_contributions_on_spoken_in_id"
-  add_index "contributions", ["text"], :name => "speech_index"
+  add_index "contributions", ["text"], :name => "speech_index", :length => 128
   add_index "contributions", ["vote_id"], :name => "index_contributions_on_vote_id"
 
   create_table "debate_topics", :force => true do |t|

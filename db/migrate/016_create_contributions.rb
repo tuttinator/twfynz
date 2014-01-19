@@ -17,7 +17,7 @@ class CreateContributions < ActiveRecord::Migration
     add_index :contributions, :spoken_by_id
     add_index :contributions, :vote_id
 
-    execute 'create fulltext index speech_index on contributions (text);'
+    execute 'create fulltext index speech_index on contributions (text(128));'
   end
 
   def self.down
