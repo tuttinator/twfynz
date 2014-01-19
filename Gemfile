@@ -45,3 +45,4 @@ gem 'compass-rails'
 gem 'thin'
 gem 'nokogiri'
 gem 'debugger'
+gem "rspec-rails", :group => [:development, :test]
