@@ -1,3 +1,4 @@
+# encoding: UTF-8
 require File.dirname(__FILE__) + '/hansard_parser_spec_helper'
 
 describe HansardParser, "when passed Electoral Finance Bill - First Reading" do
@@ -15,6 +16,7 @@ describe HansardParser, "when passed Electoral Finance Bill - First Reading" do
     @debate_index = 1
     @file_name = 'nil'
     def_parties
+    Parliament.stub(:latest).and_return double(Parliament)
   end
 
   after(:all) do
@@ -23,7 +25,7 @@ describe HansardParser, "when passed Electoral Finance Bill - First Reading" do
   end
 
   it 'should determine missing question text' do
-    HansardParser.stub!(:load_file).and_return html
+    HansardParser.stub(:load_file).and_return html
     debate = parse_debate
     voteplaceholder = debate.sub_debate.contributions.first
     voteplaceholder.should be_an_instance_of(VotePlaceholder)
