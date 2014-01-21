@@ -523,11 +523,12 @@ class HansardParser
       question_tag = caption.at('em')
 
       if question_tag
-        vote_text = caption.xpath('text()').text.squish
-        vote_question = question_tag.inner_text
+        vote_text = caption.xpath('text()').txt
+        vote_question = question_tag.txt
       else
-        text = caption.inner_text
-        match, vote_text, vote_question = /(.*)(That (the|Vote) .*)/.match text
+        text = caption.txt
+        match, vote_text, vote_question = *text.match(/(.*)(?! )(That (the|Vote) .*)/)
+        vote_text.squish!
       end
 
       check_vote_text vote, vote_text
@@ -599,12 +600,8 @@ class HansardParser
       placeholder = VotePlaceholder.new :text => ''
       vote = PartyVote.new :vote_question => '', :vote_result => ''
 
-      div.children.each do |node|
-        if node.elem?
-          handle_party_vote_element node, placeholder, vote, debate
-        elsif node.text? && !node.txt.blank?
-          raise 'unexpected text in party vote: ' + node.txt
-        end
+      div.elements.each do |node|
+        handle_party_vote_element node, placeholder, vote, debate
       end
 
       check_for_vote_blanks vote
