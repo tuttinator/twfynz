@@ -885,9 +885,9 @@ class HansardParser
     end
 
     def debate_headings(type)
-      headings = @doc.search(".#{type} h2")
+      headings = @doc.search(".#{type} > h2")
       if headings.empty?
-        headings = @doc.search(".#{type} h1")
+        headings = @doc.search(".#{type} > h1")
         @title_is_h2 = false
       end
       headings.reject{|h|
