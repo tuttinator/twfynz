@@ -66,7 +66,7 @@ class HansardParser
       create_oral_answers debate_index
 
     elsif type == 'SubsQuestion'
-      create_oral_answer document_title, @doc.at_css('.copy .section:nth(1) .SubsQuestion').first, true, debate_index
+      create_oral_answer document_title, @doc.at_css('.copy .section:nth(1) .SubsQuestion'), true, debate_index
 
     elsif type == 'BillDebate'
       create_bill_debate debate_index
