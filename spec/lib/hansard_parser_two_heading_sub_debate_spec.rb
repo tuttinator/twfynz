@@ -34,7 +34,7 @@ describe HansardParser, "when passed debate with two heading subdebate" do
 
   it 'should create slug using second sub_debate h2 heading' do
     @sub_debate.create_url_slug
-    @sub_debate.url_slug.should == 'members_pecuniary_interests'
+    @sub_debate.url_slug.should == 'members-pecuniary-interests'
   end
 
   def html
