@@ -769,12 +769,10 @@ class HansardParser
       # <li>Sandra Goudie withdrew from the Chamber.</li>
     # </ul>
     def handle_procedural node
-      proceduals = []
-      node.children.each do |child|
+      node.elements.map do |child|
         if child.elem?
           if child.name == 'li'
-            procedual = Procedural.new(:text => '<p>'+child.txt+'</p>')
-            proceduals << procedual
+            Procedural.new(:text => "<p>#{child.txt}</p>")
           else
             raise 'unexpected element ' + node.to_s
           end
@@ -782,7 +780,6 @@ class HansardParser
           raise 'unexpected text ' + child.squish + node.to_s
         end
       end
-      proceduals
     end
 
     def populate_from_text text, type, node, a
@@ -1030,11 +1027,7 @@ class HansardParser
 
     def create_bill_debate debate_index
       debate = @doc.at_css('.BillDebate')
-      header = debate.first_element_child
-
-      until !header or (header.name.match(/h1|h2/) and !header.is_date?)
-        header = header.next_element
-      end
+      header = debate.header
 
       debugger unless header.name.match(/h1|h2/)
       name = header.txt
@@ -1072,9 +1065,7 @@ class HansardParser
     end
 
     def add_sub_heading sub_debate, sub_names
-      h_element = @title_is_h2 ? 'h3' : 'h2'
-      sub_heading = sub_debate.at_css("#{h_element}")
-      sub_heading = sub_debate.at_css("h2") if sub_heading.nil?
+      sub_heading = sub_debate.header
 
       unless sub_heading.nil?
         sub_names << sub_heading.txt
@@ -1153,6 +1144,12 @@ module Nokogiri
 
       def is_date?
         !!/^[mtwf][a-z]+, \d\d? [jfmasond][a-z]+ \d\d\d\d$/.match(text.downcase)
+      end
+
+      def header
+        elements.find{|el|
+          el.name.match(/^h/) and not el.is_date?
+        }
       end
     end
   end
