@@ -1,3 +1,4 @@
+# encoding: UTF-8
 require File.dirname(__FILE__) + '/hansard_parser_spec_helper'
 
 describe HansardParser, "when passed Crimes (Substituted Section 59) Amendment Bill, Third Reading" do
@@ -16,7 +17,7 @@ describe HansardParser, "when passed Crimes (Substituted Section 59) Amendment B
     @file_name = 'nil'
 
     def_parties
-    HansardParser.stub!(:load_file).and_return html
+    HansardParser.stub(:load_file).and_return html
     @debate = parse_debate
     @sub_debate = @debate.sub_debate
   end
