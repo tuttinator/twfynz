@@ -1,3 +1,4 @@
+# encoding: UTF-8
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe WrittenQuestionParser do
@@ -7,10 +8,10 @@ describe WrittenQuestionParser do
       @parser = WrittenQuestionParser.new
       @asker = Mp.new
       @respondent = Mp.new
-      Mp.stub!(:from_name).with("Clare Curran", Date.parse("2009-02-10")).and_return(@asker)
-      Mp.stub!(:from_name).with("Hon Steven Joyce", Date.parse("2009-02-10")).and_return(@respondent)
+      Mp.stub(:from_name).with("Clare Curran", Date.parse("2009-02-10")).and_return(@asker)
+      Mp.stub(:from_name).with("Hon Steven Joyce", Date.parse("2009-02-10")).and_return(@respondent)
       @portfolio = Portfolio.new
-      Portfolio.stub!(:from_name).with("Communications and Information Technology").and_return(@portfolio)
+      Portfolio.stub(:from_name).with("Communications and Information Technology").and_return(@portfolio)
       @result = @parser.parse(answered)
     end
 
@@ -73,9 +74,9 @@ describe WrittenQuestionParser do
     before do
       @parser = WrittenQuestionParser.new
       @asker = Mp.new
-      Mp.stub!(:from_name).with("Darien Fenton", Date.parse("2009-04-07")).and_return(@asker)
+      Mp.stub(:from_name).with("Darien Fenton", Date.parse("2009-04-07")).and_return(@asker)
       @portfolio = Portfolio.new
-      Portfolio.stub!(:from_name).with("Transport").and_return(@portfolio)
+      Portfolio.stub(:from_name).with("Transport").and_return(@portfolio)
       @result = @parser.parse(unanswered)
     end
 

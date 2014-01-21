@@ -1,3 +1,4 @@
+# encoding: UTF-8
 require File.dirname(__FILE__) + '/hansard_parser_oral_answers_spec_helper'
 
 describe HansardParser, " when passed oral answers with on behalf asker" do
@@ -28,7 +29,7 @@ describe HansardParser, " when passed oral answers with on behalf asker" do
         'Minister of Internal Affairs'
     ]
 
-    HansardParser.stub!(:load_file).and_return html
+    HansardParser.stub(:load_file).and_return html
     parse_oral_answers_all
   end
 

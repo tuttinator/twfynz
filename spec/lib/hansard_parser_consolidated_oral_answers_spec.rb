@@ -1,3 +1,4 @@
+# encoding: UTF-8
 require File.dirname(__FILE__) + '/hansard_parser_oral_answers_spec_helper'
 
 describe HansardParser, " when passed 48HansD_20070814_00000157-Questions-for-Oral-Answer-Questions-to-Ministers.htm" do
@@ -27,7 +28,7 @@ describe HansardParser, " when passed 48HansD_20070814_00000157-Questions-for-Or
         'Minister for Courts'
     ]
 
-    HansardParser.stub!(:load_file).and_return html
+    HansardParser.stub(:load_file).and_return html
     parse_oral_answers_all
   end
 

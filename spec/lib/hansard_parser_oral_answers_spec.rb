@@ -1,3 +1,4 @@
+# encoding: UTF-8
 require File.dirname(__FILE__) + '/hansard_parser_oral_answers_spec_helper'
 
 describe HansardParser, " when passed Oral Question: 1. Electoral Finance Bill—Select Committee Changes" do
@@ -59,7 +60,7 @@ describe HansardParser, " when passed Oral Question: 1. Electoral Finance Bill�
 
     @interjecter_names = []
     @interjecter_ids = []
-    HansardParser.stub!(:load_file).and_return html
+    HansardParser.stub(:load_file).and_return html
     parse_debate
   end
 
@@ -153,7 +154,7 @@ describe HansardParser, " when passed Oral Question: 3. Oil Market—Supply 2007
 
     @interjecter_names = ['Jeanette Fitzsimons','Madam SPEAKER']
     @interjecter_ids = [@asking_mp_id,202]
-    HansardParser.stub!(:load_file).and_return html
+    HansardParser.stub(:load_file).and_return html
     parse_debate
   end
 
@@ -251,7 +252,7 @@ describe HansardParser, " when passed Oral Question: 4. Dalai Lama—Government 
     @first_suplimentary_answer_text = '<p>On</p>'
 
     @interjecter_names = []
-    HansardParser.stub!(:load_file).and_return html
+    HansardParser.stub(:load_file).and_return html
     parse_debate
   end
 
@@ -329,7 +330,7 @@ describe HansardParser, " when passed 1. Finance and Expenditure Committee—Tel
     @supplimentary_answerer_name = 'SHANE JONES'
     @first_suplimentary_answer_text = '<p>I</p>'
     @interjecter_names = []
-    HansardParser.stub!(:load_file).and_return html
+    HansardParser.stub(:load_file).and_return html
     parse_debate
   end
 
@@ -465,7 +466,7 @@ describe HansardParser, " when passed 1. Crimes (Substituted Section 59) Amendme
     ]
     @interjecter_text = '<p>I</p>'
 
-    HansardParser.stub!(:load_file).and_return html
+    HansardParser.stub(:load_file).and_return html
     parse_debate
   end
 
@@ -563,7 +564,7 @@ describe HansardParser, " when passed question with question number not in stron
     @supplimentary_answerer_name = 'SHANE JONES'
     @first_suplimentary_answer_text = '<p>I</p>'
     @interjecter_names = []
-    HansardParser.stub!(:load_file).and_return html
+    HansardParser.stub(:load_file).and_return html
     parse_debate
   end
 

@@ -1,3 +1,4 @@
+# encoding: UTF-8
 require File.dirname(__FILE__) + '/hansard_parser_spec_helper'
 
 module OralAnswersHelperMethods
@@ -21,8 +22,8 @@ module OralAnswersHelperMethods
 
       mp = mock(Mp)
       mp.should_receive(:id).any_number_of_times.and_return 42
-      mp.stub!(:party).and_return nil
-      Mp.stub!(:from_name).and_return(mp)
+      mp.stub(:party).and_return nil
+      Mp.stub(:from_name).and_return(mp)
       debates = parse_hansard @file_name, @debate_index
       debates.each {|d| d.save!}
 
@@ -143,12 +144,12 @@ module OralQuestionHelperMethods
       end
 
       @asking_mp = mock(Mp)
-      @asking_mp.stub!(:party).and_return nil
+      @asking_mp.stub(:party).and_return nil
       @asking_mp.should_receive(:id).any_number_of_times.and_return @asking_mp_id
       Mp.should_receive(:from_name).with(@asking_mp_name, @date).and_return @asking_mp
 
       @answering_mp = mock(Mp)
-      @answering_mp.stub!(:party).and_return nil
+      @answering_mp.stub(:party).and_return nil
       @answering_mp.should_receive(:id).any_number_of_times.and_return @answering_mp_id
       Mp.should_receive(:from_name).with(@answering_mp_name, @date).and_return @answering_mp
       Mp.should_receive(:from_name).with(@supplimentary_answerer_name, @date).any_number_of_times.and_return @answering_mp
@@ -163,7 +164,7 @@ module OralQuestionHelperMethods
       @interjecters = []
       @interjecter_names.each_with_index do |name,index|
         @interjecters << mock(Mp)
-        @interjecters.last.stub!(:party).and_return nil
+        @interjecters.last.stub(:party).and_return nil
         @interjecters.last.should_receive(:id).any_number_of_times.and_return @interjecter_ids[index]
         Mp.should_receive(:from_name).with(name, @date).any_number_of_times.and_return @interjecters.last
       end

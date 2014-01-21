@@ -1,3 +1,4 @@
+# encoding: UTF-8
 require File.dirname(__FILE__) + '/hansard_parser_oral_answers_spec_helper'
 
 describe HansardParser, " when passed oral question that has 'on behalf of' in contribution text" do
@@ -56,7 +57,7 @@ describe HansardParser, " when passed oral question that has 'on behalf of' in c
 
     @interjecter_names = ['Hon Bill English','Madam SPEAKER']
     @interjecter_ids = [@asking_mp_id, @yet_other_asking_mp_id]
-    HansardParser.stub!(:load_file).and_return html
+    HansardParser.stub(:load_file).and_return html
     parse_debate
   end
 

@@ -1,3 +1,4 @@
+# encoding: UTF-8
 require File.dirname(__FILE__) + '/hansard_parser_spec_helper'
 
 describe HansardParser, "when passed bill debate with one subdebate plus two h2 headings" do
@@ -14,9 +15,10 @@ describe HansardParser, "when passed bill debate with one subdebate plus two h2 
 
     @debate_index = 1
     @file_name = 'bill_debate_with_one_subdebate_plus_two_h2_headings.htm'
-    def_parties
 
-    HansardParser.stub!(:load_file).and_return html
+    def_parties
+    Parliament.stub(:latest).and_return double(Parliament)
+    HansardParser.stub(:load_file).and_return html
     @debate = parse_debate
     @sub_debate = @debate.sub_debate
   end

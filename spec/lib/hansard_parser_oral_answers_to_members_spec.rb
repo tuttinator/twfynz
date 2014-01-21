@@ -1,3 +1,4 @@
+# encoding: UTF-8
 require File.dirname(__FILE__) + '/hansard_parser_oral_answers_spec_helper'
 
 describe HansardParser, " when passed questions to ministers and members" do
@@ -29,21 +30,21 @@ describe HansardParser, " when passed questions to ministers and members" do
     ]
 
     bill = mock(Bill)
-    bill.stub!(:id).and_return 33
+    bill.stub(:id).and_return 33
     mp = mock(Mp)
-    mp.stub!(:party).and_return nil
-    mp.stub!(:id).and_return 23
-    bill.stub!(:member_in_charge).and_return(mp)
-    Bill.stub!(:from_name_and_date).and_return(bill)
+    mp.stub(:party).and_return nil
+    mp.stub(:id).and_return 23
+    bill.stub(:member_in_charge).and_return(mp)
+    Bill.stub(:from_name_and_date).and_return(bill)
 
     chair = mock(CommitteeChair)
-    chair.stub!(:id).and_return 44
+    chair.stub(:id).and_return 44
     committee = mock(Committee)
-    committee.stub!(:id).and_return 55
-    chair.stub!(:committee).and_return(committee)
-    CommitteeChair.stub!(:from_name).and_return(chair)
+    committee.stub(:id).and_return 55
+    chair.stub(:committee).and_return(committee)
+    CommitteeChair.stub(:from_name).and_return(chair)
 
-    HansardParser.stub!(:load_file).and_return html
+    HansardParser.stub(:load_file).and_return html
     debates = parse_oral_answers_all
     @debate = debates[0]
     @other_debate = debates[1]

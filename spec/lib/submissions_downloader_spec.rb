@@ -1,3 +1,4 @@
+# encoding: UTF-8
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe SubmissionsDownloader do
@@ -113,8 +114,8 @@ describe SubmissionsDownloader do
   end
 
   it 'should return false if there are no submissions on page' do
-    SubmissionsDownloader.stub!(:open_page).and_return
-    SubmissionsDownloader.stub!(:find_committees).and_return []
+    SubmissionsDownloader.stub(:open_page).and_return
+    SubmissionsDownloader.stub(:find_committees).and_return []
     SubmissionsDownloader.should_not_receive(:create_submissions)
     SubmissionsDownloader.download_page(1).should == false
   end
@@ -123,8 +124,8 @@ describe SubmissionsDownloader do
     doc = mock('doc')
     committees = [mock('committee')]
 
-    SubmissionsDownloader.stub!(:open_page).and_return doc
-    SubmissionsDownloader.stub!(:find_committees).and_return committees
+    SubmissionsDownloader.stub(:open_page).and_return doc
+    SubmissionsDownloader.stub(:find_committees).and_return committees
     SubmissionsDownloader.should_receive(:create_submissions).with(committees, doc)
     SubmissionsDownloader.download_page(1).should == true
   end
