@@ -1,3 +1,4 @@
+# encoding: UTF-8
 require File.dirname(__FILE__) + '/hansard_parser_spec_helper'
 
 describe HansardParser, "when passed debate containing BillDebateMid" do
@@ -19,7 +20,8 @@ describe HansardParser, "when passed debate containing BillDebateMid" do
     @debate_index = 1
     @file_name = 'nil'
     def_parties
-    HansardParser.stub!(:load_file).and_return html
+    Parliament.stub(:latest).and_return double(Parliament)
+    HansardParser.stub(:load_file).and_return html
     @debate = parse_debate
     @sub_debate = @debate.sub_debate
   end
@@ -81,7 +83,7 @@ describe HansardParser, "when passed debate containing BillDebateMid" do
 <div class="copy">
   <div class="section">
     <a name="DocumentTitle"></a>
-    <h1>Taxation (Annual Rates of Income Tax 2007-08) Bill (No 2), Taxation (Business Taxation , Chewing Gum and Remedial Matters) Bill, Taxation (KiwiSaver) Bill — Third Readings</h1>
+    <h1>Taxation (Annual Rates of Income Tax 2007-08) Bill (No 2), Taxation (Business Taxation, Chewing Gum and Remedial Matters) Bill, Taxation (KiwiSaver) Bill — Third Readings</h1>
     <a name="DocumentReference"></a>
     <p>[Advance Copy - Subject to minor change before inclusion in Bound Volume.]</p>
 
