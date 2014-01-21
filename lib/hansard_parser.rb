@@ -523,7 +523,8 @@ class HansardParser
       question_tag = caption.at('em')
 
       if question_tag
-        vote_text = caption.xpath('text()').txt
+        caption_txt = caption.text_children.first
+        vote_text = caption_txt.text.squish if caption_txt
         vote_question = question_tag.txt
       else
         text = caption.txt
@@ -1147,6 +1148,10 @@ module Nokogiri
         elements.find{|el|
           el.name.match(/^h/) and not el.is_date?
         }
+      end
+
+      def text_children
+        children.find_all(&:text?)
       end
     end
   end
