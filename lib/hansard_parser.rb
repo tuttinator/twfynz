@@ -150,60 +150,53 @@ class HansardParser
 
       hit_first_question = false
 
-      qoa.children.each_with_index do |node, index|
-        if node.text?
-          text = node.txt
-          unless (text.blank?)
-            raise 'unexpected text near oral answer: ' + text
-          end
-        elsif node.elem?
-          if (node.name == 'h4' or
-              (node.name == 'h2' and (re_question = node.txt.starts_with?('Question No')) ) )
-            type = node['class']
-            if (type == 'QSubjectHeading' or type == 'QSubjectheadingalone' or re_question)
-              hit_first_question = true
-              debate_index = debate_index.next
-              answer_name = node.txt
-              answer = create_oral_answer answer_name, node.next_sibling, false, debate_index
-              answers.add_oral_answer answer
-            else
-              raise 'unexpected type of h4 class under QOA: ' + type
-            end
-          elsif node.name == 'h2'
-            heading = node.txt
-            if heading == name or heading.is_date?
-                #ignore
-            elsif (heading == 'Questions to Members' or
-                heading == 'Urgent Questions' or
-                heading == 'Questions to Ministers')
-              debate_index = debate_index.next
-              answers = OralAnswers.new({
-                :name => heading,
-                :date => get_date,
-                :publication_status => publication_status,
-                :debate_index => debate_index,
-                :source_url => @parliament_url,
-                :css_class => 'qoa',
-                :hansard_volume => @hansard_volume,
-                :start_page => @page
-              })
-
-              hit_first_question = false
-              answers_array << answers
-            else
-              raise 'unexpected h2 in oral answers: ' + node.to_s
-            end
-          elsif node.name == 'div'
-            # should be handled in the handling of 'h4'
-          elsif node.name == 'a'
-            @page = node['name'].sub('page_','').to_i
-          elsif (node.name == 'p' and (node.to_s.include?('took the Chair') || node.to_s.include?('Prayers') || node.to_s.include?('Karakia') ))
-            # ignore
-          elsif (not(hit_first_question) and node.name == 'p')
-            handle_paragraph node, answers
+      qoa.elements.each_with_index do |node, index|
+        if (node.name == 'h4' or
+            (node.name == 'h2' and (re_question = node.txt.starts_with?('Question No')) ) )
+          type = node['class']
+          if (type == 'QSubjectHeading' or type == 'QSubjectheadingalone' or re_question)
+            hit_first_question = true
+            debate_index = debate_index.next
+            answer_name = node.txt
+            answer = create_oral_answer answer_name, node.next_element, false, debate_index
+            answers.add_oral_answer answer
           else
-            raise 'unexpected element under "QOA"[' + index.to_s + ']: ' + node.to_s
+            raise 'unexpected type of h4 class under QOA: ' + type
           end
+        elsif node.name == 'h2'
+          heading = node.txt
+          if heading == name or is_date?(heading)
+              #ignore
+          elsif (heading == 'Questions to Members' or
+              heading == 'Urgent Questions' or
+              heading == 'Questions to Ministers')
+            debate_index = debate_index.next
+            answers = OralAnswers.new({
+              :name => heading,
+              :date => get_date,
+              :publication_status => publication_status,
+              :debate_index => debate_index,
+              :source_url => @parliament_url,
+              :css_class => 'qoa',
+              :hansard_volume => @hansard_volume,
+              :start_page => @page
+            })
+
+            hit_first_question = false
+            answers_array << answers
+          else
+            raise 'unexpected h2 in oral answers: ' + node.to_s
+          end
+        elsif node.name == 'div'
+          # should be handled in the handling of 'h4'
+        elsif node.name == 'a'
+          @page = node['name'].sub('page_','').to_i
+        elsif (node.name == 'p' and (node.to_s.include?('took the Chair') || node.to_s.include?('Prayers') || node.to_s.include?('Karakia') ))
+          # ignore
+        elsif (not(hit_first_question) and node.name == 'p')
+          handle_paragraph node, answers
+        else
+            raise 'unexpected element under "QOA"[' + index.to_s + ']: ' + node.to_s
         end
       end unless no_questions
 

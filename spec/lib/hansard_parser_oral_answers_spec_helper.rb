@@ -13,11 +13,11 @@ module OralAnswersHelperMethods
         minister = double(Minister)
         portfolio = double(Portfolio)
 
-        Minister.should_receive(:from_name).at_least(:once).with(minister_name).and_return(minister)
-        minister.should_receive(:portfolio).at_least(:once).and_return(portfolio)
+        Minister.stub(:from_name).with(minister_name).and_return(minister)
+        minister.stub(:portfolio).and_return(portfolio)
 
-        minister.should_receive(:id).at_least(:once).and_return(index + 1)
-        portfolio.should_receive(:id).at_least(:once).and_return(index + 1)
+        minister.stub(:id).and_return(index + 1)
+        portfolio.stub(:id).and_return(index + 1)
       end
 
       mp = double(Mp)
