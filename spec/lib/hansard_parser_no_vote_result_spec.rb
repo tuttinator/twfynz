@@ -1,3 +1,4 @@
+# encoding: UTF-8
 require File.dirname(__FILE__) + '/hansard_parser_spec_helper'
 
 describe HansardParser, "when passed debate containing vote without result text" do
@@ -15,7 +16,7 @@ describe HansardParser, "when passed debate containing vote without result text"
     @debate_index = 1
     @file_name = '48HansD_20071212_00000680-Taxation-Annual-Rates-of-Income-Tax-2007_no_vote_result.htm'
     def_parties
-    HansardParser.stub!(:load_file).and_return html
+    HansardParser.stub(:load_file).and_return html
   end
 
   after(:all) do
