@@ -632,7 +632,6 @@ class HansardParser
           elsif (h3 = div.at('h3'))
             add_section_header h3, debate
           else
-            debugger
             raise 'unexpected div ' + div.to_s
           end
         else
