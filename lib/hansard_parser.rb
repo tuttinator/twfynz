@@ -1023,6 +1023,8 @@ class HansardParser
       debate = @doc.at_css('.BillDebate')
       header = debate.header
 
+      @title_is_h2 = header.name == 'h2'
+
       name = header.txt
 
       sub_name_el = debate.at_css('.SubDebate').first_element_child
