@@ -648,8 +648,8 @@ class HansardParser
             css = MAKE_CSS_TYPES.include?(type) ? %Q[ class="#{type}"] : ''
             debate.contributions.last.text += %Q[<p#{css}>#{text}</p>]
           end
-        elsif type == 'MsoNormal' || type == 'JHBill' || type == 'Urgency'
-          procedural = Procedural.new :text => node.txt
+        elsif procedural_class?(type)
+          procedural = Procedural.new(:text => node.txt)
           debate.contributions << procedural
         else
           raise 'what is this: ' + node.to_s
@@ -860,8 +860,7 @@ class HansardParser
 
       elsif SPOKEN_TYPES.include?(type)
         populate_contribution_attributes type, paragraph
-      elsif (type == 'a' || MAKE_CSS_TYPES.include?(type) ||
-          type == 'MsoNormal' || type == 'JHBill' || type == 'Urgency')
+      elsif (type == 'a' || MAKE_CSS_TYPES.include?(type) || procedural_class?(type))
         nil
       elsif NON_SPOKEN_TYPES.include?(type)
         type = type.sub('-','').sub('0','')
@@ -882,6 +881,10 @@ class HansardParser
           :hansard_volume => @hansard_volume
       handle_contributions @doc.at_css('.DebateAlone'), debate
       debate
+    end
+
+    def procedural_class?(cls)
+      %w(MsoNormal JHBill Urgency IndentMarginalone).include?(cls)
     end
 
     def debate_headings(type)
@@ -1020,11 +1023,10 @@ class HansardParser
       debate = @doc.at_css('.BillDebate')
       header = debate.header
 
-      debugger unless header.name.match(/h1|h2/)
+      debugger
       name = header.txt
 
       sub_name_el = debate.at_css('.SubDebate').first_element_child
-      debugger unless sub_name_el.name.match(/h2|h3/)
       sub_name = sub_name_el.txt
 
       make_bill_debate name, sub_name, debate_index, 'BillDebate', 'billdebate'
