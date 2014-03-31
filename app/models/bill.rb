@@ -325,11 +325,11 @@ class Bill < ActiveRecord::Base
       other_bill = bills.detect {|b| b.id != self.id}
       topics.each do |topic|
         if other_bill.send(:third_reading) == topic.debate.date
-          puts 'found match for: ' + topic.debate.name + ' ' + other_bill.bill_name
+          # puts 'found match for: ' + topic.debate.name + ' ' + other_bill.bill_name
           topic.topic_id = other_bill.id
           topic.save
         else
-          puts 'no match for: ' + topic.debate.name + ' ' + other_bill.bill_name
+          # puts 'no match for: ' + topic.debate.name + ' ' + other_bill.bill_name
         end
       end
     end
@@ -349,7 +349,7 @@ class Bill < ActiveRecord::Base
               end
             rescue
               dates = third_reading.to_s + ' ' + debate.date.to_s
-              # puts 'found match for: ' + debate.name + ' ' + self.bill_name + ' ' + dates
+              # # puts 'found match for: ' + debate.name + ' ' + self.bill_name + ' ' + dates
             end
           end
         end
@@ -366,7 +366,7 @@ class Bill < ActiveRecord::Base
 
       unmatched.each do |event|
         if other_bill.send(event.date_method) == event.date
-          puts 'found match for: ' + event.name + ' ' + other_bill.bill_name
+          # puts 'found match for: ' + event.name + ' ' + other_bill.bill_name
           event.bill_id = other_bill.id
           event.save
         end

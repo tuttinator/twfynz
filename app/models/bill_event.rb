@@ -229,7 +229,7 @@ class BillEvent < ActiveRecord::Base
   end
 
   def log_creation
-    puts "created: #{self.inspect}"
+    # puts "created: #{self.inspect}"
   end
 
   def expire_cached_pages

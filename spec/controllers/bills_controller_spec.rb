@@ -15,7 +15,6 @@ describe BillsController do
     it 'should render bill' do
       @controller.should_receive(:get_bill).with(@name).and_return double('bill')
       @controller.should_receive(@action)
-      puts @action.to_s
       get @action, :bill_url => @name
     end
   end

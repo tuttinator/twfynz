@@ -61,7 +61,7 @@ class PecuniaryCategory < ActiveRecord::Base
         elsif line[/^[A-Z].+$/]
           PecuniaryInterest.find_or_create_by_mp_id_and_pecuniary_category_id_and_item(last_mp.id, last_category.id, line.strip)
         else
-          puts line
+          # puts line
         end
       end
     end

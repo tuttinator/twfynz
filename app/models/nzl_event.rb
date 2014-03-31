@@ -19,7 +19,7 @@ class NzlEvent < ActiveRecord::Base
       publication_date = NzlEvent.parse_pub_date params[:pub_date]
       existing = NzlEvent.find_all_by_title(params[:title])
       if existing.empty?
-        puts 'creating ' + params[:title] + ' (' + publication_date.to_s + ')' if RAILS_ENV != 'test'
+        # puts 'creating ' + params[:title] + ' (' + publication_date.to_s + ')' if RAILS_ENV != 'test'
         NzlEvent.create params
       else
         event = NzlEvent.new params
@@ -34,7 +34,7 @@ class NzlEvent < ActiveRecord::Base
           end
 
           unless should_ignore
-            puts 'creating ' + params[:title] + ' (' + publication_date.to_s + ')' if RAILS_ENV != 'test'
+            # puts 'creating ' + params[:title] + ' (' + publication_date.to_s + ')' if RAILS_ENV != 'test'
             event.save!
             saved_event = event
           end
@@ -50,7 +50,7 @@ class NzlEvent < ActiveRecord::Base
         keep = list.sort.reverse.uniq.collect(&:id)
         list.each do |event|
           unless keep.include? event.id
-            puts 'deleting ' + event.id.to_s
+            # puts 'deleting ' + event.id.to_s
             event.destroy
           end
         end
@@ -151,7 +151,7 @@ public
         else
           require 'yaml'
           y self.attributes
-          puts "\ndidn't find Bill for event: " + self.title + ', ' + self.year.to_s + ' (' + self.publication_date.to_s + ')'
+          # puts "\ndidn't find Bill for event: " + self.title + ', ' + self.year.to_s + ' (' + self.publication_date.to_s + ')'
         end
       end
     end
