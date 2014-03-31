@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
-describe "An NzlEvent", :shared => true do
+shared_examples_for "An NzlEvent" do
 
   before(:all) do
     if @bill_id

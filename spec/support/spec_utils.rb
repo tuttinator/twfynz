@@ -1,3 +1,5 @@
+# TODO: Remove all references to these methods
+
 
 # e.g. assert_model_has_many :questions
 def assert_model_has_one(association_name)

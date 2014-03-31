@@ -2,8 +2,6 @@ require File.dirname(__FILE__) + '/../spec_helper'
 
 describe BillEvent do
 
-  assert_model_belongs_to :bill
-
   describe 'when creating from NzlEvent' do
     before do
       @bill_id = 123
