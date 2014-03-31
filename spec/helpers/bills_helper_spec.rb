@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + '/../spec_helper'
 describe BillsHelper do
   describe 'BillEvent' do
     before do
-      @bill_event = mock(BillEvent)
+      @bill_event = double(BillEvent)
       @bill_name = 'Web Bill'
       @date, @url = 'date', 'url'
     end

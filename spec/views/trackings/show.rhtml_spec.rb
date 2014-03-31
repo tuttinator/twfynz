@@ -5,12 +5,12 @@ describe "/trackings/show.rhtml" do
 
   before do
     @tracking = mock_model(Tracking)
-    @tracking.stub!(:user_id).and_return("1")
-    @tracking.stub!(:created_at).and_return(Date.today)
-    @tracking.stub!(:item_type).and_return("MyString")
-    @tracking.stub!(:item_id).and_return("1")
-    @tracking.stub!(:email_alert).and_return(false)
-    @tracking.stub!(:include_in_feed).and_return(false)
+    @tracking.stub(:user_id).and_return("1")
+    @tracking.stub(:created_at).and_return(Date.today)
+    @tracking.stub(:item_type).and_return("MyString")
+    @tracking.stub(:item_id).and_return("1")
+    @tracking.stub(:email_alert).and_return(false)
+    @tracking.stub(:include_in_feed).and_return(false)
 
     assigns[:tracking] = @tracking
   end

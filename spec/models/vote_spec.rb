@@ -4,10 +4,10 @@ describe Vote do
 
   describe 'when asked for bill' do
     it 'should look ask contribution for bill' do
-      bill = mock('bill')
-      contribution = mock('contribution', :bill => bill)
+      bill = double('bill')
+      contribution = double('contribution', :bill => bill)
       vote = Vote.new
-      vote.stub!(:contribution).and_return contribution
+      vote.stub(:contribution).and_return contribution
       vote.bill.should == bill
     end
   end

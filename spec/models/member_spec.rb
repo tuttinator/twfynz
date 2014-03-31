@@ -45,7 +45,7 @@ describe Member do
     end
 
     it 'should return false if from_date and to_date are both nil' do
-      date = mock('date')
+      date = double('date')
       member = Member.new
       member.is_active_on(date).should be_false
     end

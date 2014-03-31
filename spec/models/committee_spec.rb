@@ -11,7 +11,7 @@ end
 describe Committee, "from_name" do
 
   it 'should find "Finance Committee"' do
-    committee = mock Committee
+    committee = double Committee
     committee.should_receive(:committee_name).and_return 'Finance'
     Committee.should_receive(:find).with(:all).and_return [committee]
 
@@ -19,7 +19,7 @@ describe Committee, "from_name" do
   end
 
   it 'should find "Māori Affairs Committee"' do
-    committee = mock Committee
+    committee = double Committee
     committee.should_receive(:committee_name).and_return 'Māori Affairs'
     Committee.should_receive(:find).with(:all).and_return [committee]
 
@@ -27,7 +27,7 @@ describe Committee, "from_name" do
   end
 
   it 'should find "Maori Affairs Committee"' do
-    committee = mock Committee
+    committee = double Committee
     committee.should_receive(:committee_name).and_return 'Māori Affairs'
     Committee.should_receive(:find).with(:all).and_return [committee]
 
@@ -40,7 +40,7 @@ describe Committee, 'in general' do
 
   it 'should have bills' do
     committee = Committee.create :clerk_category_id=>"18", :committee_name => 'Business', :url => 'business', :committee_type => 'SpecialistCommittee'
-    Mp.stub!(:from_name).and_return(mock_model(Mp))
+    Mp.stub(:from_name).and_return(mock_model(Mp))
     bill = GovernmentBill.create committee_bill_params.merge(:referred_to_committee_id => committee.id)
     committee.bills.size.should == 1
     committee.bills.first.id.should == bill.id

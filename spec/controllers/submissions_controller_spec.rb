@@ -28,9 +28,9 @@ describe SubmissionsController, "handling GET /submissions" do
 
   before do
     @submission = mock_model(Submission)
-    @submission.stub!(:populate_submitter_id)
-    Submission.stub!(:find_by_sql).and_return([@submission])
-    @controller.stub!(:admin?).and_return(true)
+    @submission.stub(:populate_submitter_id)
+    Submission.stub(:find_by_sql).and_return([@submission])
+    @controller.stub(:admin?).and_return(true)
   end
 
   def do_get
@@ -61,8 +61,8 @@ describe SubmissionsController, "handling GET /submissions/1" do
 
   before do
     @submission = mock_model(Submission)
-    Submission.stub!(:find).and_return(@submission)
-    @controller.stub!(:admin?).and_return(true)
+    Submission.stub(:find).and_return(@submission)
+    @controller.stub(:admin?).and_return(true)
   end
 
   def do_get
@@ -94,8 +94,8 @@ describe SubmissionsController, "handling GET /submissions/1.xml" do
 
   before do
     @submission = mock_model(Submission, :to_xml => "XML")
-    Submission.stub!(:find).and_return(@submission)
-    @controller.stub!(:admin?).and_return(true)
+    Submission.stub(:find).and_return(@submission)
+    @controller.stub(:admin?).and_return(true)
   end
 
   def do_get
@@ -124,8 +124,8 @@ describe SubmissionsController, "handling GET /submissions/new" do
 
   before do
     @submission = mock_model(Submission)
-    Submission.stub!(:new).and_return(@submission)
-    @controller.stub!(:admin?).and_return(true)
+    Submission.stub(:new).and_return(@submission)
+    @controller.stub(:admin?).and_return(true)
   end
 
   def do_get
@@ -162,8 +162,8 @@ describe SubmissionsController, "handling GET /submissions/1/edit" do
 
   before do
     @submission = mock_model(Submission)
-    Submission.stub!(:find).and_return(@submission)
-    @controller.stub!(:admin?).and_return(true)
+    Submission.stub(:find).and_return(@submission)
+    @controller.stub(:admin?).and_return(true)
   end
 
   def do_get
@@ -195,9 +195,9 @@ describe SubmissionsController, "handling POST /submissions" do
 
   before do
     @submission = mock_model(Submission, :to_param => "1", :save => true)
-    Submission.stub!(:new).and_return(@submission)
+    Submission.stub(:new).and_return(@submission)
     @params = {}
-    @controller.stub!(:admin?).and_return(true)
+    @controller.stub(:admin?).and_return(true)
   end
 
   def do_post
@@ -219,14 +219,14 @@ describe SubmissionsController, "handling PUT /submissions/1" do
 
   before do
     @submission = mock_model(Submission, :to_param => "1", :update_attributes => true)
-    @submission.stub!(:reload)
-    @submission.stub!(:business_item_name).and_return ''
-    @submission.stub!(:evidence_url).and_return ''
-    @submission.stub!(:submitter_url).and_return ''
-    @submission.stub!(:submitter_name).and_return ''
-    @submission.stub!(:is_from_organisation).and_return(false)
-    Submission.stub!(:find).and_return(@submission)
-    @controller.stub!(:admin?).and_return(true)
+    @submission.stub(:reload)
+    @submission.stub(:business_item_name).and_return ''
+    @submission.stub(:evidence_url).and_return ''
+    @submission.stub(:submitter_url).and_return ''
+    @submission.stub(:submitter_name).and_return ''
+    @submission.stub(:is_from_organisation).and_return(false)
+    Submission.stub(:find).and_return(@submission)
+    @controller.stub(:admin?).and_return(true)
   end
 
   def do_update

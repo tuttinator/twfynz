@@ -93,14 +93,14 @@ describe OralAnswer, "creating url slug" do
     about_type = about.keys.first
     about_name = about.values.first
     about_class = Object.const_get(about_type.to_s.capitalize)
-    about = mock(about_class)
-    about.stub!(:full_name).and_return about_name
-    about.stub!(:class).and_return about_class
+    about = double(about_class)
+    about.stub(:full_name).and_return about_name
+    about.stub(:class).and_return about_class
 
     @answer = new_answer name
-    @answer.stub!(:about).and_return about
-    @answer.stub!(:about_type).and_return about_class.name
-    @answer.stub!(:about_id).and_return 21
+    @answer.stub(:about).and_return about
+    @answer.stub(:about_type).and_return about_class.name
+    @answer.stub(:about_id).and_return 21
     @answer.create_url_slug
     @answer.url_slug.should == expected
   end

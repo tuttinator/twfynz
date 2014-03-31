@@ -4,7 +4,7 @@ describe SubDebate do
   describe 'in general' do
     it 'should return parent name' do
       debate = SubDebate.new
-      parent = mock('parent',:name=>'name')
+      parent = double('parent',:name=>'name')
       debate.should_receive(:parent).twice.and_return parent
       debate.parent_name.should == 'name'
     end
@@ -14,18 +14,18 @@ describe SubDebate do
     describe 'and is about bill' do
       it 'should return bill' do
         subdebate = SubDebate.new
-        bill = mock('government_bill')
+        bill = double('government_bill')
         bill.should_receive(:is_a?).with(Bill).and_return true
-        subdebate.stub!(:about).and_return bill
+        subdebate.stub(:about).and_return bill
         subdebate.bill.should == bill
       end
     end
     describe 'and is not about bill' do
       it 'should return nil' do
         subdebate = SubDebate.new
-        portfolio = mock('portfolio')
+        portfolio = double('portfolio')
         portfolio.should_receive(:is_a?).with(Bill).and_return false
-        subdebate.stub!(:about).and_return portfolio
+        subdebate.stub(:about).and_return portfolio
         subdebate.bill.should be_nil
       end
     end
@@ -50,8 +50,8 @@ describe SubDebate do
 
     def assert_slug_correct name, expected
       debate = SubDebate.new(:name => name, :date => '2008-04-01', :publication_status => 'U')
-      debate.stub!(:about).and_return mock_model(Bill)
-      debate.stub!(:make_url_category_text).and_return ''
+      debate.stub(:about).and_return mock_model(Bill)
+      debate.stub(:make_url_category_text).and_return ''
       debate.create_url_slug
       debate.url_slug.should == expected
     end
@@ -61,8 +61,8 @@ describe SubDebate do
   describe "creating url slug for non-bill subdebate" do
     def assert_slug_correct parent_name, name, category_or_slug, slug=nil
       debate = SubDebate.new(:name => name, :date => '2008-04-01', :publication_status => 'U')
-      debate.stub!(:about).and_return nil
-      debate.stub!(:parent).and_return mock_model(ParentDebate, :name => parent_name)
+      debate.stub(:about).and_return nil
+      debate.stub(:parent).and_return mock_model(ParentDebate, :name => parent_name)
       debate.create_url_slug
       debate.url_category.should == category_or_slug if slug
       debate.url_slug.should == (slug ? slug : category_or_slug)

@@ -28,7 +28,7 @@ describe TrackingsController, "handling GET /trackings/1" do
 
   before do
     @tracking = mock_model(Tracking)
-    Tracking.stub!(:find).and_return(@tracking)
+    Tracking.stub(:find).and_return(@tracking)
   end
 
   def do_get
@@ -60,7 +60,7 @@ describe TrackingsController, "handling GET /trackings/1.xml" do
 
   before do
     @tracking = mock_model(Tracking, :to_xml => "XML")
-    Tracking.stub!(:find).and_return(@tracking)
+    Tracking.stub(:find).and_return(@tracking)
   end
 
   def do_get
@@ -89,7 +89,7 @@ describe TrackingsController, "handling GET /trackings/new" do
 
   before do
     @tracking = mock_model(Tracking)
-    Tracking.stub!(:new).and_return(@tracking)
+    Tracking.stub(:new).and_return(@tracking)
   end
 
   def do_get
@@ -126,7 +126,7 @@ describe TrackingsController, "handling GET /trackings/1/edit" do
 
   before do
     @tracking = mock_model(Tracking)
-    Tracking.stub!(:find).and_return(@tracking)
+    Tracking.stub(:find).and_return(@tracking)
   end
 
   def do_get
@@ -159,11 +159,11 @@ describe TrackingsController, "handling POST /trackings" do
   fixtures :users
   before do
     @tracking = mock_model(Tracking, :to_param => "1", :save => true, :tracking_on => true)
-    @tracking.stub!(:user=)
-    @tracking.stub!(:item).and_return(mock_model(Bill))
-    Tracking.stub!(:new).and_return(@tracking)
+    @tracking.stub(:user=)
+    @tracking.stub(:item).and_return(mock_model(Bill))
+    Tracking.stub(:new).and_return(@tracking)
     # user = users(:the_bob)
-    controller.stub!(:current_user).and_return(mock(User, :login=>'bob'))
+    controller.stub(:current_user).and_return(double(User, :login=>'bob'))
     @params = {}
   end
 
@@ -186,7 +186,7 @@ describe TrackingsController, "handling PUT /trackings/1" do
 
   before do
     @tracking = mock_model(Tracking, :to_param => "1", :update_attributes => true)
-    Tracking.stub!(:find).and_return(@tracking)
+    Tracking.stub(:find).and_return(@tracking)
     end
 
   def do_update
@@ -219,7 +219,7 @@ describe TrackingsController, "handling DELETE /trackings/1" do
 
   before do
     @tracking = mock_model(Tracking, :destroy => true)
-    Tracking.stub!(:find).and_return(@tracking)
+    Tracking.stub(:find).and_return(@tracking)
   end
 
   def do_delete

@@ -13,7 +13,7 @@ def unvalidated_new_bill params=nil
 end
 
 def new_bill params=nil, validate=true
-  Mp.should_receive(:from_name).any_number_of_times.and_return(mock_model(Mp))
+  Mp.should_receive(:from_name).and_return(mock_model(Mp))
   bill = GovernmentBill.new(params ? bill_params.merge(params) : bill_params)
   bill.should(be_valid) if validate
   bill
@@ -188,7 +188,7 @@ describe Bill do
     describe "when it doesn't have an earliest date and bill is formerly part of other bill" do
       it "should have earliest date set to formerly part of bill's earliest date" do
         former_bill = mock_model(Bill)
-        former_bill.stub!(:id).and_return(1)
+        former_bill.stub(:id).and_return(1)
         former_bill.should_receive(:earliest_date).and_return Date.new(2007,9,11)
 
         Bill.should_receive(:find_by_bill_name).with('Aviation Security Legislation Bill').and_return former_bill
@@ -378,14 +378,14 @@ describe Bill do
     describe 'and there is a member in charge' do
       describe 'that belongs to a party' do
         it 'should return party of member' do
-          party = mock('party', :short=>name)
-          @bill.should_receive(:member_in_charge).twice.and_return mock('member', :party=>party)
+          party = double('party', :short=>name)
+          @bill.should_receive(:member_in_charge).twice.and_return double('member', :party=>party)
           @bill.party_in_charge.should == party
         end
       end
       describe 'that does not belong to a party' do
         it 'should return nil' do
-          @bill.should_receive(:member_in_charge).twice.and_return mock('member', :party=>nil)
+          @bill.should_receive(:member_in_charge).twice.and_return double('member', :party=>nil)
           @bill.party_in_charge.should be_nil
         end
       end
@@ -401,7 +401,7 @@ describe Bill do
   describe 'when asked for last event' do
     before do
       @bill = Bill.new
-      @date = mock('date')
+      @date = double('date')
       @name = 'name'
       @event = [@date, @name]
     end
@@ -452,9 +452,9 @@ describe Bill do
 
   describe 'when finding bills from text' do
     def check_bills billname1, and_the, billname2
-      date = mock('date')
-      bill1 = mock('bill1')
-      bill2 = mock('bill2')
+      date = double('date')
+      bill1 = double('bill1')
+      bill2 = double('bill2')
       Bill.should_receive(:from_name_and_date).with(billname1, date).and_return bill1
       Bill.should_receive(:from_name_and_date).with(billname2, date).and_return bill2
       Bill.bills_from_text_and_date("#{billname1}#{and_the} #{billname2}", date).should == [bill1, bill2]
@@ -480,9 +480,9 @@ describe Bill do
   describe 'bill with debates' do
     before do
       @bill = Bill.new
-      @debate = mock('debate')
+      @debate = double('debate')
       @debates = [@debate]
-      @bill.stub!(:debates).and_return @debates
+      @bill.stub(:debates).and_return @debates
     end
 
     describe 'when asked if it has debates' do
@@ -492,7 +492,7 @@ describe Bill do
     end
     describe 'when asked for debates in groups by name' do
       it 'should return debates in groups by name' do
-        debates_in_groups_by_name = mock('debates_in_groups_by_name')
+        debates_in_groups_by_name = double('debates_in_groups_by_name')
         Debate.should_receive(:debates_in_groups_by_name).with(@debates).and_return debates_in_groups_by_name
         @bill.debates_in_groups_by_name.should == debates_in_groups_by_name
       end
@@ -502,7 +502,7 @@ describe Bill do
   describe 'bill without debates' do
     before do
       @bill = Bill.new
-      @bill.stub!(:debates).and_return []
+      @bill.stub(:debates).and_return []
     end
     describe 'when asked if it has debates' do
       it 'should return false' do

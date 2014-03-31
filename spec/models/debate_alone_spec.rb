@@ -13,9 +13,9 @@ describe DebateAlone do
     describe 'and is not about bill' do
       it 'should return nil' do
         debate = DebateAlone.new
-        bill = mock('bill')
-        topic1 = mock('debatetopic1', :formerly_part_of_bill => bill)
-        topic2 = mock('debatetopic2', :formerly_part_of_bill => bill)
+        bill = double 'bill'
+        topic1 = double 'debatetopic1', :formerly_part_of_bill => bill
+        topic2 = double 'debatetopic2', :formerly_part_of_bill => bill
         debate.should_receive(:debate_topics).and_return [topic1, topic2]
         debate.bill.should == bill
       end

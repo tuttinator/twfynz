@@ -322,6 +322,7 @@ describe HansardParser, "when passed Visitors — Niue—Speaker of the Legislat
     @publication_status = 'A'
     @date = Date.new(2007,7,18)
     @debate_index = 1
+    binding.pry
     HansardParser.stub(:load_file).and_return html
     @debate = parse_hansard 'nil', @debate_index
     @sub_debate = @debate.sub_debate

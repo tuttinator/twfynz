@@ -4,10 +4,10 @@ describe VotePlaceholder do
 
   describe 'when asked for bill' do
     it 'should look ask debate for bill' do
-      bill = mock('bill')
-      debate = mock('debate', :bill => bill)
+      bill = double('bill')
+      debate = double('debate', :bill => bill)
       placeholder = VotePlaceholder.new
-      placeholder.stub!(:debate).and_return debate
+      placeholder.stub(:debate).and_return debate
       placeholder.bill.should == bill
     end
   end

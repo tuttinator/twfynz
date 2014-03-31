@@ -158,7 +158,7 @@ describe SpeakerName, "when creating anchor" do
 
   it 'should handle an independent MP' do
     name = 'TAITO PHILLIP FIELD'
-    mp = mock(Mp)
+    mp = double(Mp)
     mp.should_receive(:anchor).with(@date).and_return 'field'
     Mp.should_receive(:from_name).with(name, @date).and_return mp
     speaker_name = create_speaker_name name, 'Independent—Mangere'
@@ -166,7 +166,7 @@ describe SpeakerName, "when creating anchor" do
   end
 
   it "should lookup anchor from member's party if no remaining text previously given" do
-    mp = mock(Mp)
+    mp = double(Mp)
     mp.should_receive(:anchor).with(@date).and_return 'green'
     name = 'KEITH LOCKE'
     Mp.should_receive(:from_name).with(name, @date).and_return mp
@@ -175,7 +175,7 @@ describe SpeakerName, "when creating anchor" do
   end
 
   before do
-    @date = mock('date')
+    @date = double('date')
   end
 
   after :each do
@@ -189,8 +189,8 @@ describe SpeakerName, "when creating anchor" do
 
   def create_speaker_name name, remaining
     returning SpeakerName.new('') do |speaker_name|
-      speaker_name.stub!(:name).and_return name
-      speaker_name.stub!(:remaining).and_return remaining
+      speaker_name.stub(:name).and_return name
+      speaker_name.stub(:remaining).and_return remaining
     end
   end
 

@@ -43,9 +43,9 @@ end
 describe Mp, 'finding member on date' do
   before do
     @mp = Mp.new
-    @date = mock('date')
-    @member1 = mock('member')
-    @member2 = mock('member')
+    @date = double('date')
+    @member1 = double('member')
+    @member2 = double('member')
   end
   it 'should return member on date' do
     @member1.should_receive(:is_active_on).with(@date).and_return false
@@ -66,15 +66,15 @@ end
 describe Mp, 'finding party on date' do
   it 'should return party from member on date' do
     mp = Mp.new
-    party = mock('party')
-    date = mock('date')
-    member = mock('member', :party => party)
+    party = double('party')
+    date = double('date')
+    member = double('member', :party => party)
     mp.should_receive(:member_on_date).with(date).and_return member
     mp.party_on_date(date).should == party
   end
   it 'should return nil if no member on date' do
     mp = Mp.new
-    date = mock('date')
+    date = double('date')
     mp.should_receive(:member_on_date).with(date).and_return nil
     mp.party_on_date(date).should be_nil
   end
@@ -104,12 +104,12 @@ describe Mp, "from_name" do
 
   describe 'when date is in 48th Parliament' do
     before do
-      @date = mock(Date)
-      Parliament.stub!(:date_within?).with(48,@date).and_return true
+      @date = double(Date)
+      Parliament.stub(:date_within?).with(48,@date).and_return true
     end
 
     it 'should return Margaret Wilson for "Madam Speaker"' do
-      mp = mock(Mp)
+      mp = double(Mp)
       Mp.should_receive(:find_by_first_and_last).twice.with('Margaret','Wilson').and_return(mp)
 
       Mp.from_name('Madam Speaker', @date).should == mp
@@ -117,21 +117,21 @@ describe Mp, "from_name" do
     end
 
     it 'should return Helen Clark for "Prime Minister"' do
-      mp = mock(Mp)
+      mp = double(Mp)
       Mp.should_receive(:find_by_first_and_last).with('Helen','Clark').and_return(mp)
 
       Mp.from_name('Prime Minister', @date).should == mp
     end
 
     it 'should return Michael Cullen for "Deputy Prime Minister"' do
-      mp = mock(Mp)
+      mp = double(Mp)
       Mp.should_receive(:find_by_first_and_last).with('Michael','Cullen').and_return(mp)
 
       Mp.from_name('Deputy Prime Minister', @date).should == mp
     end
 
     it 'should return Clem Simich for "Mr Deputy Speaker"' do
-      mp = mock(Mp)
+      mp = double(Mp)
       Mp.should_receive(:find_by_first_and_last).with('Clem','Simich').and_return(mp)
 
       Mp.from_name('Mr Deputy Speaker', @date).should == mp
@@ -201,12 +201,12 @@ describe Mp, "from_name" do
 
   describe 'when date is in 49th Parliament' do
     before do
-      Parliament.stub!(:date_within?).with(48,@date).and_return false
-      Parliament.stub!(:date_within?).with(49,@date).and_return true
+      Parliament.stub(:date_within?).with(48,@date).and_return false
+      Parliament.stub(:date_within?).with(49,@date).and_return true
     end
 
     it 'should return Lockwood Smith for "Mr Speaker"' do
-      mp = mock(Mp)
+      mp = double(Mp)
       Mp.should_receive(:find_by_first_and_last).twice.with('Lockwood','Smith').and_return(mp)
 
       Mp.from_name('Mr SPEAKER', @date).should == mp
@@ -214,21 +214,21 @@ describe Mp, "from_name" do
     end
 
     it 'should return John Key for "Prime Minister"' do
-      mp = mock(Mp)
+      mp = double(Mp)
       Mp.should_receive(:find_by_first_and_last).with('John','Key').and_return(mp)
 
       Mp.from_name('Prime Minister', @date).should == mp
     end
 
     it 'should return Bill English for "Deputy Prime Minister"' do
-      mp = mock(Mp)
+      mp = double(Mp)
       Mp.should_receive(:find_by_first_and_last).with('Bill','English').and_return(mp)
 
       Mp.from_name('Deputy Prime Minister', @date).should == mp
     end
 
     it 'should return Lindsay Tisch for "Mr Deputy Speaker"' do
-      mp = mock(Mp)
+      mp = double(Mp)
       Mp.should_receive(:find_by_first_and_last).with('Lindsay','Tisch').and_return(mp)
 
       Mp.from_name('Mr Deputy Speaker', @date).should == mp
