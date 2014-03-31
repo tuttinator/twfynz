@@ -421,10 +421,10 @@ class Debate < ActiveRecord::Base
       debate_to_bill_names = {}
       contributions.each { |c| debate_to_bill_names[c.debate] = c.bill_names }
 
-      debate_to_bill_names.each_pair { |d,b| # puts d.id.to_s + " -> " + b.join(' | ') }
+      debate_to_bill_names.each_pair { |d,b| puts d.id.to_s + " -> " + b.join(' | ') }
       # puts "\n unknown bills:"
       debate_to_bill_names.each_pair do |d, bill_names|
-        bill_names.select{|n| Bill.from_name_and_date(n, d.date).nil? }.each { |name| # puts "#{d.date} #{name}" }
+        bill_names.select{|n| Bill.from_name_and_date(n, d.date).nil? }.each { |name| puts "#{d.date} #{name}" }
       end ;nil
 
       debate_to_bill_names.each do |debate, bill_names|
