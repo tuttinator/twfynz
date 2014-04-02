@@ -689,6 +689,10 @@ class Bill < ActiveRecord::Base
     def referred_to
       @referred_to
     end
+    def bill_change= change
+      @bill_change = change
+    end
+  public
 
     def mp_name= name
       @mp_name = name
@@ -698,10 +702,6 @@ class Bill < ActiveRecord::Base
       @mp_name
     end
 
-    def bill_change= change
-      @bill_change = change
-    end
-  public
     def bill_change
       @bill_change
     end
