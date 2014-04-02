@@ -46,6 +46,7 @@ class HansardParser
     @doc ||= HansardParser.load_doc(@file)
     type_el = @doc.at_css('.copy .section:nth(1) div:nth(1)')
 
+
     if type_el.nil?
       # puts "Could not find type element. continuing"
       return nil
@@ -233,7 +234,7 @@ class HansardParser
     end
 
     def raise_unexpected node, name, sub=''
-      raise "found #{node.name} not in #{sub}debate name #{name}: #{node.to_s}"
+      raise "did not find #{node.name} in #{sub}debate name #{name}: #{node.to_s}"
     end
 
     def handle_h1_h2_h3 node, debate
@@ -267,7 +268,7 @@ class HansardParser
           raise_unexpected(node, debate.name)
         end
       elsif debate.is_a?(DebateAlone)
-        raise_unexpected(node, debate.name) unless is_date?(text)
+        raise_unexpected(node, debate.name) unless is_date?(text) or text == 'Business Statement'
       else
         raise_unexpected(node, debate.name)
       end
