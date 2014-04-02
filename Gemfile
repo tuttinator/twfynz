@@ -47,4 +47,9 @@ gem 'nokogiri'
 
 group :development, :test do
   gem 'rspec-rails'
+  gem 'guard-rspec'
+end
+
+group :development do
+  gem 'pry-rails'
 end
