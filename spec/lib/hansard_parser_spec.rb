@@ -1,7 +1,7 @@
 # encoding: UTF-8
 require File.dirname(__FILE__) + '/hansard_parser_spec_helper'
 
-describe HansardParser, "when passed Business Statement 2007-07-19", focus: true do
+describe HansardParser, "when passed Business Statement 2007-07-19" do
 
   let(:html_fixture) do
     %Q|<html>
