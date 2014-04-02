@@ -185,7 +185,8 @@ class Organisation < ActiveRecord::Base
   end
 
   def grab_thumbnail
-    if (RAILS_ENV != 'test' and url and !File.exist?(thumbnail))
+    # TODO: Production code shouldn't be inspecting the Rails env
+    if (!Rails.env.test? and url and !File.exist?(thumbnail))
       uri = url.sub('www.','')
       resp = response "www.alexa.com", "/data/details/main/#{uri}"
 
