@@ -32,18 +32,18 @@ class ParentDebate < Debate
     end
   end
 
+  def sub_names= names
+    @sub_names = names
+  end
+
+  def sub_name= name
+    @sub_names = [name]
+  end
+
   protected
 
     def make_url_slug_text
       '' # slugs are set on the sub-debates
-    end
-
-    def sub_names= names
-      @sub_names = names
-    end
-
-    def sub_name= name
-      @sub_names = [name]
     end
 
     def populate_sub_debate type=SubDebate
