@@ -32,6 +32,10 @@ class OralAnswer < SubDebate
     end
   end
 
+  def question_to= name
+    @question_to = name
+  end
+
   protected
 
     def find_by_candidate_slug candidate_slug
@@ -45,10 +49,6 @@ class OralAnswer < SubDebate
       else
         text = name.parameterize
       end
-    end
-
-    def question_to= name
-      @question_to = name
     end
 
     def populate_sub_debate

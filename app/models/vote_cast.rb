@@ -16,15 +16,15 @@ class VoteCast < ActiveRecord::Base
     @date ? @date : vote.debate.date
   end
 
+  def mp_name= name
+    @mp_name = name
+  end
+
+  def party_name= name
+    @party_name = name
+  end
+
   protected
-
-    def mp_name= name
-      @mp_name = name
-    end
-
-    def party_name= name
-      @party_name = name
-    end
 
     def populate_party
       if @party_name

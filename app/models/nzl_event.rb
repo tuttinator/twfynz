@@ -85,22 +85,24 @@ class NzlEvent < ActiveRecord::Base
     end
   end
 =end
+  
+  def description
+    @description
+  end
+
+  def description= description
+    @description = description
+  end
+
+  def pub_date
+    @pub_date
+  end
+
+  def pub_date= pub_date
+    @pub_date = pub_date
+  end
+
   protected
-    def description
-      @description
-    end
-
-    def description= description
-      @description = description
-    end
-
-    def pub_date
-      @pub_date
-    end
-
-    def pub_date= pub_date
-      @pub_date = pub_date
-    end
 
     def populate_publication_date
       if pub_date
