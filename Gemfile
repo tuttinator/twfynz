@@ -1,4 +1,4 @@
-source 'http://rubygems.org'
+source 'https://rubygems.org'
 
 gem 'rails', '3.2.17'
 
@@ -44,6 +44,10 @@ gem 'sass-rails'
 gem 'compass-rails'
 gem 'thin'
 gem 'nokogiri'
+
+group :test do
+  gem 'factory_girl_rails'
+end
 
 group :development, :test do
   gem 'rspec-rails'
