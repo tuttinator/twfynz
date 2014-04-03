@@ -316,20 +316,25 @@ class Contribution < ActiveRecord::Base
     end
 
     def self.create_condition term
-      if term[/^"([\S]+)"$/]
-        term = term[/^"([\S]+)"$/, 1]
-      end
-      term = term.gsub('\\', '').gsub(';','').gsub('>','').gsub('<','').gsub("'",'').gsub('*','').gsub('%','')
-      terms = term.split
 
-      condition = 'MATCH (text) AGAINST '
-      if terms.length == 1
-        condition + %Q[("#{term}")]
-      elsif term.include? '"'
-        condition + %Q[('#{term}' IN BOOLEAN MODE)]
-      else
-        condition + %Q[("+#{terms.join(" +")}" IN BOOLEAN MODE)]
-      end
+      # TODO: Refactor
+      # Injecting SQL is horrible
+
+
+      #if term[/^"([\S]+)"$/]
+        #term = term[/^"([\S]+)"$/, 1]
+      #end
+      #term = term.gsub('\\', '').gsub(';','').gsub('>','').gsub('<','').gsub("'",'').gsub('*','').gsub('%','')
+      #terms = term.split
+
+      #condition = 'MATCH (text) AGAINST '
+      #if terms.length == 1
+        #condition + %Q[("#{term}")]
+      #elsif term.include? '"'
+        #condition + %Q[('#{term}' IN BOOLEAN MODE)]
+      #else
+        #condition + %Q[("+#{terms.join(" +")}" IN BOOLEAN MODE)]
+      #end
     end
 
     # Override if needed
