@@ -9,26 +9,18 @@ describe SubmissionsController, "handling GET /submissions" do
     @controller.stub(:admin?).and_return(true)
   end
 
-  def do_get
-    get :index
-  end
-
   it "should be successful" do
-    do_get
+    get :index
     response.should be_success
   end
 
   it "should render index template" do
-    do_get
+    get :index
     response.should render_template('index')
   end
 
-  it "should find all submissions" do
-    do_get
-  end
-
   it "should assign the found submissions for the view" do
-    do_get
+    get :index
     assigns[:submissions].should == [@submission]
   end
 end
@@ -41,27 +33,23 @@ describe SubmissionsController, "handling GET /submissions/1" do
     @controller.stub(:admin?).and_return(true)
   end
 
-  def do_get
-    get :show, :id => "1"
-  end
-
   it "should be successful" do
-    do_get
+    get :show, id: 1
     response.should be_success
   end
 
   it "should render show template" do
-    do_get
+    get :show, id: 1
     response.should render_template('show')
   end
 
   it "should find the submission requested" do
     Submission.should_receive(:find).with("1").and_return(@submission)
-    do_get
+    get :show, id: 1
   end
 
   it "should assign the found submission for the view" do
-    do_get
+    get :show, id: 1
     assigns[:submission].should equal(@submission)
   end
 end
@@ -74,24 +62,23 @@ describe SubmissionsController, "handling GET /submissions/1.xml" do
     @controller.stub(:admin?).and_return(true)
   end
 
-  def do_get
+  before :each do
     @request.env["HTTP_ACCEPT"] = "application/xml"
-    get :show, :id => "1"
   end
 
   it "should be successful" do
-    do_get
+    get :show, id: 1
     response.should be_success
   end
 
   it "should find the submission requested" do
     Submission.should_receive(:find).with("1").and_return(@submission)
-    do_get
+    get :show, id: 1
   end
 
   it "should render the found submission as xml" do
     @submission.should_receive(:to_xml).and_return("XML")
-    do_get
+    get :show, id: 1
     response.body.should == "XML"
   end
 end
@@ -104,32 +91,28 @@ describe SubmissionsController, "handling GET /submissions/new" do
     @controller.stub(:admin?).and_return(true)
   end
 
-  def do_get
-    get :new
-  end
-
   it "should be successful" do
-    do_get
+    get :new
     response.should be_success
   end
 
   it "should render new template" do
-    do_get
+    get :new
     response.should render_template('new')
   end
 
   it "should create an new submission" do
     Submission.should_receive(:new).and_return(@submission)
-    do_get
+    get :new
   end
 
   it "should not save the new submission" do
     @submission.should_not_receive(:save)
-    do_get
+    get :new
   end
 
   it "should assign the new submission for the view" do
-    do_get
+    get :new
     assigns[:submission].should equal(@submission)
   end
 end
@@ -142,27 +125,23 @@ describe SubmissionsController, "handling GET /submissions/1/edit" do
     @controller.stub(:admin?).and_return(true)
   end
 
-  def do_get
-    get :edit, :id => "1"
-  end
-
   it "should be successful" do
-    do_get
+    get :edit, id: 1
     response.should be_success
   end
 
   it "should render edit template" do
-    do_get
+    get :edit, id: 1
     response.should render_template('edit')
   end
 
   it "should find the submission requested" do
     Submission.should_receive(:find).and_return(@submission)
-    do_get
+    get :edit, id: 1
   end
 
   it "should assign the found Submission for the view" do
-    do_get
+    get :edit, id: 1
     assigns[:submission].should equal(@submission)
   end
 end
@@ -176,17 +155,13 @@ describe SubmissionsController, "handling POST /submissions" do
     @controller.stub(:admin?).and_return(true)
   end
 
-  def do_post
-    post :create, :submission => @params
-  end
-
   it "should create a new submission" do
     Submission.should_receive(:new).with(@params).and_return(@submission)
-    do_post
+    post :create, submission: @params
   end
 
   it "should redirect to the new submission" do
-    do_post
+    post :create, submission: @params
     response.should redirect_to(submission_url("1"))
   end
 end
@@ -205,28 +180,24 @@ describe SubmissionsController, "handling PUT /submissions/1" do
     @controller.stub(:admin?).and_return(true)
   end
 
-  def do_update
-    put :update, :id => "1"
-  end
-
   it "should find the submission requested" do
     Submission.should_receive(:find).with("1").and_return(@submission)
-    do_update
+    put :update, id: 1
   end
 
   it "should update the found submission" do
     @submission.should_receive(:update_attributes)
-    do_update
+    put :update, id: 1
     assigns(:submission).should equal(@submission)
   end
 
   it "should assign the found submission for the view" do
-    do_update
+    put :update, id: 1
     assigns(:submission).should equal(@submission)
   end
 
   it "should redirect to the submission" do
-    do_update
+    put :update, id: 1
     response.should render_template('_submission')
   end
 end

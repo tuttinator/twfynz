@@ -20,6 +20,7 @@ Twfynz::Application.routes.draw do
   end
   resources :organisations
   resources :parliaments
+  resources :submissions
 
   match "portfolios/:portfolio_url/:year/:month/:day/:url_slug" => "debates#show_portfolio_debate", :as => "show_portfolio_debate"
 
