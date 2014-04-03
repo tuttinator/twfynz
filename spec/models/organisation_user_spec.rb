@@ -86,7 +86,7 @@ describe OrganisationUser, "email" do
         :password => "bobs_secure_password",
         :password_confirmation => "bobs_secure_password"
     organisation_user.save.should be_false
-    organisation_user.errors.invalid?('email').should be_true
+    organisation_user.errors.include?(:email).should be_true
   end
 end
 
@@ -107,7 +107,7 @@ describe OrganisationUser, "site_url" do
   def assert_site_url_invalid site_url
     organisation_user = new_organisation_user site_url
     organisation_user.save.should be_false
-    organisation_user.errors.invalid?('site_url').should be_true
+    organisation_user.errors.include?(:site_url).should be_true
   end
 
   it 'should have protocol removed before being stored' do
@@ -137,19 +137,19 @@ describe OrganisationUser, "site_url" do
   it 'should be valid if empty' do
     organisation_user = new_organisation_user 'blog.ity.com'
     organisation_user.save.should be_true
-    organisation_user.errors.invalid?('site_url').should be_false
+    organisation_user.errors.include?(:site_url).should be_false
   end
 
   it 'should be valid if correct format' do
     organisation_user = new_organisation_user 'blog.ity.com'
     organisation_user.save.should be_true
-    organisation_user.errors.invalid?('site_url').should be_false
+    organisation_user.errors.include?(:site_url).should be_false
   end
 
   it 'should be invalid if not unique' do
     organisation_user = new_organisation_user 'blog.ity.com'
     organisation_user.save.should be_true
-    organisation_user.errors.invalid?('site_url').should be_false
+    organisation_user.errors.include?(:site_url).should be_false
 
     organisation_user = OrganisationUser.new :login => 'a'+organisation_user.login,
         :email => 'a'+organisation_user.email,
@@ -157,6 +157,6 @@ describe OrganisationUser, "site_url" do
         :password_confirmation => 'magic1',
         :site_url => organisation_user.site_url
     organisation_user.save.should be_false
-    organisation_user.errors.invalid?('site_url').should be_true
+    organisation_user.errors.include?(:site_url).should be_true
   end
 end

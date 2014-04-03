@@ -73,7 +73,7 @@ describe User, "password" do
   def assert_password_invalid password
     user = new_user password
     user.save.should be_false
-    user.errors.invalid?('password').should be_true
+    user.errors.include?(:password).should be_true
     user.destroy
   end
 
@@ -111,7 +111,7 @@ describe User, "login" do
   def assert_login_invalid login
     user = new_user login
     user.save.should be_false
-    user.errors.invalid?('login').should be_true
+    user.errors.include?(:login).should be_true
     user.destroy
   end
 
@@ -163,14 +163,14 @@ describe User, "login" do
   it 'should be valid if it contains underscore between letters' do
     user = new_user 'big_bobby'
     user.save.should be_true
-    user.errors.invalid?('login').should be_false
+    user.errors.include?(:login).should be_false
     user.destroy
   end
 
   it 'should be valid if correct length' do
     user = new_user 'bigbob'
     user.save.should be_true
-    user.errors.invalid?('login').should be_false
+    user.errors.include?(:login).should be_false
     user.destroy
   end
 
@@ -195,7 +195,7 @@ describe User, "email" do
   def assert_email_invalid email
     user = new_user email
     user.save.should be_false
-    user.errors.invalid?('email').should be_true
+    user.errors.include?(:email).should be_true
     user.destroy
   end
 
@@ -226,7 +226,7 @@ describe User, "email" do
   it 'should be valid if correct format' do
     user = new_user 'bob@ity.com'
     user.save.should be_true
-    user.errors.invalid?('email').should be_false
+    user.errors.include?(:email).should be_false
     user.destroy
   end
 
@@ -246,7 +246,7 @@ describe User, "blog_url" do
   def assert_blog_url_invalid blog_url
     user = new_user blog_url
     user.save.should be_false
-    user.errors.invalid?('blog_url').should be_true
+    user.errors.include?(:blog_url).should be_true
     user.destroy
   end
 
@@ -268,7 +268,7 @@ describe User, "blog_url" do
         :password => "bobs_secure_password",
         :password_confirmation => "bobs_secure_password"
     user.save.should be_true
-    user.errors.invalid?('blog_url').should be_false
+    user.errors.include?(:blog_url).should be_false
     user.destroy
   end
 
@@ -279,21 +279,21 @@ describe User, "blog_url" do
         :password_confirmation => "bobs_secure_password",
         :blog_url => ""
     user.save.should be_true
-    user.errors.invalid?('blog_url').should be_false
+    user.errors.include?(:blog_url).should be_false
     user.destroy
   end
 
   it 'should be valid if correct format' do
     user = new_user 'blog.ity.com'
     user.save.should be_true
-    user.errors.invalid?('blog_url').should be_false
+    user.errors.include?(:blog_url).should be_false
     user.destroy
   end
 
   it 'should be invalid if not unique' do
     user = new_user 'blog.ity.com'
     user.save.should be_true
-    user.errors.invalid?('blog_url').should be_false
+    user.errors.include?(:blog_url).should be_false
 
     user = User.new :login => 'a'+user.login,
         :email => 'a'+user.email,
@@ -301,7 +301,7 @@ describe User, "blog_url" do
         :password_confirmation => 'magic1',
         :blog_url => user.blog_url
     user.save.should be_false
-    user.errors.invalid?('blog_url').should be_true
+    user.errors.include?(:blog_url).should be_true
     user.destroy
   end
 end
