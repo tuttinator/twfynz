@@ -1,3 +1,17 @@
+# == Schema Information
+#
+# Table name: bill_events
+#
+#  id          :integer          not null, primary key
+#  bill_id     :integer
+#  name        :string(255)
+#  date        :date
+#  source_type :string(255)
+#  source_id   :integer
+#  created_at  :datetime
+#  updated_at  :datetime
+#
+
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe BillEvent do

@@ -1,3 +1,16 @@
+# == Schema Information
+#
+# Table name: committees
+#
+#  id                :integer          not null, primary key
+#  clerk_category_id :integer
+#  committee_type    :string(19)       not null
+#  committee_name    :string(46)       not null
+#  url               :text             not null
+#  description       :text
+#  former            :boolean          not null
+#
+
 require File.dirname(__FILE__) + '/../spec_helper'
 
 def committee_bill_params

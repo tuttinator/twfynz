@@ -1,4 +1,27 @@
 # encoding: UTF-8
+# == Schema Information
+#
+# Table name: nzl_events
+#
+#  id                 :integer          not null, primary key
+#  title              :string(255)
+#  about_type         :string(255)
+#  about_id           :integer
+#  status             :string(255)
+#  nzl_id             :string(255)
+#  version_stage      :string(255)
+#  version_date       :date
+#  version_committee  :string(255)
+#  committee_id       :integer
+#  information_type   :string(255)
+#  legislation_type   :string(255)
+#  year               :integer
+#  no                 :string(255)
+#  current_as_at_date :date
+#  link               :string(255)
+#  publication_date   :datetime
+#
+
 require 'morph'
 
 class NzlEvent < ActiveRecord::Base
@@ -11,8 +34,7 @@ class NzlEvent < ActiveRecord::Base
   class << self
 
     def all_act_names
-      @all_act_names = find_all_by_information_type('act').collect(&:title).compact.sort.uniq unless @all_act_names
-      @all_act_names
+      @all_act_names ||= find_all_by_information_type('act').collect(&:title).compact.sort.uniq
     end
 
     def create_from params

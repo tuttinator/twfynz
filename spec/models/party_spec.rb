@@ -1,3 +1,19 @@
+# == Schema Information
+#
+# Table name: parties
+#
+#  id            :integer          not null, primary key
+#  short         :string(255)      not null
+#  name          :string(255)
+#  vote_name     :string(255)
+#  registered    :date
+#  abbreviation  :string(255)
+#  url           :string(255)
+#  colour        :string(6)
+#  logo          :string(255)
+#  wikipedia_url :string(255)
+#
+
 require File.dirname(__FILE__) + '/../spec_helper'
 
 def party_params

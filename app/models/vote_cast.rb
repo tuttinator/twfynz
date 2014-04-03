@@ -1,4 +1,19 @@
 # encoding: UTF-8
+# == Schema Information
+#
+# Table name: vote_casts
+#
+#  id         :integer          not null, primary key
+#  vote_id    :integer          not null
+#  cast       :string(12)       not null
+#  cast_count :integer          not null
+#  vote_label :string(255)      not null
+#  mp_id      :integer
+#  party_id   :integer
+#  present    :boolean
+#  teller     :boolean
+#
+
 class VoteCast < ActiveRecord::Base
 
   belongs_to :vote

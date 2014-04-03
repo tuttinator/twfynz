@@ -1,3 +1,21 @@
+# == Schema Information
+#
+# Table name: submissions
+#
+#  id                   :integer          not null, primary key
+#  submitter_name       :string(255)
+#  submitter_url        :string(255)
+#  business_item_name   :string(255)
+#  committee_id         :integer
+#  date                 :date
+#  evidence_url         :string(255)
+#  business_item_type   :string(255)
+#  business_item_id     :integer
+#  is_from_organisation :boolean
+#  submitter_type       :string(255)
+#  submitter_id         :integer
+#
+
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe Submission do

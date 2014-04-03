@@ -1,3 +1,16 @@
+# == Schema Information
+#
+# Table name: order_paper_alerts
+#
+#  id               :integer          not null, primary key
+#  order_paper_date :date
+#  name             :string(255)
+#  alert_date       :date
+#  url              :string(255)
+#  created_at       :datetime
+#  updated_at       :datetime
+#
+
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe OrderPaperAlert do
