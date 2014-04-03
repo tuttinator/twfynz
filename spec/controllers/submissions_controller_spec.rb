@@ -1,29 +1,5 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
-describe SubmissionsController, "#route_for" do
-
-  it "should map { :controller => 'submissions', :action => 'index' } to /submissions" do
-    route_for(:controller => "submissions", :action => "index").should == "/submissions"
-  end
-
-  it "should map { :controller => 'submissions', :action => 'new' } to /submissions/new" do
-    route_for(:controller => "submissions", :action => "new").should == "/submissions/new"
-  end
-
-  it "should map { :controller => 'submissions', :action => 'show', :id => 1 } to /submissions/1" do
-    route_for(:controller => "submissions", :action => "show", :id => "1").should == "/submissions/1"
-  end
-
-  it "should map { :controller => 'submissions', :action => 'edit', :id => 1 } to /submissions/1/edit" do
-    route_for(:controller => "submissions", :action => "edit", :id => "1").should == "/submissions/1/edit"
-  end
-
-  it "should map { :controller => 'submissions', :action => 'update', :id => 1} to /submissions/1" do
-    assert_generates("/submissions/1", :controller => "submissions", :action => "update", :id => "1")
-  end
-
-end
-
 describe SubmissionsController, "handling GET /submissions" do
 
   before do
