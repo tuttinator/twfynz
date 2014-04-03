@@ -47,15 +47,15 @@ describe DebateAlone do
     end
 
     it 'should set category for variants of frequent debate names' do
-      assert_category_correct 'Member Sworn', 'members_sworn'
+      assert_category_correct 'Member Sworn', 'members-sworn'
     end
 
     it 'should set category and slug for frequent debate names' do
-      assert_slug_correct 'Standing Orders—Sessional',  'standing_orders', 'sessional'
-      assert_slug_correct 'Standing Orders—Suspension', 'standing_orders', 'suspension'
-      assert_slug_correct 'Members’ Bills — Procedure', 'members_bills', 'procedure'
-      assert_slug_correct 'Offices of Parliament—Address to Governor-General', 'offices_of_parliament', 'address_to_governor-general'
-      assert_slug_correct 'Address in Reply—Presentation to Governor-General', 'address_in_reply', 'presentation_to_governor-general'
+      assert_slug_correct 'Standing Orders—Sessional',  'standing-orders', 'sessional'
+      assert_slug_correct 'Standing Orders—Suspension', 'standing-orders', 'suspension'
+      assert_slug_correct 'Members’ Bills — Procedure', 'members_-ills', 'procedure'
+      assert_slug_correct 'Offices of Parliament—Address to Governor-General', 'offices-of-parliament', 'address-to-governor-general'
+      assert_slug_correct 'Address in Reply—Presentation to Governor-General', 'address-in-reply', 'presentation-to-governor-general'
     end
 
     it 'should set category and slug for variants of frequent debate names' do
