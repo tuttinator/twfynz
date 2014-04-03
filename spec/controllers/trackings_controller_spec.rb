@@ -2,10 +2,6 @@ require File.dirname(__FILE__) + '/../spec_helper'
 
 describe TrackingsController, "#route_for" do
 
-  it "should map { :controller => 'trackings', :action => 'new' } to /trackings/new" do
-    route_for(:controller => "trackings", :action => "new").should == "/trackings/new"
-  end
-
   it "should map { :controller => 'trackings', :action => 'show', :id => 1 } to /trackings/1" do
     assert_generates("/trackings/1", :controller => "trackings", :action => "show", :id => 1)
   end

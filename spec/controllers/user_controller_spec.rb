@@ -2,10 +2,6 @@ require File.dirname(__FILE__) + '/../spec_helper'
 
 describe UserController, 'signup' do
 
-  it "should be accessible via route '/users/signup'" do
-    route_for(:controller => "user", :action => "signup").should == "/users/signup"
-  end
-
   it "should show initial signup page on GET request" do
     get :signup
     response.should be_success
@@ -25,20 +21,8 @@ describe UserController, 'signup' do
   end
 end
 
-describe UserController, 'signup organisation' do
-  fixtures :users
-
-  it "should be accessible via route '/users/signup/organisation'" do
-    route_for(:controller => "user", :action => "signup_organisation").should == "/users/signup/organisation"
-  end
-end
-
 describe UserController, 'signup individual' do
   fixtures :users
-
-  it "should be accessible via route '/users/signup/individual'" do
-    route_for(:controller => "user", :action => "signup_individual").should == "/users/signup/individual"
-  end
 
   it "should create user and redirect to user_home" do
     post :signup_individual, :user => { :login => "newbob", :password => "newpassword", :password_confirmation => "newpassword", :email => "newbob@mcbob.com" }
