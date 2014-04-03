@@ -188,10 +188,10 @@ describe SpeakerName, "when creating anchor" do
   end
 
   def create_speaker_name name, remaining
-    returning SpeakerName.new('') do |speaker_name|
-      speaker_name.stub(:name).and_return name
-      speaker_name.stub(:remaining).and_return remaining
-    end
+    speaker_name = SpeakerName.new('')
+    speaker_name.stub(:name).and_return name
+    speaker_name.stub(:remaining).and_return remaining
+    speaker_name
   end
 
 end

@@ -13,13 +13,13 @@ class BillEvent < ActiveRecord::Base
 
     def create_from_nzl_event nzl_event
       if nzl_event.about_type == 'Bill' && nzl_event.about_id && nzl_event.version_stage
-        returning(BillEvent.new) do |e|
-          e.bill_id     = nzl_event.about_id
-          e.name        = nzl_event.version_stage
-          e.date        = nzl_event.version_date
-          e.source_type = 'NzlEvent'
-          e.source_id   = nzl_event.id
-        end
+        BillEvent.new(
+          bill_id:      nzl_event.about_id,
+          name:         nzl_event.version_stage,
+          date:         nzl_event.version_date,
+          source_type:  'NzlEvent',
+          source_id:    nzl_event.id
+        )
       else
         nil
       end
