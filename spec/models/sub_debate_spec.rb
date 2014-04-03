@@ -45,7 +45,7 @@ describe SubDebate do
     end
 
     it 'should handle other text as usual' do
-      assert_slug_correct 'Third Reading', 'third_reading'
+      assert_slug_correct 'Third Reading', 'third-reading'
     end
 
     def assert_slug_correct name, expected
@@ -69,7 +69,7 @@ describe SubDebate do
     end
 
     it 'should create url_category and url_slug' do
-      assert_slug_correct 'Points of Order', 'Mispronunciation—Māori Language and Members’ Names', 'points_of_order', 'mispronunciation'              # http://theyworkforyou.co.nz/debates/2008/apr/09/02
+      assert_slug_correct 'Points of Order', 'Mispronunciation—Māori Language and Members’ Names', 'points-of-order', 'mispronunciation'              # http://theyworkforyou.co.nz/debates/2008/apr/09/02
       assert_slug_correct 'Visitors', "Australia—Attorney-General", 'visitors', 'australia'
       assert_slug_correct 'Urgent Debates Declined', 'Auckland International Airport—Canada Pension Plan Investment Board Bid', 'urgent_debates_declined', 'auckland_international_airport'  # http://theyworkforyou.co.nz/debates/2008/apr/15/20
       assert_slug_correct 'Tabling of Documents', 'Driving Incident', 'tabling_of_documents', 'driving_incident'                                      # http://theyworkforyou.co.nz/debates/2008/apr/02/23
@@ -94,11 +94,11 @@ describe SubDebate do
     end
 
     it 'should abbreviate New Zealand to nz, and " - " to "_"' do
-      assert_slug_correct 'Australia - New Zealand Political Exchange—Members', 'Australia—Standing Committee on Economics, Finance and Public Administration', 'australia_nz_political_exchange'
+      assert_slug_correct 'Australia - New Zealand Political Exchange—Members', 'Australia—Standing Committee on Economics, Finance and Public Administration', 'australia-nz-political_exchange'
     end
 
     it 'only use name up to "—"' do
-      assert_slug_correct 'Conduct in the House—Standards', 'Motion of No Confidence—Leave to Move', 'conduct_in_the_house'
+      assert_slug_correct 'Conduct in the House—Standards', 'Motion of No Confidence—Leave to Move', 'conduct-in-the-house'
     end
   end
 end
