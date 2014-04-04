@@ -1,16 +1,5 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
-describe PlacesController do
-
-  it "should map { :controller => 'places', :action => 'index' } to /places" do
-    route_for(:controller => "places", :action => "index").should == "/places"
-  end
-
-  it "should map { :controller => 'places', :action => 'show_place', :name => 'puhoi' } to /places/puhoi" do
-    route_for(:controller => "places", :action => "show_place", :name => 'puhoi').should == "/places/puhoi"
-  end
-end
-
 describe PlacesController, "handling GET /places" do
 
   before do

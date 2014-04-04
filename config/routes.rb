@@ -24,7 +24,7 @@ Twfynz::Application.routes.draw do
   resources :submissions
   resources :trackings
   resources :places, only: :index do
-    get ':name' => 'places#show_places'
+    get ':name' => 'places#show_place', on: :collection
   end
 
   match "portfolios/:portfolio_url/:year/:month/:day/:url_slug" => "debates#show_portfolio_debate", :as => "show_portfolio_debate"
