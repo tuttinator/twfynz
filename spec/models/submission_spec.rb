@@ -33,9 +33,9 @@ describe Submission do
     bill.should_receive(:id).and_return(2)
     Bill.should_receive(:from_name_and_date).with(item_name, date).and_return(bill)
 
-    submission = Submission.new :committee_name => committee_name,
-      :business_item_name => item_name,
+    submission = Submission.new :business_item_name => item_name,
       :date => date.to_s
+    submission.committee_name = committee_name
     submission.should be_valid
     submission.committee_id.should == 1
     submission.business_item_id.should == 2
@@ -51,9 +51,9 @@ describe Submission do
     committee.should_receive(:id).and_return(1)
     Committee.should_receive(:from_name).with(committee_name).and_return(committee)
 
-    submission = Submission.new :committee_name => committee_name,
-      :business_item_name => item_name,
+    submission = Submission.new :business_item_name => item_name,
       :date => date.to_s
+    submission.committee_name = committee_name
     submission.should be_valid
     submission.committee_id.should == 1
     submission.business_item_id.should == nil
