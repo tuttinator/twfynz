@@ -24,6 +24,8 @@
 
 require 'morph'
 
+# TODO: Rename class to be more descriptive
+# does it mean New Zealand Legislative Event?
 class NzlEvent < ActiveRecord::Base
 
   belongs_to :about, :polymorphic => true
@@ -38,7 +40,7 @@ class NzlEvent < ActiveRecord::Base
     end
 
     def create_from params
-      publication_date = NzlEvent.parse_pub_date params[:pub_date]
+      NzlEvent.parse_pub_date params[:pub_date]
       existing = NzlEvent.find_all_by_title(params[:title])
       if existing.empty?
         # puts 'creating ' + params[:title] + ' (' + publication_date.to_s + ')' if RAILS_ENV != 'test'
