@@ -26,6 +26,7 @@ class BillEvent < ActiveRecord::Base
   class << self
 
     def create_from_nzl_event nzl_event
+      # TODO: Remove defensive coding guarding attributes
       if nzl_event.about_type == 'Bill' && nzl_event.about_id && nzl_event.version_stage
         BillEvent.new(
           bill_id:      nzl_event.about_id,
