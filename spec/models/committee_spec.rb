@@ -11,7 +11,7 @@
 #  former            :boolean          not null
 #
 
-require File.dirname(__FILE__) + '/../spec_helper'
+require 'spec_helper'
 
 def committee_bill_params
   {:bill_name => 'Major Events Management Bill',

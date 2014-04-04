@@ -24,7 +24,7 @@
 #  url_category       :string(255)
 #
 
-require File.dirname(__FILE__) + '/../spec_helper'
+require 'spec_helper'
 
 describe SubDebate do
   describe 'in general' do

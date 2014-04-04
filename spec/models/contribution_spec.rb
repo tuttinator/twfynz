@@ -16,7 +16,7 @@
 #  date_int     :integer
 #
 
-require File.dirname(__FILE__) + '/../spec_helper'
+require 'spec_helper'
 
 
 describe Contribution, 'on validation' do

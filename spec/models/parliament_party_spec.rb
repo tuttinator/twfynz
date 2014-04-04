@@ -15,7 +15,7 @@
 #  bill_final_reading_party_votes_count :integer
 #
 
-require File.dirname(__FILE__) + '/../spec_helper'
+require 'spec_helper'
 
 describe ParliamentParty do
 

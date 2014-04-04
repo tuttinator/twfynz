@@ -24,7 +24,7 @@
 #  image                     :string(255)
 #
 
-require File.dirname(__FILE__) + '/../spec_helper'
+require 'spec_helper'
 
 describe Member do
 

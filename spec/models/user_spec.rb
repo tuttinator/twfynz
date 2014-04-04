@@ -15,7 +15,7 @@
 #  updated_at      :datetime
 #
 
-require File.dirname(__FILE__) + '/../spec_helper'
+require 'spec_helper'
 
 describe User, 'authenticate' do
   fixtures :users

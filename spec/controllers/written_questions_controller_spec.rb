@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../spec_helper'
+require 'spec_helper'
 
 describe WrittenQuestionsController, "routes" do
   it "should map { :controller => 'written_questions', :action => 'index' } to /written_questions" do

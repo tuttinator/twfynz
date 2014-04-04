@@ -27,7 +27,7 @@
 #  count_of_mentions  :integer
 #
 
-require File.dirname(__FILE__) + '/../spec_helper'
+require 'spec_helper'
 
 describe Geoname, 'when matching geonames in text' do
   fixtures :geonames

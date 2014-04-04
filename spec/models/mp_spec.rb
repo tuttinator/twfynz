@@ -23,7 +23,7 @@
 #  alt_last        :string(255)
 #
 
-require File.dirname(__FILE__) + '/../spec_helper'
+require 'spec_helper'
 
 def mp_from_name_correct date, downcase_name, lookup_name, alt_downcase_name=nil
   mp = mock_model(Mp)

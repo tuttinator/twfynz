@@ -24,7 +24,7 @@
 #  url_category       :string(255)
 #
 
-require File.dirname(__FILE__) + '/../spec_helper'
+require 'spec_helper'
 
 describe ParentDebate, 'when it has a single sub_debate' do
   it 'should identify itself as a parent debate with a single sub_debate' do

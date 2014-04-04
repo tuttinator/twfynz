@@ -41,7 +41,7 @@
 #  formerly_part_of_text                   :string(255)
 #
 
-require File.dirname(__FILE__) + '/../spec_helper'
+require 'spec_helper'
 
 def bill_params
   {:bill_name => 'Major Events Management Bill',

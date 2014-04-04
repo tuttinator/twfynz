@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../spec_helper'
+require 'spec_helper'
 
 describe TrackingsController, "#route_for" do
 
@@ -159,7 +159,7 @@ describe TrackingsController, "handling POST /trackings" do
     @tracking.stub(:item).and_return(mock_model(Bill))
     Tracking.stub(:new).and_return(@tracking)
     # user = users(:the_bob)
-    controller.stub(:current_user).and_return(double(User, :login=>'bob'))
+    controller.stub(:current_user).and_return(create :user)
     @params = {}
   end
 

@@ -13,7 +13,7 @@
 #  updated_at      :datetime
 #
 
-require File.dirname(__FILE__) + '/../spec_helper'
+require 'spec_helper'
 
 describe Tracking do
   fixtures :trackings

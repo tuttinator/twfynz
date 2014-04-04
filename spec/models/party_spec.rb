@@ -14,7 +14,7 @@
 #  wikipedia_url :string(255)
 #
 
-require File.dirname(__FILE__) + '/../spec_helper'
+require 'spec_helper'
 
 def party_params
   { :name => 'The Greens, The Green Party of Aotearoa New Zealand',

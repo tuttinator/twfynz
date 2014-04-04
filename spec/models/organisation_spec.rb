@@ -14,7 +14,7 @@
 #  sourcewatch_url   :string(255)
 #
 
-require File.dirname(__FILE__) + '/../spec_helper'
+require 'spec_helper'
 
 describe Organisation, 'when finding organisation from text' do
   assert_model_has_many :donations

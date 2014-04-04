@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../spec_helper'
+require 'spec_helper'
 
 def answers_from_question_time_alert
   receiving_address = 'receiving_address.co.nz'

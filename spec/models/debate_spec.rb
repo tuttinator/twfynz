@@ -24,7 +24,7 @@
 #  url_category       :string(255)
 #
 
-require File.dirname(__FILE__) + '/../spec_helper'
+require 'spec_helper'
 
 def dummy_bill_params
   {:bill_name => 'Major Events Management Bill',

@@ -18,7 +18,7 @@
 #  written_status     :string(10)
 #
 
-require File.dirname(__FILE__) + '/../spec_helper'
+require 'spec_helper'
 
 describe PersistedFile, 'the class' do
 

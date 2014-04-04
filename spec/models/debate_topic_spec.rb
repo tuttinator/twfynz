@@ -8,7 +8,7 @@
 #  topic_id   :integer          not null
 #
 
-require File.dirname(__FILE__) + '/../spec_helper'
+require 'spec_helper'
 
 describe DebateTopic do
 
