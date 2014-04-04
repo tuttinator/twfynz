@@ -34,7 +34,7 @@ class User < ActiveRecord::Base
       :if => Proc.new { |u| !u.email.blank? },
       :message => "format is invalid"
 
-  validates_format_of :login, :with => /^([a-z]+)(_[a-z]+)*$/,
+  validates_format_of :login, :with => /^([a-z0-9]+)(_[a-z]0-9+)*$/,
       :if => Proc.new { |u| !u.login.blank? },
       :message => "format is invalid, try lower case letters, with _ in between words"
 
