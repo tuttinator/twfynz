@@ -53,6 +53,7 @@ class Mp < ActiveRecord::Base
   class << self
 
     def all_mps
+      # FIXME: Avoid SQL
       # @all_mps ||= Mp.find_by_sql('select id,first,alt,last from mps')
       Mp.find_by_sql('select id,first,alt,last from mps')
     end

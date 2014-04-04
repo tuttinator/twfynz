@@ -25,7 +25,7 @@ require 'spec_helper'
 
 shared_examples_for "An NzlEvent" do
 
-  before(:all) do
+  before(:each) do
     if @bill_id
       bill = mock_model(Bill)
       bill.stub(:id).and_return @bill_id

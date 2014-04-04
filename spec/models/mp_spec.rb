@@ -68,7 +68,7 @@ end
 describe Mp, 'finding member on date' do
   before do
     @mp = Mp.new
-    @date = double('date')
+    @date = Date.today
     @member1 = double('member')
     @member2 = double('member')
   end
@@ -92,14 +92,14 @@ describe Mp, 'finding party on date' do
   it 'should return party from member on date' do
     mp = Mp.new
     party = double('party')
-    date = double('date')
+    date = Date.today
     member = double('member', :party => party)
     mp.should_receive(:member_on_date).with(date).and_return member
     mp.party_on_date(date).should == party
   end
   it 'should return nil if no member on date' do
     mp = Mp.new
-    date = double('date')
+    date = Date.today
     mp.should_receive(:member_on_date).with(date).and_return nil
     mp.party_on_date(date).should be_nil
   end
@@ -129,7 +129,7 @@ describe Mp, "from_name" do
 
   describe 'when date is in 48th Parliament' do
     before do
-      @date = double(Date)
+      @date = Date.parse("2008-01-01")
       Parliament.stub(:date_within?).with(48,@date).and_return true
     end
 
@@ -226,6 +226,7 @@ describe Mp, "from_name" do
 
   describe 'when date is in 49th Parliament' do
     before do
+      @date = Date.parse("2008-12-30")
       Parliament.stub(:date_within?).with(48,@date).and_return false
       Parliament.stub(:date_within?).with(49,@date).and_return true
     end
