@@ -60,6 +60,10 @@ class Submission < ActiveRecord::Base
     return 'no'
   end
 
+  def committee_name= committee_name
+    @committee_name = committee_name
+  end
+
   protected
 
     def expire_cached_pages
@@ -84,10 +88,6 @@ class Submission < ActiveRecord::Base
         end
       end
       populate_submitter_id
-    end
-
-    def committee_name= committee_name
-      @committee_name = committee_name
     end
 
     def populate_business_item
